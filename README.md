@@ -9,8 +9,14 @@ Also allows to Get RecoverableItems and Restore items.
 ----
 
 ## Delete Meetings using a GUI  
-Delete Meetings items from attendees when Organizers that already left the company, in Exchange Online.  
+Delete Meeting items from attendees when Organizers already left the company, in Exchange Online.  
 [File](/DeleteMeetings-gui/)
+
+----
+
+## Manage Mobile Devices using a GUI  
+Allows admins to manage mobile devices in Exchange Online with a simplified GUI, and 'allow' or 'block' them in bulk.
+[File](/manage-mobileDevices/)
 
 ----
 

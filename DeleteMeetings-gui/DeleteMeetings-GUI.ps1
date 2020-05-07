@@ -12,8 +12,9 @@
 	BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
 	NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
 	DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- 
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+.PARAMETER EnableTranscript
+    Enable this parameter to write a powershell transcript in your 'Documents' folder.
 .SYNOPSIS
     Delete Meetings items for Organizers that already left the company, in Exchange Online.
 .DESCRIPTION
@@ -28,6 +29,8 @@
 .ROLE
    Support
 #>
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+[CmdletBinding()]
 param(
     [switch]$EnableTranscript = $false
 )
