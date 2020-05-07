@@ -15,8 +15,8 @@ Delete Meeting items from attendees when Organizers already left the company, in
 ----
 
 ## Manage Mobile Devices using a GUI  
-Allows admins to manage mobile devices in Exchange Online with a simplified GUI, and 'allow' or 'block' them in bulk.
-[File](/manage-mobileDevices/)
+Allows admins to manage mobile devices in Exchange Online with a simplified GUI, and 'allow' or 'block' them in bulk.  
+[File](/Manage-MobileDevices/)
 
 ----
 
