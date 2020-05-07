@@ -6,6 +6,8 @@ Allows admins to Search, Delete content from mailboxes.
 Also allows to Get RecoverableItems and Restore items.  
 [File](/search-gui/)
 
+----
+
 ## Collect FreeBusy information
-Collects info usually requested by Microsoft support to troubleshoot FreeBusy issues.
+Collects info usually requested by Microsoft support to troubleshoot FreeBusy issues.  
 [File](/CollectFBLogs/)
