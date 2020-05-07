@@ -1,5 +1,5 @@
 # Exchange Powershell tools
-Exchange Powershell tools mostly to use in Exchange Online (Office 365)
+Exchange Powershell tools mostly use in Exchange Online (Office 365)
 
 ## Search-GUI tool
 Allows admins to Search, Delete content from mailboxes.  
