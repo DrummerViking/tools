@@ -29,6 +29,13 @@ Delete Meeting items from attendees when Organizers already left the company, in
 
 ----
 
+## Report Calendar Items  
+Reports how many calendar items, per calendar year, some user/room mailboxes have in Exchange Online.  
+Report can be exported to a DestinationFolderPath or by default to user's Desktop.  
+[File](/ReportCalendarItems/)
+
+----
+
 ## Manage Mobile Devices using a GUI  
 Allows admins to manage mobile devices in Exchange Online with a simplified GUI, and 'allow' or 'block' them in bulk.  
 [File](/Manage-MobileDevices/)
