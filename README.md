@@ -8,6 +8,14 @@ Also allows to Get RecoverableItems and Restore items.
 
 ----
 
+## Merge SoftDeleted Mailboxes using a GUI
+Automate the process to create a New-MailboxRestoreRequest and verify the progress of it.
+It will allow to export SourceAccount's ProxyAddresses in case needs to be imported in the target account.   
+Allows to select and combine if we involve Archive Mailboxes.
+[File](/MergeMailboxes-gui/)
+
+----
+
 ## Delete Meetings using a GUI  
 Delete Meeting items from attendees when Organizers already left the company, in Exchange Online.  
 [File](/DeleteMeetings-gui/)
