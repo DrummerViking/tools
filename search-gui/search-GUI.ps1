@@ -230,9 +230,7 @@ if($livePSSession -ne $null){
             Install-Module ExchangeOnlineManagement -Force -ErrorAction Stop
         }
         Import-Module ExchangeOnlineManagement
-        $cred = Get-Credential -Message "Type your Exchange Online Admin credentials"
-        Connect-ExchangeOnline -Credential $cred
-        
+        Connect-ExchangeOnline        
     }else{
         # we will test common endpoints for tentative URLs based on
         # autodiscover. domain.com

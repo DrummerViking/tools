@@ -74,14 +74,12 @@ Get-SendConnector | export-clixml -path "$ts.OnPrem_SendConnectors.xml"
 Write-Host ""
 Write-Host "Connecting to Exchange Online Powershell" -ForegroundColor Cyan
 
-$LiveCred = Get-Credential -Message "Please enter your Global Admin Credentials"
-            
 if ( !(Get-Module ExchangeOnlineManagement -ListAvailable) -and !(Get-Module ExchangeOnlineManagement) )
 {
     Install-Module ExchangeOnlineManagement -Force -ErrorAction Stop
 }
 Import-Module ExchangeOnlineManagement
-Connect-ExchangeOnline -Credential $LiveCred -Prefix EO
+Connect-ExchangeOnline -Prefix EO
 
 $FormatEnumerationLimit = -1
 

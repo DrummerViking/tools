@@ -1,7 +1,8 @@
 ﻿# Merge Mailboxes GUI
 
-## Author:  
+## Authors:  
 Agustin Gallegos  
+Nelson Riera
 
 ## Version History:
 ### 2.10 - 12/03/2018

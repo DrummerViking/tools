@@ -11,8 +11,15 @@ Also allows to Get RecoverableItems and Restore items.
 ## Merge SoftDeleted Mailboxes using a GUI
 Automate the process to create a New-MailboxRestoreRequest and verify the progress of it.
 It will allow to export SourceAccount's ProxyAddresses in case needs to be imported in the target account.   
-Allows to select and combine if we involve Archive Mailboxes.
+Allows to select and combine if we involve Archive Mailboxes.  
 [File](/MergeMailboxes-gui/)
+
+----
+
+## Online Mailbox and Archive report using a GUI  
+Get reports for Mailboxes and Archives hosted in Exchange Online.  
+Report can be viewed live in powershell interface, or send as HTML report by email.  
+[File](/OnlineArchiveReport-gui/)
 
 ----
 

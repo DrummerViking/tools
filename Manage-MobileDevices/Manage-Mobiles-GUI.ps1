@@ -2,12 +2,6 @@
 .NOTES
 	Name: Manage-Mobiles-GUI.ps1
 	Authors: Agustin Gallegos
-	Version History:
-    1.00 - 04/12/2019 - Project start
-    1.00 - 04/15/2019 - First Release
-    1.20 - 04/24/2019 - Fixed Horizontal Scrollbar was out of place. 
-                        Adjusted Mailbox filter to only fetch UserMailbox
-                        Added ClientType column
        
 	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
 	BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -66,8 +60,7 @@ if( (Get-PSSession).Computername -notlike "*outlook*" )
         Install-Module ExchangeOnlineManagement -Force -ErrorAction Stop
     }
     Import-Module ExchangeOnlineManagement
-    $cred = Get-Credential -Message "Type your Exchange Online Admin credentials"
-    Connect-ExchangeOnline -Credential $cred
+    Connect-ExchangeOnline
 }
 #endregion
 

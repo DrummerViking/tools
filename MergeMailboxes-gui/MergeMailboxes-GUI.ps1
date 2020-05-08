@@ -2,14 +2,7 @@
 .NOTES
 	Name: MergeMailboxes-GUI.ps1
 	Authors: Agustin Gallegos
-	Version History:
-	1.00 - 11/11/2016 - Project start
-    1.00 - 11/11/2016 - First Release
-    1.50 - 03/22/2017 - Fixed Status Progress Bar. Exchange Online service changed on how to retrieve Request's status.
-    2.00 - 11/12/2018 - Redesign tool to graphical interface
-    2.10 - 12/03/2018 - Updated BadItemLimit to not be 0
-                        Change "Search Target Mailbox" with '-Anr' parameter
-                        
+                    
 	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
 	BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
 	NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
@@ -130,8 +123,7 @@ if( (Get-PSSession).Computername -notlike "*outlook*" )
         Install-Module ExchangeOnlineManagement -Force -ErrorAction Stop
     }
     Import-Module ExchangeOnlineManagement
-    $cred = Get-Credential -Message "Type your Exchange Online Admin credentials"
-    Connect-ExchangeOnline -Credential $cred
+    Connect-ExchangeOnline
 }
 #endregion
 
