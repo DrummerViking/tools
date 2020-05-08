@@ -8,6 +8,14 @@ Also allows to Get RecoverableItems and Restore items.
 
 ----
 
+## Get MRM Statistics Tool  
+Allow admins to check current MRM Statistics and info for users.  
+App brings Current Retention Policy and Tags.  
+Can get current Managed Folder Assistant Cycle Stats for primary and Archive Mailbox.  
+Button available to issue a "Start-ManagedFolderAssistant" on the account.  
+
+----
+
 ## Merge SoftDeleted Mailboxes using a GUI
 Automate the process to create a New-MailboxRestoreRequest and verify the progress of it.
 It will allow to export SourceAccount's ProxyAddresses in case needs to be imported in the target account.   
