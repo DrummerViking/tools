@@ -121,20 +121,54 @@ Write-Host "This script requires at least EWS API 2.1" -ForegroundColor Yellow
 #region Create Service Object
 $ExchangeVersion = [Microsoft.Exchange.WebServices.Data.ExchangeVersion]::Exchange_2016
 $service = New-Object Microsoft.Exchange.WebServices.Data.ExchangeService($ExchangeVersion)
+#Getting oauth credentials
+if ( !(Get-Module AzureAD -ListAvailable) -and !(Get-Module AzureAD) ) 
+{
+    Install-Module AzureAD -Force -ErrorAction Stop
+}
+$Folderpath = (Get-Module azuread -ListAvailable | Sort-Object Version -Descending)[0].Path
+$path = join-path (split-path $Folderpath -parent) 'Microsoft.IdentityModel.Clients.ActiveDirectory.dll'
+Add-Type -Path $path
 
-$creds = New-Object System.Net.NetworkCredential($psCred.UserName.ToString(),$psCred.GetNetworkCredential().password.ToString()) 
-$service.Credentials = $creds
-$service.Url = [system.URI]"https://outlook.office365.com/ews/exchange.asmx"    
+$authenticationContext = New-Object Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext("https://login.windows.net/common", $False)
+$platformParameters = New-Object Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters([Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior]::Always)
+$resourceUri = "https://outlook.office365.com"
+$AppId = "8799ab60-ace5-4bda-b31f-621c9f6668db"
+$redirectUri = New-Object Uri("http://localhost/code")
+
+$authenticationResult = $authenticationContext.AcquireTokenSilentAsync($resourceUri, $AppId)
+while ($authenticationResult.IsCompleted -ne $true) { Start-Sleep -Milliseconds 500 }
+
+# Check if we failed to get the token
+if (!($authenticationResult.IsFaulted -eq $false))
+{
+    switch ($authenticationResult.Exception.InnerException.ErrorCode) {
+        failed_to_acquire_token_silently {
+            # do nothing since we pretty much expect this to fail
+            $authenticationResult = $authenticationContext.AcquireTokenAsync($resourceUri, $AppId, $redirectUri, $platformParameters)
+            while ($authenticationResult.IsCompleted -ne $true) { Start-Sleep -Milliseconds 500 }
+        }
+        multiple_matching_tokens_detected {
+            # we could clear the cache here since we don't have a UPN, but we are just going to move on to prompting
+            $authenticationResult = $authenticationContext.AcquireTokenAsync($resourceUri, $AppId, $redirectUri, $platformParameters)
+            while ($authenticationResult.IsCompleted -ne $true) { Start-Sleep -Milliseconds 500 }
+        }
+        Default { Write-host "Unknown Token Error $($authenticationResult.Exception.InnerException.ErrorCode). Error message: $_" }
+    }
+}
+$exchangeCredentials = New-Object Microsoft.Exchange.WebServices.Data.OAuthCredentials($authenticationResult.Result.AccessToken)
+$Service.Credentials = $exchangeCredentials
+$service.Url = New-Object Uri("https://outlook.office365.com/ews/exchange.asmx")
 #endregion
 
 # Selecting CSV file if it is not pass as a Parameter
-if($CSVFile -eq $Null){
-$OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
-$OpenFileDialog.initialDirectory = $initialDirectory
-$OpenFileDialog.ShowDialog() | Out-Null
-if($OpenFileDialog.filename -ne ""){
-    $CSVFile = $OpenFileDialog.filename
-    Write-Host "$((Get-Date).ToString("MM-dd-yyyy HH:mm:ss")) - Select file Operation finished" -ForegroundColor Yellow
+if( $null -eq $CSVFile ){
+    $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
+    $OpenFileDialog.initialDirectory = $initialDirectory
+    $OpenFileDialog.ShowDialog() | Out-Null
+    if($OpenFileDialog.filename -ne ""){
+        $CSVFile = $OpenFileDialog.filename
+        Write-Host "$((Get-Date).ToString("MM-dd-yyyy HH:mm:ss")) - Select file Operation finished" -ForegroundColor Yellow
     }
 }
 

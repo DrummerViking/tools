@@ -242,7 +242,7 @@ Write-Host "This script requires at least EWS API 2.1" -ForegroundColor Yellow
         if($radiobutton1.Checked){$Global:option = "Exchange2007_SP1"}
         elseif($radiobutton2.Checked){$Global:option = "Exchange2010_SP2"}
         elseif($radiobutton3.Checked){$Global:option = "Exchange2013_SP1"}
-        elseif($radiobutton4.Checked){$Global:option = "Exchange2013_SP1"}
+        elseif($radiobutton4.Checked){$Global:option = "Exchange2016"}
         $PremiseForm.Hide()
     })
     $PremiseForm.Controls.Add($buttonGo)
@@ -274,22 +274,57 @@ Write-Host "This script requires at least EWS API 2.1" -ForegroundColor Yellow
     $ExchangeVersion = [Microsoft.Exchange.WebServices.Data.ExchangeVersion]::$option
     $service = New-Object Microsoft.Exchange.WebServices.Data.ExchangeService($ExchangeVersion)
  
-    #setting credentials
-    $psCred = Get-Credential -Message "Type your credentials or Administrator credentials"
-    $Global:email = $psCred.UserName
-    $creds = New-Object System.Net.NetworkCredential($psCred.UserName.ToString(),$psCred.GetNetworkCredential().password.ToString()) 
-    $service.Credentials = $creds
-    $service.TraceEnabled = $False
-    if($radiobutton4.Checked){
-        $service.EnableScpLookup = $False 
-        $service.Url = [system.URI]"https://outlook.office365.com/ews/exchange.asmx"
-    }else{
+    if ($radiobutton4.Checked)
+    {
+        #Getting oauth credentials
+        if ( !(Get-Module AzureAD -ListAvailable) -and !(Get-Module AzureAD) ) 
+        {
+            Install-Module AzureAD -Force -ErrorAction Stop
+        }
+        $Folderpath = (Get-Module azuread -ListAvailable | Sort-Object Version -Descending)[0].Path
+        $path = join-path (split-path $Folderpath -parent) 'Microsoft.IdentityModel.Clients.ActiveDirectory.dll'
+        Add-Type -Path $path
+
+        $authenticationContext = New-Object Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext("https://login.windows.net/common", $False)
+        $platformParameters = New-Object Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters([Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior]::Always)
+        $resourceUri = "https://outlook.office365.com"
+        $AppId = "8799ab60-ace5-4bda-b31f-621c9f6668db"
+        $redirectUri = New-Object Uri("http://localhost/code")
+
+        $authenticationResult = $authenticationContext.AcquireTokenSilentAsync($resourceUri, $AppId)
+        while ($authenticationResult.IsCompleted -ne $true) { Start-Sleep -Milliseconds 500 }
+
+        # Check if we failed to get the token
+        if (!($authenticationResult.IsFaulted -eq $false))
+        {
+            switch ($authenticationResult.Exception.InnerException.ErrorCode) {
+                failed_to_acquire_token_silently {
+                    # do nothing since we pretty much expect this to fail
+                    $authenticationResult = $authenticationContext.AcquireTokenAsync($resourceUri, $AppId, $redirectUri, $platformParameters)
+                    while ($authenticationResult.IsCompleted -ne $true) { Start-Sleep -Milliseconds 500 }
+                }
+                multiple_matching_tokens_detected {
+                    # we could clear the cache here since we don't have a UPN, but we are just going to move on to prompting
+                    $authenticationResult = $authenticationContext.AcquireTokenAsync($resourceUri, $AppId, $redirectUri, $platformParameters)
+                    while ($authenticationResult.IsCompleted -ne $true) { Start-Sleep -Milliseconds 500 }
+                }
+                Default { Write-host "Unknown Token Error $($authenticationResult.Exception.InnerException.ErrorCode). Error message: $_" }
+            }
+        }
+        $Global:email = $authenticationResult.Result.UserInfo.DisplayableId
+        $exchangeCredentials = New-Object Microsoft.Exchange.WebServices.Data.OAuthCredentials($authenticationResult.Result.AccessToken)
+        $service.Url = New-Object Uri("https://outlook.office365.com/ews/exchange.asmx")
+    }
+    else
+    {
+        $psCred = Get-Credential -Message "Type your credentials or Administrator credentials"
+        $Global:email = $psCred.UserName
+        $exchangeCredentials = New-Object System.Net.NetworkCredential($psCred.UserName.ToString(),$psCred.GetNetworkCredential().password.ToString())
         # setting Autodiscover endpoint
         $service.EnableScpLookup = $True
-        $service.AutodiscoverUrl($email,{$true}) 
-	}    
-    Write-Host "connected to URL: " $service.url -ForegroundColor Yellow
-
+        $service.AutodiscoverUrl($email,{$true})
+    }
+    $Service.Credentials = $exchangeCredentials
 #endregion
 
 #region Processes

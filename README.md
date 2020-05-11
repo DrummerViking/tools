@@ -13,6 +13,7 @@ Allow admins to check current MRM Statistics and info for users.
 App brings Current Retention Policy and Tags.  
 Can get current Managed Folder Assistant Cycle Stats for primary and Archive Mailbox.  
 Button available to issue a "Start-ManagedFolderAssistant" on the account.  
+[File](/Get-MRMStatistics/)
 
 ----
 

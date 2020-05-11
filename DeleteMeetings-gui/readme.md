@@ -4,6 +4,8 @@
 Agustin Gallegos  
 
 ## Version History:
+### 2.00 - 05/11/2020
+ - Updated tool to connect to Exchange Online using oauth authentication.
 ### 1.30 - 01/03/2019
  - Remove hardcoded timeframe of 180 days. Now user can select desired time frame, including past items
  - Added 'Subject' column to results. **Take into account, EXO's default Calendar Processing is to Delete the Subject for Room Mailboxes**
