@@ -3,6 +3,9 @@
 ## Author:  
 Agustin Gallegos
 
+### Previous link:
+<u>https://gallery.technet.microsoft.com/Manage-Folder-permissions-b5295673</u>  
+
 ## Version History:  
 ### 4.30 - 05/11/2020
  - Updated tool to connect to Exchange Online using new EXO v2 module.
