@@ -73,7 +73,8 @@ We grant the option to create a RBAC Role Group, with the minimum permissions to
 Have you ever had a folder in your mailbox with a bunch of Incident report emails? When the time comes to look for all the reports matching a rule, or a sender, you can't just look at your e-mails one by one.  
 With this script, you will read all the e-mail reports in a folder, and extract that content to a CSV, so you can easily open with a spreadsheet editor and perform easier queries against it.  
 The resultant file in the user's Desktop, will have the following columns:  
-> Received Time, Report Id, Message Id, Sender, Subject, To, Rule Hit  
+> Received Time, Report Id, Message Id, Sender, Subject, To, Rule Hit
+
 [File](/Parse-IncidentReports/)
 
 ----
@@ -86,7 +87,9 @@ Collects info usually requested by Microsoft support to troubleshoot FreeBusy is
 
 ## Get Exchange Server Info Tool  
 
-This script checks the On-Premises Exchange servers for general information by getting Server's name, build number (and RU/CU name), AD Site and roles, .NET version, V++ versions.  
+This script checks the On-Premises Exchange servers for general information by getting:  
+> Server's name, build number (and RU/CU name), AD Site and roles, .NET version, V++ versions.
+
 If you have a mixed environment running multiple versions of Exchange, it is recommended to run the script from your newest version available.  
 Includes a "CASLoad" switch, to collect some Protocol load counters, Netlogon's Semaphores, and check ASA credentials if it is running in a local CAS Server.  
 Includes an "Autodiscover" switch, to collect SCPs.  
