@@ -34,6 +34,15 @@ Report can be viewed live in powershell interface, or send as HTML report by ema
 
 ## Delete Meetings using a GUI  
 Delete Meeting items from attendees when Organizers already left the company, in Exchange Online.  
+You can pass a list of users/room mailboxes, and delete all meetings found from a specific Organizer.  
+
+As this uses EWS, you will need a "master account" with Impersonation permissions. Regularly you can run:  
+```` powershell
+New-ManagementRoleAssignment –Name:impersonationAssignmentName –Role:ApplicationImpersonation –User:<Account>
+````  
+This will give Impersonation permissions over all mailboxes in the tenant, so is critical that this account is not shared.  
+We recommend that you use the tool initially for a single user/room mailbox, and check you have the expected experience.  
+Is not recommended to run against an Organizer Mailbox. There is already a builtin commands in Exchange Online service for this: `Remove-CalendarEvents`  
 [File](/DeleteMeetings-gui/)
 
 ----
