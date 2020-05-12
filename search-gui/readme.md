@@ -5,6 +5,8 @@ Agustin Gallegos
 Nelson Riera  
 
 ## Version History:
+### 3.40 - 05/11/2020
+ - Updated tool to connect to Exchange Online using new EXO v2 module.
 ### 3.30 - 01/17/2018
  - Added Radio button for simplicity when running app with no existing PS Session
 ### 3.20 - 01/17/2018

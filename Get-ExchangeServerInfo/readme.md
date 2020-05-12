@@ -3,7 +3,6 @@
 ## Author:  
 Agustin Gallegos  
 
-Requires: Exchange Management Shell and administrator rights
 ## Version History:  
 ### 1.97 - 03/30/2020
  - Updated build versions for March 2020 releases

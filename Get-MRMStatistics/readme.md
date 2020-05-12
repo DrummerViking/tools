@@ -5,6 +5,8 @@ Agustin Gallegos
 Nelson Riera  
 
 ## Version History:  
+### 1.90 - 05/11/2020
+ - Updated tool to connect to Exchange Online using new EXO v2 module.
 ### 1.80 - 10/08/2017
  - Fixed process 2, to get RetentionPolicyTags and details as it was not pulling SystemTags.
 ### 1.70 - 07/17/2017

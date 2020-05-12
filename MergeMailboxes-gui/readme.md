@@ -5,6 +5,8 @@ Agustin Gallegos
 Nelson Riera
 
 ## Version History:
+### 2.20 - 05/11/2020
+ - Updated tool to connect to Exchange Online using new EXO v2 module.
 ### 2.10 - 12/03/2018
  - Updated BadItemLimit to not be 0
  - Change "Search Target Mailbox" with '-Anr' parameter
