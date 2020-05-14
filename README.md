@@ -17,6 +17,13 @@ Button available to issue a "Start-ManagedFolderAssistant" on the account.
 
 ----
 
+## Get MRM Romaing XML Stream from Mailbox script  
+This scripts allows to inspect the MRM configuration message in a user's mailbox.
+Allows to see the PR_ROMAING_XMLSTREAM data, and returned as a text.  
+[File](/Get-MRMRoamingXMLData/)  
+
+----
+
 ## Merge SoftDeleted Mailboxes using a GUI
 Automate the process to create a New-MailboxRestoreRequest and verify the progress of it.
 It will allow to export SourceAccount's ProxyAddresses in case needs to be imported in the target account.   
@@ -37,9 +44,9 @@ Delete Meeting items from attendees when Organizers already left the company, in
 You can pass a list of users/room mailboxes, and delete all meetings found from a specific Organizer.  
 
 As this uses EWS, you will need a "master account" with Impersonation permissions. Regularly you can run:  
-```` powershell
+``` powershell
 New-ManagementRoleAssignment –Name:impersonationAssignmentName –Role:ApplicationImpersonation –User:<Account>
-````  
+```  
 This will give Impersonation permissions over all mailboxes in the tenant, so is critical that this account is not shared.  
 We recommend that you use the tool initially for a single user/room mailbox, and check you have the expected experience.  
 Is not recommended to run against an Organizer Mailbox. There is already a builtin commands in Exchange Online service for this: `Remove-CalendarEvents`  

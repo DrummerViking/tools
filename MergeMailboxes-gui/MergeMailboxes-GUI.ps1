@@ -50,29 +50,7 @@ $script:nl = "`r`n"
 $ProgressPreference = "SilentlyContinue"
 
 function GenerateForm {
- 
-#Internal function to request inputs using UI instead of Read-Host
-function Show-InputBox{
-    [CmdletBinding()]
-    param
-    (
-        [Parameter(Mandatory=$true)]
-        [string]
-        $Prompt,
-        
-        [Parameter(Mandatory=$false)]
-        [string]
-        $DefaultValue='',
-        
-        [Parameter(Mandatory=$false)]
-        [string]
-        $Title = 'Windows PowerShell'
-    )
-    
-    Add-Type -AssemblyName Microsoft.VisualBasic
-    [Microsoft.VisualBasic.Interaction]::InputBox($Prompt,$Title, $DefaultValue)
-}
- 
+  
 #region Import the Assemblies
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
