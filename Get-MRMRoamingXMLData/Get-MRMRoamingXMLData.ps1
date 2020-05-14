@@ -11,8 +11,8 @@
 .SYNOPSIS
     Get MRM setting stamped in a user's mailbox.
 .DESCRIPTION
-    Delete Meetings items for Organizers that already left the company, in Exchange Online.
-    You can pass a list of users/room mailboxes, and delete all meetings found from a specific Organizer. 
+    Get MRM setting stamped in a user's mailbox.
+    Output will be parsed from XML to readable text.
 .EXAMPLE 
     PS C:\> Get-MRMRoamingXMLData.ps1
 

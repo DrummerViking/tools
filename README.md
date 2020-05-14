@@ -13,12 +13,13 @@ Allow admins to check current MRM Statistics and info for users.
 App brings Current Retention Policy and Tags.  
 Can get current Managed Folder Assistant Cycle Stats for primary and Archive Mailbox.  
 Button available to issue a "Start-ManagedFolderAssistant" on the account.  
+Button available to get ManagedFolderAssistants logs from mailbox.  
 [File](/Get-MRMStatistics/)
 
 ----
 
 ## Get MRM Romaing XML Stream from Mailbox script  
-This scripts allows to inspect the MRM configuration message in a user's mailbox.
+This scripts allows to inspect the MRM configuration message in a user's mailbox.  
 Allows to see the PR_ROMAING_XMLSTREAM data, and returned as a text.  
 [File](/Get-MRMRoamingXMLData/)  
 
