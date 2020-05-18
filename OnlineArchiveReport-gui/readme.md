@@ -2,7 +2,15 @@
 
 ## Authors:  
 Agustin Gallegos  
-Nelson Riera
+Nelson Riera  
+
+## Examples  
+### Example 1  
+````powershell
+PS C:\> .\OnlineArchiveReport-GUI.ps1 -EnableTranscript
+````
+In this exmaple the script will run, and will ask for a global admin credentials.  
+It will generate a transcript file.  
 
 ## Version History:
 ### 1.23 - 05/08/2020

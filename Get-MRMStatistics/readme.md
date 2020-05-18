@@ -4,6 +4,13 @@
 Agustin Gallegos  
 Nelson Riera  
 
+## Examples  
+### Example 1  
+````powershell
+PS C:\> .\Get-MRMStatistics.ps1
+````
+In this example the script will run, and will ask for a global admin credentials.  
+
 ## Version History:  
 ### 1.90 - 05/11/2020
  - Updated tool to connect to Exchange Online using new EXO v2 module.

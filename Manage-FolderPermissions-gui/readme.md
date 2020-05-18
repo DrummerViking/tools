@@ -6,6 +6,13 @@ Agustin Gallegos
 ### Previous link:
 <u>https://gallery.technet.microsoft.com/Manage-Folder-permissions-b5295673</u>  
 
+## Examples  
+### Example 1  
+````powershell
+PS C:\> .\Manage-FolderPermissionsGUI.ps1
+````
+In this exmaple the script will run, and will ask for a global admin credentials.  
+
 ## Version History:  
 ### 4.30 - 05/11/2020
  - Updated tool to connect to Exchange Online using new EXO v2 module.

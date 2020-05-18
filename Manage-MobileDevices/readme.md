@@ -3,6 +3,14 @@
 ## Author:  
 Agustin Gallegos  
 
+## Examples  
+### Example 1  
+````powershell
+PS C:\> .\Manage-Mobiles-GUI.ps1 -EnableTranscript
+````
+In this exmaple the script will run, and will ask for a global admin credentials.  
+It will generate a transcript file as well.  
+
 ## Version History:
 ### 1.30 - 05/11/2020
  - Updated tool to connect to Exchange Online using new EXO v2 module.

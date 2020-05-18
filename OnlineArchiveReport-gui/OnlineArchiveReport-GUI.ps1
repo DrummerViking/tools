@@ -17,12 +17,8 @@
     Report can be viewed live in powershell interface, or send as HTML report by email. 
 
 .EXAMPLE 
-    PS C:\> OnlineArchiveReport-GUI.ps1 -MFAEnabled $true
-    Connects to the tool using MFA authentication
-
-.EXAMPLE 
-    PS C:\> OnlineArchiveReport-GUI.ps1 -MFAEnabled $False -EnableTranscript
-    Connects to the tool without using MFA authentication and enables PowerShell Transcript
+    PS C:\> OnlineArchiveReport-GUI.ps1 -EnableTranscript
+    Connects to the tool and enables PowerShell Transcript
 
 .COMPONENT
    STORE, Archive
@@ -31,8 +27,6 @@
    Support
 #>
 param(
-    [Parameter(Position=0, HelpMessage = 'Select if you want to connect using MFA or Basic Authentication...')]
-    [switch]$MFAEnabled = $False,
     [switch]$EnableTranscript = $False
 )
 
@@ -120,13 +114,13 @@ $GetDataProcess={
     }
     elseif($radiobutton2.Checked){
         $csv = Import-Csv -Path $filename
-        $mbxs = $csv | %{get-EXOmailbox $_.UserPrincipalName -Archive -PropertySets Quota -ErrorAction SilentlyContinue | Select-Object UserPrincipalname,RecoverableItemsQuota}
+        $mbxs = $csv | ForEach-Object{get-EXOmailbox $_.UserPrincipalName -Archive -PropertySets Quota -ErrorAction SilentlyContinue | Select-Object UserPrincipalname,RecoverableItemsQuota}
     }
     elseif($radiobutton3.Checked){
-        $mbxs = Get-EXOMailbox -Archive -ResultSize unlimited -PropertySets Quota -ErrorAction SilentlyContinue | Select UserPrincipalName,RecoverableItemsQuota
+        $mbxs = Get-EXOMailbox -Archive -ResultSize unlimited -PropertySets Quota -ErrorAction SilentlyContinue | Select-Object UserPrincipalName,RecoverableItemsQuota
     }
 
-    if($mbxs -eq $null){
+    if($null -eq $mbxs){
         [Microsoft.VisualBasic.Interaction]::MsgBox("Mailbox(es) doesn't have an archive associated.",[Microsoft.VisualBasic.MsgBoxStyle]::Okonly,"Information Message")
     }else{
         $Global:array = New-Object System.Collections.ArrayList
@@ -156,7 +150,7 @@ $GetDataProcess={
                 $global:RIQuota = $mbx | Select-Object @{Name="RIQuota"; E={[math]::Round(($_.RecoverableItemsQuota.ToString().Split("(")[1].Split(" ")[0].Replace(",","")/1MB),3)}}
                 
                 #getting mailbox stats to be displayed
-                $stats = Get-EXOMailboxStatistics -Identity $MbxLoc.MailboxGuid.Guid -Properties lastlogontime | Select `
+                $stats = Get-EXOMailboxStatistics -Identity $MbxLoc.MailboxGuid.Guid -Properties lastlogontime | Select-Object `
                 @{N="DisplayName";E={$MbxLoc.OwnerID}},`
                 @{N="MailboxLocationType";E={$MbxLoc.MailboxLocationType}},`
                 itemcount,`
@@ -168,7 +162,7 @@ $GetDataProcess={
                 $array.Add($stats)
             }
             # sleeping process for 500 milliseconds, to prevents PS micro delays
-            sleep -Milliseconds 500
+            Start-Sleep -Milliseconds 500
         }
         $dgResults.datasource = $array
         $dgResults.AutoResizeColumns()
@@ -221,7 +215,7 @@ if($checkboxOrgAdmins.Checked -eq $True){
 }
 $listrecipients = ("$templist").Split(",")
 $Subject = "Archive Mailbox Report $((Get-Date).ToString("yyyy-MM-dd HH:mm:ss"))"
-if($cred -eq $Null){
+if($Null -eq $cred){
     $Global:cred = Get-Credential -Message "Type your Sender's credentials"
 }
 Send-MailMessage -From $cred.UserName -To $listrecipients -Body $html -BodyasHtml -SmtpServer smtp.office365.com -UseSsl -Port 587 -Subject $Subject -Credential $cred
