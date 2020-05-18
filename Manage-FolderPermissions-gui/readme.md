@@ -8,9 +8,9 @@ Agustin Gallegos
 
 ## Examples  
 ### Example 1  
-````powershell
+```powershell
 PS C:\> .\Manage-FolderPermissionsGUI.ps1
-````
+```
 In this exmaple the script will run, and will ask for a global admin credentials.  
 
 ## Version History:  

@@ -5,21 +5,21 @@ Agustin Gallegos
 
 ## Examples  
 ### Example 1  
-````powershell
+```powershell
 PS C:\> .\Get-ExchangeServerInfo.ps1 -Server "EXCHSERVER1"
-````
+```
 Runs against a single remote Exchange server.  
 
 ### Example 2  
-````powershell
+```powershell
 PS C:\> .\Get-ExchangeServerInfo.ps1 -Server "EXCHSERVER1" -CASLoad
-````
+```
 Runs against a single remote Exchange server including CAS related information.  
 
 ### Example 3  
-````powershell
+```powershell
 PS C:\> .\Get-ExchangeServerInfo.ps1 -Site "Site1"
-````
+```
 Runs against all servers located in the specified Site.  
 
 ## Version History:  

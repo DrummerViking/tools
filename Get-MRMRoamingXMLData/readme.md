@@ -5,9 +5,9 @@ Agustin Gallegos
 
 ## Examples  
 ### Example 1  
-````powershell
+```powershell
 PS C:\> .\Get-MRMRoamingXMLData.ps1
-````
+```
 In this example the script will ask for the user's credentials to be checked and get the MRM Roaming XML Data.  
 
 ## Version History:  

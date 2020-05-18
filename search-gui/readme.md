@@ -4,6 +4,13 @@
 Agustin Gallegos  
 Nelson Riera  
 
+## Examples  
+### Example 1  
+```powershell
+PS C:\> .\Search-GUI.ps1
+```
+In this exmaple the script will run, and will ask for a global admin credentials.  
+
 ## Version History:
 ### 3.40 - 05/11/2020
  - Updated tool to connect to Exchange Online using new EXO v2 module.

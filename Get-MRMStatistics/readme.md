@@ -6,9 +6,9 @@ Nelson Riera
 
 ## Examples  
 ### Example 1  
-````powershell
+```powershell
 PS C:\> .\Get-MRMStatistics.ps1
-````
+```
 In this example the script will run, and will ask for a global admin credentials.  
 
 ## Version History:  

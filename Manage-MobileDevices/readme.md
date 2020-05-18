@@ -5,9 +5,9 @@ Agustin Gallegos
 
 ## Examples  
 ### Example 1  
-````powershell
+```powershell
 PS C:\> .\Manage-Mobiles-GUI.ps1 -EnableTranscript
-````
+```
 In this exmaple the script will run, and will ask for a global admin credentials.  
 It will generate a transcript file as well.  
 

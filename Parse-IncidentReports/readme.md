@@ -5,9 +5,9 @@ Agustin Gallegos
 
 ## Examples  
 ### Example 1  
-````powershell
+```powershell
 PS C:\> .\Parse-IncidentReports.ps1 -OrgAdmins
-````
+```
 In this exmaple the script will run, and will ask for a global admin credentials.  
 Once the report is ready, it will send it to all Global Admins found in the tenant.  
 

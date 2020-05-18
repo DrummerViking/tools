@@ -102,15 +102,14 @@ $buttonRestoreRI = New-Object System.Windows.Forms.Button
 
 $dgResults = New-Object System.Windows.Forms.DataGridView
 $txtBoxResults = New-Object System.Windows.Forms.Label
-$InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
 #endregion Generated Form Objects
 
 
 #region connecting to powershell
 
 # Testing if we have a live PSSession of type Exchange
-$livePSSession = Get-PSSession | ?{$_.ConfigurationName -eq "Microsoft.Exchange"}
-if($livePSSession -ne $null){
+$livePSSession = Get-PSSession | Where-Object{$_.ConfigurationName -eq "Microsoft.Exchange"}
+if($null -ne $livePSSession){
     if($livePSSession.ComputerName -eq "outlook.office365.com"){
          $Global:premise = "office365"
     }else{
@@ -220,11 +219,11 @@ if($livePSSession -ne $null){
         $AutoDEmail = $AutoDEmail.Substring($AutoDEmail.IndexOf('@')+1)
 
         $AutoDEndpoint = $AutoDEmail.Insert(0,"autodiscover.") # definining "autodiscover.domain.com"
-        if((Test-Connection -ComputerName $AutoDEndpoint -Count 1 -ErrorAction SilentlyContinue) -eq $null){
+        if($null -eq (Test-Connection -ComputerName $AutoDEndpoint -Count 1 -ErrorAction SilentlyContinue)){
             $AutoDEndpoint = $AutoDEmail.Insert(0,"mail.") # definining "mail.domain.com"
-            if((Test-Connection -ComputerName $AutoDEndpoint -Count 1 -ErrorAction SilentlyContinue) -eq $null){
+            if($null -eq (Test-Connection -ComputerName $AutoDEndpoint -Count 1 -ErrorAction SilentlyContinue)){
                 $AutoDEndpoint = $AutoDEmail.Insert(0,"webmail.") # definining "webmail.domain.com"
-                if((Test-Connection -ComputerName $AutoDEndpoint -Count 1 -ErrorAction SilentlyContinue) -eq $null){
+                if($null -eq (Test-Connection -ComputerName $AutoDEndpoint -Count 1 -ErrorAction SilentlyContinue)){
                     # if all previous attempts fail, we will request to enter the Exchange Server FQDN or NETBIOS
                     $AutoDEndpoint = . Show-InputBox -Prompt "Please enter your Exchange CAS FQDN or NETBIOS name"
                 }
@@ -247,18 +246,18 @@ $SearchProcess= {
     # creating variables
     $IsSoftDeleted = $checkboxSoftDeleted.Checked
     if($checkboxAllMbxs.Checked){
-        $mbx = get-Mailbox -ResultSize Unlimited | Select Identity
+        $mbx = get-Mailbox -ResultSize Unlimited | Select-Object Identity
     }else{
         if($txtBoxMbxAlias.Text -eq "...Imported from File..."){
         $csv = Import-Csv $filename
-        $mbx = $csv | %{get-mailbox $_.primarySMTPAddress | Select Identity}
+        $mbx = $csv | ForEach-Object{get-mailbox $_.primarySMTPAddress | Select-Object Identity}
         }
-        if((get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted -ErrorAction SilentlyContinue) -ne $null){
-            $mbx = get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted | Select Identity
+        if($null -ne (get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted -ErrorAction SilentlyContinue)){
+            $mbx = get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted | Select-Object Identity
         }
     }
 
-    if($mbx -ne $null){
+    if($null -ne $mbx){
         $Filter = $null
         $subjectFilter = $null
         $datefilter = $null
@@ -309,26 +308,26 @@ $SearchProcess= {
                 $datefilter = $datefilter + " AND " + $Todate
                 }
             }else{
-            if($Todate -ne $null){ 
+            if($null -ne $Todate){ 
                 $datefilter = $Todate
                 }
             }
 
         #Combining Filters
-        if($subjectFilter -ne $Null){
+        if($Null -ne $subjectFilter){
             $filter = $subjectFilter
 
-            if($datefilter -ne $null){ 
+            if($null -ne $datefilter){ 
                 $filter = $filter + " AND " + $datefilter
                 }
             }else{
-            if($datefilter -ne $null){ 
+            if($null -ne $datefilter){ 
                 $filter = $datefilter
                 }
             }
         
         if($fromfilter -ne ""){
-            if($Filter -eq $Null){
+            if($Null -eq $Filter){
                 $Filter = $fromfilter
             }else{
                 $Filter = $filter + " AND " + $fromfilter
@@ -336,7 +335,7 @@ $SearchProcess= {
         }
 
         if($fromfilter -ne ""){
-            if($Filter -eq $Null){
+            if($Null -eq $Filter){
                 $Filter = $Tofilter
             }else{
                 $Filter = $filter + " AND " + $Tofilter
@@ -344,9 +343,9 @@ $SearchProcess= {
         }
 
         $DumpsterChecked = $checkboxDumpsterOnly.Checked
-        $output = $mbx | Search-Mailbox -SearchQuery $Filter -EstimateResultOnly -SearchDumpsterOnly:$DumpsterChecked -WarningAction SilentlyContinue | Select Identity,Success,ResultItemsCount,ResultItemsSize,TargetMailbox,TargetFolder
+        $output = $mbx | Search-Mailbox -SearchQuery $Filter -EstimateResultOnly -SearchDumpsterOnly:$DumpsterChecked -WarningAction SilentlyContinue | Select-Object Identity,Success,ResultItemsCount,ResultItemsSize,TargetMailbox,TargetFolder
         $array = New-Object System.Collections.ArrayList
-        if($mbx.Count -eq $Null){
+        if($Null -eq $mbx.Count){
             $array.Add($output)
         }else{
             $array.addrange($output)}
@@ -386,24 +385,24 @@ $SearchExportProcess={
     # creating variables
     $IsSoftDeleted = $checkboxSoftDeleted.Checked
     $targetMailbox = $txtBoxTargetMbxAlias.Text
-    if((get-mailbox $targetMailbox -SoftDeletedMailbox:$IsSoftDeleted -erroraction SilentlyContinue) -eq $null){
+    if($null -eq (get-mailbox $targetMailbox -SoftDeletedMailbox:$IsSoftDeleted -erroraction SilentlyContinue)){
         [Microsoft.VisualBasic.Interaction]::MsgBox("Target Mailbox not found. Check and try again",[Microsoft.VisualBasic.MsgBoxStyle]::Okonly,"Information Message")
         return
         }
 
     if($checkboxAllMbxs.Checked){
-        $mbx = get-Mailbox -ResultSize Unlimited | Select Identity
+        $mbx = get-Mailbox -ResultSize Unlimited | Select-Object Identity
     }else{
         if($txtBoxMbxAlias.Text -eq "...Imported from File..."){
             $csv = Import-Csv $filename
-            $mbx = $csv | %{get-mailbox $_.primarySMTPAddress | Select Identity}
+            $mbx = $csv | ForEach-Object{get-mailbox $_.primarySMTPAddress | Select-Object Identity}
         }
-        if((get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted -ErrorAction SilentlyContinue) -ne $null){
-            $mbx = get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted | Select Identity
+        if($null -ne (get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted -ErrorAction SilentlyContinue)){
+            $mbx = get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted | Select-Object Identity
         }
     }
 
-    if($mbx -ne $null){
+    if($null -ne $mbx){
 
         $targetFolder = $txtBoxTargetFolder.Text
         $Filter = $null
@@ -442,21 +441,21 @@ $SearchExportProcess={
                 $datefilter = $datefilter + " AND " + $Todate
                 }
             }else{
-            if($Todate -ne $null){ 
+            if($null -ne $Todate){ 
                 $datefilter = $Todate
                 }
             }
 
 
         #Combining Filters
-        if($subjectFilter -ne $Null){
+        if($Null -ne $subjectFilter){
             $filter = $subjectFilter
 
-            if($datefilter -ne $null){ 
+            if($null -ne $datefilter){ 
                 $filter = $filter + " AND " + $datefilter
                 }
             }else{
-            if($datefilter -ne $null){ 
+            if($null -ne $datefilter){ 
                 $filter = $datefilter
                 }
             }
@@ -475,7 +474,7 @@ $SearchExportProcess={
         }
 
         if($fromfilter -ne ""){
-            if($Filter -eq $Null){
+            if($Null -eq $Filter){
                 $Filter = $fromfilter
             }else{
                 $Filter = $filter + " AND " + $fromfilter
@@ -483,7 +482,7 @@ $SearchExportProcess={
         }
 
         if($Tofilter -ne ""){
-            if($Filter -eq $Null){
+            if($Null -eq $Filter){
                 $Filter = $Tofilter
             }else{
                 $Filter = $filter + " AND " + $Tofilter
@@ -491,9 +490,9 @@ $SearchExportProcess={
         }
         
         $DumpsterChecked = $checkboxDumpsterOnly.Checked
-        $output = $mbx | Search-Mailbox -SearchQuery $Filter -TargetMailbox $targetMailbox -TargetFolder $targetFolder -SearchDumpsterOnly:$DumpsterChecked -WarningAction SilentlyContinue | Select Identity,Success,ResultItemsCount,ResultItemsSize,TargetMailbox,TargetFolder
+        $output = $mbx | Search-Mailbox -SearchQuery $Filter -TargetMailbox $targetMailbox -TargetFolder $targetFolder -SearchDumpsterOnly:$DumpsterChecked -WarningAction SilentlyContinue | Select-Object Identity,Success,ResultItemsCount,ResultItemsSize,TargetMailbox,TargetFolder
         $array = New-Object System.Collections.ArrayList
-        if($mbx.Count -eq $Null){
+        if($Null -eq $mbx.Count){
             $array.Add($output)
         }else{
             $array.addrange($output)}
@@ -552,24 +551,24 @@ $SearchLogOnlyProcess={
     # creating variables
     $IsSoftDeleted = $checkboxSoftDeleted.Checked
     $targetMailbox = $txtBoxTargetMbxAlias.Text
-    if((get-mailbox $targetMailbox -SoftDeletedMailbox:$IsSoftDeleted -erroraction SilentlyContinue) -eq $null){
+    if($null -eq (get-mailbox $targetMailbox -SoftDeletedMailbox:$IsSoftDeleted -erroraction SilentlyContinue)){
         [Microsoft.VisualBasic.Interaction]::MsgBox("Target Mailbox not found. Check and try again",[Microsoft.VisualBasic.MsgBoxStyle]::Okonly,"Information Message")
         return
         }
 
     if($checkboxAllMbxs.Checked){
-        $mbx = get-Mailbox -ResultSize Unlimited | Select Identity
+        $mbx = get-Mailbox -ResultSize Unlimited | Select-Object Identity
     }else{
         if($txtBoxMbxAlias.Text -eq "...Imported from File..."){
             $csv = Import-Csv $filename
-            $mbx = $csv | %{get-mailbox $_.primarySMTPAddress | Select Identity}
+            $mbx = $csv | ForEach-Object{get-mailbox $_.primarySMTPAddress | Select-Object Identity}
         }
-        if((get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted -ErrorAction SilentlyContinue) -ne $null){
-            $mbx = get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted | Select Identity
+        if($null -ne (get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted -ErrorAction SilentlyContinue)){
+            $mbx = get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted | Select-Object Identity
         }
     }
 
-    if($mbx -ne $null){
+    if($null -ne $mbx){
 
         $targetFolder = $txtBoxTargetFolder.Text
         $Filter = $null
@@ -608,21 +607,21 @@ $SearchLogOnlyProcess={
                 $datefilter = $datefilter + " AND " + $Todate
                 }
             }else{
-            if($Todate -ne $null){ 
+            if($null -ne $Todate){ 
                 $datefilter = $Todate
                 }
             }
 
 
         #Combining Filters
-        if($subjectFilter -ne $Null){
+        if($Null -ne $subjectFilter){
             $filter = $subjectFilter
 
-            if($datefilter -ne $null){ 
+            if($null -ne $datefilter){ 
                 $filter = $filter + " AND " + $datefilter
                 }
             }else{
-            if($datefilter -ne $null){ 
+            if($null -ne $datefilter){ 
                 $filter = $datefilter
                 }
             }
@@ -641,7 +640,7 @@ $SearchLogOnlyProcess={
         }
 
         if($fromfilter -ne ""){
-            if($Filter -eq $Null){
+            if($Null -eq $Filter){
                 $Filter = $fromfilter
             }else{
                 $Filter = $filter + " AND " + $fromfilter
@@ -649,7 +648,7 @@ $SearchLogOnlyProcess={
         }
 
         if($Tofilter -ne ""){
-            if($Filter -eq $Null){
+            if($Null -eq $Filter){
                 $Filter = $Tofilter
             }else{
                 $Filter = $filter + " AND " + $Tofilter
@@ -657,9 +656,9 @@ $SearchLogOnlyProcess={
         }
         
         $DumpsterChecked = $checkboxDumpsterOnly.Checked
-        $output = $mbx | Search-Mailbox -SearchQuery $Filter -TargetMailbox $targetMailbox -TargetFolder $targetFolder -SearchDumpsterOnly:$DumpsterChecked -LogOnly -LogLevel Full -WarningAction SilentlyContinue | Select Identity,Success,ResultItemsCount,ResultItemsSize,TargetMailbox,TargetFolder
+        $output = $mbx | Search-Mailbox -SearchQuery $Filter -TargetMailbox $targetMailbox -TargetFolder $targetFolder -SearchDumpsterOnly:$DumpsterChecked -LogOnly -LogLevel Full -WarningAction SilentlyContinue | Select-Object Identity,Success,ResultItemsCount,ResultItemsSize,TargetMailbox,TargetFolder
         $array = New-Object System.Collections.ArrayList
-        if($mbx.Count -eq $Null){
+        if($Null -eq $mbx.Count){
             $array.Add($output)
         }else{
             $array.addrange($output)}
@@ -703,7 +702,7 @@ $DeleteCommandProcess={
     }else{
         $mbx = $txtBoxMbxAlias.Text
         if($txtBoxMbxAlias.Text -ne "...Imported from File..." -and
-            (get-mailbox $mbx -SoftDeletedMailbox:$IsSoftDeleted -erroraction SilentlyContinue) -eq $null){
+            $null -eq (get-mailbox $mbx -SoftDeletedMailbox:$IsSoftDeleted -erroraction SilentlyContinue)){
             [Microsoft.VisualBasic.Interaction]::MsgBox("Source Mailbox not found. Check and try again",[Microsoft.VisualBasic.MsgBoxStyle]::Okonly,"Information Message")
             return
             
@@ -739,20 +738,20 @@ $DeleteCommandProcess={
             $datefilter = $datefilter + " AND " + $Todate
             }
         }else{
-        if($Todate -ne $null){ 
+        if($null -ne $Todate){ 
             $datefilter = $Todate
             }
         }
 
     #Combining Filters
-    if($subjectFilter -ne $Null){
+    if($Null -ne $subjectFilter){
         $filter = $subjectFilter
 
-        if($datefilter -ne $null){ 
+        if($null -ne $datefilter){ 
             $filter = $filter + " AND " + $datefilter
             }
         }else{
-        if($datefilter -ne $null){ 
+        if($null -ne $datefilter){ 
             $filter = $datefilter
             }
         }
@@ -771,7 +770,7 @@ $DeleteCommandProcess={
         }
 
         if($fromfilter -ne ""){
-            if($Filter -eq $Null){
+            if($Null -eq $Filter){
                 $Filter = $fromfilter
             }else{
                 $Filter = $filter + " AND " + $fromfilter
@@ -779,7 +778,7 @@ $DeleteCommandProcess={
         }
 
         if($Tofilter -ne ""){
-            if($Filter -eq $Null){
+            if($Null -eq $Filter){
                 $Filter = $Tofilter
             }else{
                 $Filter = $filter + " AND " + $Tofilter
@@ -820,18 +819,18 @@ $GetRIProcess= {
     # creating variables
     $IsSoftDeleted = $checkboxSoftDeleted.Checked
     if($checkboxAllMbxs.Checked){
-        $mbx = get-Mailbox -ResultSize Unlimited | Select Identity
+        $mbx = get-Mailbox -ResultSize Unlimited | Select-Object Identity
     }else{
         if($txtBoxMbxAlias.Text -eq "...Imported from File..."){
         $csv = Import-Csv $filename
-        $mbx = $csv | %{get-mailbox $_.primarySMTPAddress | Select Identity}
+        $mbx = $csv | ForEach-Object{get-mailbox $_.primarySMTPAddress | Select-Object Identity}
         }
-        if((get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted -ErrorAction SilentlyContinue) -ne $null){
-            $mbx = get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted | Select Identity
+        if($null -ne (get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted -ErrorAction SilentlyContinue)){
+            $mbx = get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted | Select-Object Identity
         }
     }
 
-    if($mbx -ne $null){
+    if($null -ne $mbx){
         $Filter = $null
         $subjectFilter = $null
         $datefilter = $null
@@ -867,7 +866,7 @@ $GetRIProcess= {
         }
 
         
-        $output = $mbx | %{Get-RecoverableItems -Identity $_.Identity -SubjectContains $SubjectContains -FilterStartTime $FilterstartTime -FilterEndTime $FilterEndTime -FilterItemType $itemType -SourceFolder $sourceFoldername -WarningAction SilentlyContinue | Select MailboxIdentity,ItemClass,Subject,lastmodifiedtime,lastParentPath,OriginalFolderExists}
+        $output = $mbx | ForEach-Object{Get-RecoverableItems -Identity $_.Identity -SubjectContains $SubjectContains -FilterStartTime $FilterstartTime -FilterEndTime $FilterEndTime -FilterItemType $itemType -SourceFolder $sourceFoldername -WarningAction SilentlyContinue | Select-Object MailboxIdentity,ItemClass,Subject,lastmodifiedtime,lastParentPath,OriginalFolderExists}
         $array = New-Object System.Collections.ArrayList
         if( @($output).Count -eq 1) {
             $array.add($output)
@@ -906,18 +905,18 @@ $RestoreRIProcess= {
     # creating variables
     $IsSoftDeleted = $checkboxSoftDeleted.Checked
     if($checkboxAllMbxs.Checked){
-        $mbx = get-Mailbox -ResultSize Unlimited | Select Identity
+        $mbx = get-Mailbox -ResultSize Unlimited | Select-Object Identity
     }else{
         if($txtBoxMbxAlias.Text -eq "...Imported from File..."){
         $csv = Import-Csv $filename
-        $mbx = $csv | %{get-mailbox $_.primarySMTPAddress | Select Identity}
+        $mbx = $csv | ForEach-Object{get-mailbox $_.primarySMTPAddress | Select-Object Identity}
         }
-        if((get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted -ErrorAction SilentlyContinue) -ne $null){
-            $mbx = get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted | Select Identity
+        if($null -ne (get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted -ErrorAction SilentlyContinue)){
+            $mbx = get-mailbox $txtBoxMbxAlias.Text -SoftDeletedMailbox:$IsSoftDeleted | Select-Object Identity
         }
     }
 
-    if($mbx -ne $null){
+    if($null -ne $mbx){
         $Filter = $null
         $subjectFilter = $null
         $datefilter = $null
@@ -953,7 +952,7 @@ $RestoreRIProcess= {
         }
 
         
-        $output = $mbx | %{Restore-RecoverableItems -Identity $_.Identity -SubjectContains $SubjectContains -FilterStartTime $FilterstartTime -FilterEndTime $FilterEndTime -FilterItemType $itemType -SourceFolder $sourceFoldername -WarningAction SilentlyContinue | Select MailboxIdentity,ItemClass,Subject,RestoredtoFolderPath,WasRestored*}
+        $output = $mbx | ForEach-Object{Restore-RecoverableItems -Identity $_.Identity -SubjectContains $SubjectContains -FilterStartTime $FilterstartTime -FilterEndTime $FilterEndTime -FilterItemType $itemType -SourceFolder $sourceFoldername -WarningAction SilentlyContinue | Select-Object MailboxIdentity,ItemClass,Subject,RestoredtoFolderPath,WasRestored*}
         $array = New-Object System.Collections.ArrayList
         $array.addrange($output)
 	    $dgResults.datasource = $array
@@ -987,10 +986,10 @@ $RestoreRIProcess= {
 $permissionsProcess={
     $user = . Show-InputBox -Prompt "Please type the Admin's Alias you want to check permissions for"
     if($user.length -ne 0){
-    if((Get-ManagementRoleAssignment -RoleAssignee $user -Delegating $false -Role "Mailbox Search") -eq $null){
+    if($null -eq (Get-ManagementRoleAssignment -RoleAssignee $user -Delegating $false -Role "Mailbox Search")){
         $DiscoveryMgt = 0
         }
-    if((Get-ManagementRoleAssignment -RoleAssignee $user -Delegating $false -Role "Mailbox Import Export") -eq $null){
+    if($null -eq (Get-ManagementRoleAssignment -RoleAssignee $user -Delegating $false -Role "Mailbox Import Export")){
         $MbxImportExport = 0
         }
     
