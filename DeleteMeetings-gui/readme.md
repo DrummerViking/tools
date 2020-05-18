@@ -3,6 +3,13 @@
 ## Author:  
 Agustin Gallegos  
 
+## Examples  
+### Example 1  
+```powershell
+PS C:\> .\DeleteMeetings-GUI.ps1 -EnableTranscript
+```
+In this example the script will run and create a transcript file.  
+
 ## Version History:
 ### 2.00 - 05/11/2020
  - Updated tool to connect to Exchange Online using oauth authentication.
