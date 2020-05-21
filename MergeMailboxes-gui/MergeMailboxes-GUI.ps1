@@ -146,7 +146,7 @@ $ProcessMerge = {
     $statusBar.Text = "Merging mailboxes..."
 
     # getting Addresses from soft-deleted account
-    $sourceMailbox = Get-EXOMailbox $txtBoxSourceMailbox.Text -SoftDeletedMailbox -PropertySets StatisticsSeed, archive, minimum | Select-Object UserPrincipalName,ExchangeGuid,emailAddresses,ArchiveGuid
+    $sourceMailbox = Get-EXOMailbox -Identity $txtBoxSourceMailbox.Text -SoftDeletedMailbox -PropertySets StatisticsSeed, archive, minimum | Select-Object UserPrincipalName,ExchangeGuid,emailAddresses,ArchiveGuid
 
     # removing SIP and SPO addresses from the Array
     foreach($address in $sourceMailbox.EmailAddresses){

@@ -212,7 +212,7 @@ $processData=
     $statusBar.Text = "Running..."
     $array = New-Object System.Collections.ArrayList
     
-    $policy = Get-EXOMailbox $txtBoxMbxAlias.Text -PropertySets Retention | select RetentionPolicy 
+    $policy = Get-EXOMailbox -Identity $txtBoxMbxAlias.Text -PropertySets Retention | select RetentionPolicy 
     if($policy -ne $null){
         if($policy.RetentionPolicy -eq $null){
             [Microsoft.VisualBasic.Interaction]::MsgBox("User has no Archive mailbox assigned yet or no Default Retention Policy is stamped.",[Microsoft.VisualBasic.MsgBoxStyle]::Okonly,"Warning Message")
@@ -238,7 +238,7 @@ $processData2=
     $statusBar.Text = "Running..."
     $array = New-Object System.Collections.ArrayList
 
-    $mbx = Get-EXOMailbox $txtBoxMbxAlias.Text -ErrorAction SilentlyContinue -PropertySets Retention | Select-Object Identity,RetentionPolicy
+    $mbx = Get-EXOMailbox -Identity $txtBoxMbxAlias.Text -ErrorAction SilentlyContinue -PropertySets Retention | Select-Object Identity,RetentionPolicy
     if($mbx -ne $Null){
     $MRMPolicy = Get-RetentionPolicy $mbx.RetentionPolicy -ErrorAction SilentlyContinue
         if($MRMPolicy -ne $null){
@@ -269,7 +269,7 @@ $processData3=
     $statusBar.Text = "Running..."
     $array = New-Object System.Collections.ArrayList
 
-    $mbx = Get-EXOMailbox $txtBoxMbxAlias.Text -ErrorAction Silentlycontinue -PropertySets StatisticsSeed | select ExchangeGuid
+    $mbx = Get-EXOMailbox -Identity $txtBoxMbxAlias.Text -ErrorAction Silentlycontinue -PropertySets StatisticsSeed | select ExchangeGuid
     if($mbx -ne $null){
         $Guid = $mbx.ExchangeGuid.Guid
         $logProps = Export-MailboxDiagnosticLogs $Guid -ExtendedProperties
@@ -297,7 +297,7 @@ $processData4=
     $statusBar.Text = "Running..."
     $array = New-Object System.Collections.ArrayList
 
-    $mbx = Get-EXOMailbox $txtBoxMbxAlias.Text -Archive -ErrorAction SilentlyContinue -PropertySets StatisticsSeed | select ExchangeGuid
+    $mbx = Get-EXOMailbox -Identity $txtBoxMbxAlias.Text -Archive -ErrorAction SilentlyContinue -PropertySets StatisticsSeed | select ExchangeGuid
     if($mbx -ne $null){
         $Guid = $mbx.ExchangeGuid.Guid
         $logProps = Export-MailboxDiagnosticLogs $Guid -Archive -ExtendedProperties
@@ -323,7 +323,7 @@ $processData4=
 $processData5= 
 {
     $statusBar.Text = "Running..."
-    $mbx = Get-EXOMailbox $txtBoxMbxAlias.Text -ErrorAction SilentlyContinue
+    $mbx = Get-EXOMailbox -Identity $txtBoxMbxAlias.Text -ErrorAction SilentlyContinue
     if($mbx -ne $null){
         Start-ManagedFolderAssistant $txtBoxMbxAlias.Text -Verbose
         [Microsoft.VisualBasic.Interaction]::MsgBox("Started successfully",[Microsoft.VisualBasic.MsgBoxStyle]::Okonly,"Managed Folder Assistant")  
@@ -340,7 +340,7 @@ $processData5=
 $processData6= 
 {
     $statusBar.Text = "Running..."
-    $mbx = Get-EXOMailbox $txtBoxMbxAlias.Text -ErrorAction SilentlyContinue
+    $mbx = Get-EXOMailbox -Identity $txtBoxMbxAlias.Text -ErrorAction SilentlyContinue
     if($mbx -ne $null){
         (Export-MailboxDiagnosticLogs $txtBoxMbxAlias.Text -ComponentName mrm -Verbose).Mailboxlog >> $home\Desktop\MFAlog.log
         [Microsoft.VisualBasic.Interaction]::MsgBox("MFA log exported successfully to your desktop",[Microsoft.VisualBasic.MsgBoxStyle]::Okonly,"Managed Folder Assistant")  

@@ -110,11 +110,11 @@ $GetDataProcess={
     $txtBoxResults.Visible = $True
 
     if($radiobutton1.Checked){
-        $mbxs = Get-EXOmailbox $txtBoxMbxAlias.text -Archive -PropertySets Quota -ErrorAction SilentlyContinue | Select-Object UserPrincipalname,RecoverableItemsQuota
+        $mbxs = Get-EXOmailbox -Identity $txtBoxMbxAlias.text -Archive -PropertySets Quota -ErrorAction SilentlyContinue | Select-Object UserPrincipalname,RecoverableItemsQuota
     }
     elseif($radiobutton2.Checked){
         $csv = Import-Csv -Path $filename
-        $mbxs = $csv | ForEach-Object{get-EXOmailbox $_.UserPrincipalName -Archive -PropertySets Quota -ErrorAction SilentlyContinue | Select-Object UserPrincipalname,RecoverableItemsQuota}
+        $mbxs = $csv | ForEach-Object{get-EXOmailbox -Identity $_.UserPrincipalName -Archive -PropertySets Quota -ErrorAction SilentlyContinue | Select-Object UserPrincipalname,RecoverableItemsQuota}
     }
     elseif($radiobutton3.Checked){
         $mbxs = Get-EXOMailbox -Archive -ResultSize unlimited -PropertySets Quota -ErrorAction SilentlyContinue | Select-Object UserPrincipalName,RecoverableItemsQuota
