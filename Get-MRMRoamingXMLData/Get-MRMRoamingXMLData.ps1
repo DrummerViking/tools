@@ -13,8 +13,13 @@
 .DESCRIPTION
     Get MRM setting stamped in a user's mailbox.
     Output will be parsed from XML to readable text.
+.PARAMETER DeleteConfigurationMessage
+    Using this parameter, deletes the IPM.Configuration.MRM message from the user mailbox.
+    An Administrator should run 'Start-ManagedFolderAssistant' to issue MRM service and recreate the message.
 .EXAMPLE 
     PS C:\> Get-MRMRoamingXMLData.ps1
+.EXAMPLE 
+    PS C:\> Get-MRMRoamingXMLData.ps1 -DeleteConfigurationMessage
 
 .COMPONENT
    STORE, MRM
@@ -23,11 +28,12 @@
 #>
 [CmdletBinding()]
 param(
-    # Parameters
+    [Switch]
+    $DeleteConfigurationMessage
 )
 $disclaimer = @"
 #################################################################################
-# 
+#
 # The sample scripts are not supported under any Microsoft standard support
 # program or service. The sample scripts are provided AS IS without warranty
 # of any kind. Microsoft further disclaims all implied warranties including, without
@@ -39,7 +45,7 @@ $disclaimer = @"
 # profits, business interruption, loss of business information, or other pecuniary loss) 
 # arising out of the use of or inability to use the sample scripts or documentation,
 # even if Microsoft has been advised of the possibility of such damages.
-#  
+#
 #################################################################################
 "@
 Write-Host $disclaimer -foregroundColor Yellow
@@ -142,16 +148,39 @@ $exchangeCredentials = New-Object Microsoft.Exchange.WebServices.Data.OAuthCrede
 $service.Url = New-Object Uri("https://outlook.office365.com/ews/exchange.asmx")
 $Service.credentials = $exchangeCredentials
 
-# following script block can read the PR_ROAMING_XMLSTREAM text and parse it in a readable way
-$folderid= new-object Microsoft.Exchange.WebServices.Data.FolderId([Microsoft.Exchange.WebServices.Data.WellKnownFolderName]::Inbox,$SmtpAddress)
-$UsrConfig = [Microsoft.Exchange.WebServices.Data.UserConfiguration]::Bind($service, "MRM", $folderid, [Microsoft.Exchange.WebServices.Data.UserConfigurationProperties]::All)  
-$ConfXML = [System.Text.Encoding]::UTF8.GetString($UsrConfig.XmlData)    
-[XML]$ConfXML = $ConfXML    
-write-host "Following are current 'Delete' TAGs" -ForegroundColor Green
-$ConfXML.UserConfiguration.Info.Data.PolicyTag  
-write-host ""
-write-host "Following are current 'Move to Archive' TAGs" -ForegroundColor Green
-$ConfXML.UserConfiguration.Info.Data.ArchiveTag  
-write-host ""
-write-host "Following are current 'Default Archive TAGs" -ForegroundColor Green
-$ConfXML.UserConfiguration.Info.Data.DefaultArchiveTag
+
+if ( $DeleteConfigurationMessage )
+{
+    try
+    {
+        $folderid= new-object Microsoft.Exchange.WebServices.Data.FolderId([Microsoft.Exchange.WebServices.Data.WellKnownFolderName]::Inbox,$SmtpAddress)
+        $UsrConfig = [Microsoft.Exchange.WebServices.Data.UserConfiguration]::Bind($service, "MRM", $folderid, [Microsoft.Exchange.WebServices.Data.UserConfigurationProperties]::All)  
+        $UsrConfig.Delete()
+        write-host "Successfully deleted the MRM Configuration message." -ForegroundColor Green
+    }
+    catch
+    {
+        write-host "Configuration message does not exists, or it failed to be deleted." -ForegroundColor Red
+    }
+}
+else
+{
+    try {
+        # following script block can read the PR_ROAMING_XMLSTREAM text and parse it in a readable way
+        $folderid= new-object Microsoft.Exchange.WebServices.Data.FolderId([Microsoft.Exchange.WebServices.Data.WellKnownFolderName]::Inbox,$SmtpAddress)
+        $UsrConfig = [Microsoft.Exchange.WebServices.Data.UserConfiguration]::Bind($service, "MRM", $folderid, [Microsoft.Exchange.WebServices.Data.UserConfigurationProperties]::All)
+        $ConfXML = [System.Text.Encoding]::UTF8.GetString($UsrConfig.XmlData)
+        [XML]$ConfXML = $ConfXML
+        write-host "Following are current 'Delete' TAGs" -ForegroundColor Green
+        $ConfXML.UserConfiguration.Info.Data.PolicyTag
+        write-host ""
+        write-host "Following are current 'Move to Archive' TAGs" -ForegroundColor Green
+        $ConfXML.UserConfiguration.Info.Data.ArchiveTag
+        write-host ""
+        write-host "Following are current 'Default Archive TAGs" -ForegroundColor Green
+        $ConfXML.UserConfiguration.Info.Data.DefaultArchiveTag
+    }
+    catch {
+        write-host "Configuration message does not exists, or it failed to be read." -ForegroundColor Red
+    }
+}

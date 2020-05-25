@@ -10,7 +10,17 @@ PS C:\> .\Get-MRMRoamingXMLData.ps1
 ```
 In this example the script will ask for the user's credentials to be checked and get the MRM Roaming XML Data.  
 
+### Example 2  
+```powershell
+PS C:\> .\Get-MRMRoamingXMLData.ps1 -DeleteConfigurationMessage
+```
+In this example the script will delete the IPM.Configuration.MRM message from the user mailbox.  
+An Administrator should run 'Start-ManagedFolderAssistant' to issue MRM service and recreate the message.  
+
 ## Version History:  
+### 2.20 - 05/25/2020
+ - Added 'DeleteConfigurationMessage' Switch parameter, to delete the IPM.Configuration.MRM message.
+ - Added some try/catch blocks to catch error messages and properly show to the user.
 ### 2.00 - 05/14/2020
  - Updated tool to connect to Exchange Online using oauth authentication.
 ### 1.00 - 08/22/2018
