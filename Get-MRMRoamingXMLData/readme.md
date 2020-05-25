@@ -14,8 +14,8 @@ In this example the script will ask for the user's credentials to be checked and
 ```powershell
 PS C:\> .\Get-MRMRoamingXMLData.ps1 -DeleteConfigurationMessage
 ```
-In this example the script will delete the IPM.Configuration.MRM message from the user mailbox.  
-An Administrator should run 'Start-ManagedFolderAssistant' to issue MRM service and recreate the message.  
+In this example the script will delete the 'IPM.Configuration.MRM' message from the user's mailbox.  
+An Administrator should run `Start-ManagedFolderAssistant` to issue MRM service and recreate the message.  
 
 ## Version History:  
 ### 2.20 - 05/25/2020

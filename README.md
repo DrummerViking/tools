@@ -21,6 +21,7 @@ Button available to get ManagedFolderAssistants logs from mailbox.
 ## Get MRM Romaing XML Stream from Mailbox script  
 This scripts allows to inspect the MRM configuration message in a user's mailbox.  
 Allows to see the PR_ROMAING_XMLSTREAM data, and returned as a text.  
+It also allows to delete this message.  
 [File](/Get-MRMRoamingXMLData/)  
 
 ----
