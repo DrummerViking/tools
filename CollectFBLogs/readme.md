@@ -1,5 +1,6 @@
 ﻿# Collect FreeBusy information
-Collects info usually requested by Microsoft support to troubleshoot FreeBusy issues.
+Collects info usually requested by Microsoft support to troubleshoot FreeBusy issues.  
+Please run these scripts from an Exchange On-premises Powershell Shell. The commands will use the existing session to get on-premises data, and will connect to EXO to get cloud's data.  
 
 ## Authors:  
 Agustin Gallegos
