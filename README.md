@@ -50,8 +50,8 @@ As this uses EWS, you will need a "master account" with Impersonation permission
 New-ManagementRoleAssignment –Name:impersonationAssignmentName –Role:ApplicationImpersonation –User:<Account>
 ```  
 This will give Impersonation permissions over all mailboxes in the tenant, so is critical that this account is not shared.  
-We recommend that you use the tool initially for a single user/room mailbox, and check you have the expected experience.  
-Is not recommended to run against an Organizer Mailbox. There is already a builtin commands in Exchange Online service for this: `Remove-CalendarEvents`  
+We recommend that y ou use the tool initially for a single user/room mailbox, and check you have the expected experience.  
+Is not recommended to run against an Organizer Mailbox. There is already a builtin command in Exchange Online service for this: `Remove-CalendarEvents`  
 [File](/DeleteMeetings-gui/)
 
 ----
