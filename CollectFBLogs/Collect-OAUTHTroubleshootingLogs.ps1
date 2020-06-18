@@ -162,7 +162,7 @@ if($autodomain -ne "")
 
 Write-Host ""
 Write-Host "Disconnecting from Exchange Online Powershell" -ForegroundColor Cyan
-Disconnect-ExchangeOnline
+Disconnect-ExchangeOnline -Confirm:$False
 
 # compressing log files
 $logzipfile = 'C:\Temp\MSLogs\loggingFiles.zip'

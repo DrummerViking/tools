@@ -101,7 +101,7 @@ Get-EOFederationInformation -Domainname $domain | export-clixml -path "$ts.Cloud
 #Disconnecting from Cloud side
 Write-Host ""
 Write-Host "Disconnecting from Exchange Online Powershell" -ForegroundColor Cyan
-Disconnect-ExchangeOnline
+Disconnect-ExchangeOnline -Confirm:$False
 
 # compressing log files
 $logzipfile = 'C:\Temp\MSLogs\loggingFiles.zip'
