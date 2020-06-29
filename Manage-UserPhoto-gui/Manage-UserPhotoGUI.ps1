@@ -38,33 +38,9 @@ Write-Host $disclaimer -foregroundColor Yellow
 Write-Host " " 
 
 
-function GenerateForm {
- 
-#Internal function to request inputs using UI instead of Read-Host
-function Show-InputBox
-{
-    [CmdletBinding()]
-    param
-    (
-        [Parameter(Mandatory=$true)]
-        [string]
-        $Prompt,
-        
-        [Parameter(Mandatory=$false)]
-        [string]
-        $DefaultValue='',
-        
-        [Parameter(Mandatory=$false)]
-        [string]
-        $Title = 'Windows PowerShell'
-    )
-    
-    
-    Add-Type -AssemblyName Microsoft.VisualBasic
-    [Microsoft.VisualBasic.Interaction]::InputBox($Prompt,$Title, $DefaultValue)
-}
- 
+function GenerateForm { 
 #region Import the Assemblies
+Add-Type -AssemblyName Microsoft.VisualBasic
 [reflection.assembly]::loadwithpartialname("System.Drawing") | Out-Null
 [reflection.assembly]::loadwithpartialname("System.Windows.Forms") | Out-Null
 #endregion
@@ -204,7 +180,7 @@ $RemoveProcess={
     }else{
         [Microsoft.VisualBasic.Interaction]::MsgBox("Mailbox not found. Check and try again",[Microsoft.VisualBasic.MsgBoxStyle]::Okonly,"Information Message")
     }
-    Clear-Variable $filename
+    Clear-Variable $filename -ErrorAction SilentlyContinue
     $statusBar.Text = "Process Completed"
     
 }
@@ -263,11 +239,16 @@ $RemoveUserfromRoleProcess={
 $GetRoleGroupProcess={
     $statusBar.Text = "Running. Please wait..."
     Write-Host "$((Get-Date).ToString("MM-dd-yyyy HH:mm:ss")) - Getting Role 'UserPhoto Admins' members." -ForegroundColor Yellow 
-    Get-RoleGroupMember "UserPhoto Admins" | Out-Host
-    Write-Host "$((Get-Date).ToString("MM-dd-yyyy HH:mm:ss")) - Getting Role 'UserPhoto Admins' members finished." -ForegroundColor Yellow 
-        
+    try
+    {
+        Get-RoleGroupMember "UserPhoto Admins" -ErrorAction Stop | Out-Host
+        Write-Host "$((Get-Date).ToString("MM-dd-yyyy HH:mm:ss")) - Getting Role 'UserPhoto Admins' members finished." -ForegroundColor Yellow
+    }
+    catch
+    {
+        [Microsoft.VisualBasic.Interaction]::MsgBox("'UserPhoto Admins' Role group is not created yet or something failed",[Microsoft.VisualBasic.MsgBoxStyle]::Okonly, "Information Message")
+    }        
     $statusBar.Text = "Process Completed"
-    
 }
 #endregion
 
