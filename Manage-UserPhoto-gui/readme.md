@@ -8,7 +8,7 @@ Agustin Gallegos
 ```powershell
 PS C:\> .\Manage-UserPhotoGUI.ps1
 ```
-In this exmaple the script will run, and will ask for a global admin credentials.  
+In this example the script will run, and will ask for a global admin credentials.  
 
 ## Version History:  
 ### 2.01 - 06/29/2020

@@ -274,9 +274,9 @@ $processData3=
         $Guid = $mbx.ExchangeGuid.Guid
         $logProps = Export-MailboxDiagnosticLogs $Guid -ExtendedProperties
         $xmlprops = [xml]($logProps.MailboxLog)
-        $ausgabe = $xmlprops.Properties.MailboxTable.Property | ?{$_.name -like "ELC*"} | Select Name,Value
-        if ($ausgabe) {
-	        $array.addrange($ausgabe)
+        $output = $xmlprops.Properties.MailboxTable.Property | ?{$_.name -like "ELC*"} | Select Name,Value
+        if ($output) {
+	        $array.addrange($output)
 	        $dgResults.datasource = $array
             $MainWindow.refresh()
         }
