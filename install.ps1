@@ -18,9 +18,10 @@
 #>
 [CmdletBinding()]
 Param (
+	[ParameterSet(Mandatory = $true)]
 	[ValidateSet('Collect-DAuthtroubleshootingLogs', 'Collect-OAuthtroubleshootingLogs','DeleteMeetings-Gui','Get-ExchangeServerInfo','Get-MRMRoamingXMLData','Get-MRMStatistics','Manage-FolderPermissionsGUi','Manage-Mobiles-GUI','Manage-UserPhotoGui')]
 	[string]
-	$Tool = "Collect-DAuthtroubleshootingLogs"
+	$Tool
 )
 
 #region Configuration for cloning script
@@ -28,7 +29,7 @@ Param (
 $Branch = "master"
 
 # Name of the module that is being cloned
-$ModuleName = "agallegoCSS-tools"
+$FolderName = "agallegoCSS-tools"
 
 # Base path to the github repository
 $BaseUrl = "https://github.com/agallego-css/tools"
@@ -56,15 +57,15 @@ try
 	[System.Net.ServicePointManager]::SecurityProtocol = "Tls12"
 
 	Write-LocalMessage -Message "Downloading repository from '$($BaseUrl)/archive/$($Branch).zip'"
-	Invoke-WebRequest -Uri "$($BaseUrl)/archive/$($Branch).zip" -UseBasicParsing -OutFile "$($env:TEMP)\$($ModuleName).zip" -ErrorAction Stop
+	Invoke-WebRequest -Uri "$($BaseUrl)/archive/$($Branch).zip" -UseBasicParsing -OutFile "$($env:TEMP)\$($FolderName).zip" -ErrorAction Stop
 	
-	Write-LocalMessage -Message "Creating temporary project folder: '$($env:TEMP)\$($ModuleName)'"
-	$null = New-Item -Path $env:TEMP -Name $ModuleName -ItemType Directory -Force -ErrorAction Stop
+	Write-LocalMessage -Message "Creating temporary project folder: '$($env:TEMP)\$($FolderName)'"
+	$null = New-Item -Path $env:TEMP -Name $FolderName -ItemType Directory -Force -ErrorAction Stop
 	
-	Write-LocalMessage -Message "Extracting archive to '$($env:TEMP)\$($ModuleName)'"
-	Expand-Archive -Path "$($env:TEMP)\$($ModuleName).zip" -DestinationPath "$($env:TEMP)\$($ModuleName)" -ErrorAction Stop
+	Write-LocalMessage -Message "Extracting archive to '$($env:TEMP)\$($FolderName)'"
+	Expand-Archive -Path "$($env:TEMP)\$($FolderName).zip" -DestinationPath "$($env:TEMP)\$($FolderName)" -ErrorAction Stop
 	
-	$basePath = Get-ChildItem "$($env:TEMP)\$($ModuleName)\*" | Select-Object -First 1
+	$basePath = Get-ChildItem "$($env:TEMP)\$($FolderName)\*" | Select-Object -First 1
 	
 	# Determine output path
 	$path = "$home\Desktop"
@@ -74,8 +75,8 @@ try
 	Move-Item -Path $file.FullName -Destination $path -ErrorAction Stop
 	
 	Write-LocalMessage -Message "Cleaning up temporary files"
-	Remove-Item -Path "$($env:TEMP)\$($ModuleName)" -Force -Recurse
-	Remove-Item -Path "$($env:TEMP)\$($ModuleName).zip" -Force
+	Remove-Item -Path "$($env:TEMP)\$($FolderName)" -Force -Recurse
+	Remove-Item -Path "$($env:TEMP)\$($FolderName).zip" -Force
 	
 	Write-LocalMessage -Message "Installation of the tool $($tool) completed successfully!"
 }
@@ -84,8 +85,8 @@ catch
 	Write-LocalMessage -Message "Installation of the tool $($tool) failed!"
 	
 	Write-LocalMessage -Message "Cleaning up temporary files"
-	Remove-Item -Path "$($env:TEMP)\$($ModuleName)" -Force -Recurse
-	Remove-Item -Path "$($env:TEMP)\$($ModuleName).zip" -Force
+	Remove-Item -Path "$($env:TEMP)\$($FolderName)" -Force -Recurse
+	Remove-Item -Path "$($env:TEMP)\$($FolderName).zip" -Force
 	
 	throw
 }
