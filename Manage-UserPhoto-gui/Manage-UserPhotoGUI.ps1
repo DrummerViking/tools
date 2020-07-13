@@ -37,6 +37,28 @@ $disclaimer = @"
 Write-Host $disclaimer -foregroundColor Yellow
 Write-Host " " 
 
+function Show-InputBox
+{
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Mandatory=$true)]
+        [string]
+        $Prompt,
+        
+        [Parameter(Mandatory=$false)]
+        [string]
+        $DefaultValue='',
+        
+        [Parameter(Mandatory=$false)]
+        [string]
+        $Title = 'Windows PowerShell'
+    )
+    
+    
+    Add-Type -AssemblyName Microsoft.VisualBasic
+    [Microsoft.VisualBasic.Interaction]::InputBox($Prompt,$Title, $DefaultValue)
+}
 
 function GenerateForm { 
 #region Import the Assemblies
