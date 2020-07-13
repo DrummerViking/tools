@@ -41,8 +41,14 @@ function Write-LocalMessage
         [string]$Message
     )
 
-    if (Test-Path function:Write-PSFMessage) { Write-PSFMessage -Level Important -Message $Message }
-    else { Write-Host $Message }
+	if (Get-Command Write-PSFMessage -ErrorAction SilentlyContinue)
+	{
+		Write-PSFMessage -Level Important -Message $Message
+	}
+	else
+	{
+		Write-Host $Message
+	}
 }
 
 try
