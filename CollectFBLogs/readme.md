@@ -18,7 +18,7 @@ PS C:\> .\Collect-OAUTHTroubleshootinglogs.ps1 -OnpremisesUser "onpremuser@conto
 ```
 In this example will collect OAUTH relevant logs with two sample users data.  
   
-
+  
 ## What does these scripts collects?  
   
 ### Collect-DAUTHTroubleshootinglogs.ps1 collects:  
@@ -50,7 +50,7 @@ In this example will collect OAUTH relevant logs with two sample users data.
 
 ----
 
-### CollectODAUTHTroubleshootinglogs.ps1 collects:  
+### CollectOAUTHTroubleshootinglogs.ps1 collects:  
 #### On-premises data:  
 - AuthServer info  
 - PartnerApplication
