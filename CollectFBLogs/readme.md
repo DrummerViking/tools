@@ -17,9 +17,10 @@ In this example will collect DAUTH relevant logs with two sample users data.
 PS C:\> .\Collect-OAUTHTroubleshootinglogs.ps1 -OnpremisesUser "onpremuser@contoso.com" -CloudUser "clouduser@contoso.com"
 ```
 In this example will collect OAUTH relevant logs with two sample users data.  
+  
 
-## What does this scripts collects?  
-
+## What does these scripts collects?  
+  
 ### Collect-DAUTHTroubleshootinglogs.ps1 collects:  
 #### On-premises data:  
 - Federation Trust  
@@ -45,4 +46,32 @@ In this example will collect OAUTH relevant logs with two sample users data.
 - Sharing Policies  
 - Inbound Connectors  
 - Outbound Connectors  
-- Domain's Federation Information
+- Domain's Federation Information  
+
+----
+
+### CollectODAUTHTroubleshootinglogs.ps1 collects:  
+#### On-premises data:  
+- AuthServer info  
+- PartnerApplication
+- EWS Virtual Directories  
+- Autodiscover Virtual Directories  
+- IntraOrganizationConnectors
+- Availability Address Spaces  
+- Remote Mailbox info  
+- On-premises Mailbox info  
+- Tests OAUTH Connectivity to EWS service  
+- Tests OAUTH Connectivity to AutoD service  
+- Receive Connectors  
+- Send Connectors  
+
+#### Exchange Online data:  
+- MSOL Service Principal Credentials  
+- MSOL Service Principals  
+- IntraOrganizationConnector  
+- Mail User info  
+- Cloud's Mailbox info  
+- Inbound Connectors  
+- Outbound Connectors  
+- Tests OAUTH Connectivity to on-premises EWS service  
+- Tests OAUTH Connectivity to on-premises AutoD service
