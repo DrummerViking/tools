@@ -16,4 +16,33 @@ In this example will collect DAUTH relevant logs with two sample users data.
 ```powershell
 PS C:\> .\Collect-OAUTHTroubleshootinglogs.ps1 -OnpremisesUser "onpremuser@contoso.com" -CloudUser "clouduser@contoso.com"
 ```
-In this example will collect OAUTH relevant logs with two sample users data.
+In this example will collect OAUTH relevant logs with two sample users data.  
+
+## What does this scripts collects?  
+
+### Collect-DAUTHTroubleshootinglogs.ps1 collects:  
+#### On-premises data:  
+- Federation Trust  
+- Federated Organization Identifier  
+- Organization Relationships  
+- EWS Virtual Directories  
+- Autodiscover Virtual Directories  
+- Remote Mailbox info  
+- On-premises Mailbox info  
+- Tests Federation Trust  
+- Tests Federation Trust Certificate  
+- Availability Address Spaces  
+- Sharing Policies  
+- Receive Connectors  
+- Send Connectors  
+
+#### Exchange Online data:  
+- Federation Trust  
+- Federated Organization Identifier  
+- Organization Relationships  
+- Mail User info  
+- Cloud's Mailbox info  
+- Sharing Policies  
+- Inbound Connectors  
+- Outbound Connectors  
+- Domain's Federation Information

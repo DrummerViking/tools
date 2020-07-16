@@ -121,7 +121,7 @@ Get-EOFederatedOrganizationIdentifier | export-clixml -path "$ts.Cloud_FedOrgID.
 Write-PSFHostColor -String  "[$((Get-Date).ToString("HH:mm:ss"))] Collecting cloud's Organization Relationships"
 Get-EOOrganizationRelationship | export-clixml -path "$ts.Cloud_OrgRel.xml"
 
-Write-PSFHostColor -String  "[$((Get-Date).ToString("HH:mm:ss"))] Collecting cloud's Mail User info"
+Write-PSFHostColor -String  "[$((Get-Date).ToString("HH:mm:ss"))] Collecting cloud's"
 Get-EOMailUser $OnpremisesUser | export-clixml -path "$ts.Cloud_OnPremisesMBX.xml"
 
 Write-PSFHostColor -String  "[$((Get-Date).ToString("HH:mm:ss"))] Collecting cloud's Mailbox info"

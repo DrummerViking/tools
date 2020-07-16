@@ -2,7 +2,7 @@
 Exchange Powershell tools mostly use in Exchange Online (Office 365)
 
 ## Search-GUI tool
-Allows admins to Search, Delete content from mailboxes.  
+Allows admins to Search, export and Delete content from mailboxes.  
 Also allows to Get RecoverableItems and Restore items.  
 [File](/search-gui/)
 
@@ -18,7 +18,7 @@ Button available to get ManagedFolderAssistants logs from mailbox.
 
 ----
 
-## Get MRM Romaing XML Stream from Mailbox script  
+## Get MRM Romaing XML Stream from Mailbox  
 This scripts allows to inspect the MRM configuration message in a user's mailbox.  
 Allows to see the PR_ROMAING_XMLSTREAM data, and returned as a text.  
 It also allows to delete this message.  
