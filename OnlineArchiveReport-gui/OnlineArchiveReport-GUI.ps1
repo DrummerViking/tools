@@ -156,7 +156,7 @@ $GetDataProcess={
                 itemcount,`
                 lastlogontime,`
                 totalitemsize,`
-                totaldeleteditemsize,`
+                @{N="RecoverableItemsSize";E={$_.totaldeleteditemsize}},`
                 @{N="Recoverable Items Usage Percentage";E={[math]::Round(($_.TotalDeletedItemSize.Value.ToString().Split("(")[1].Split(" ")[0].Replace(",","")/1MB) * 100 / $RIQuota.RIQuota,3) }}
                 
                 $array.Add($stats)

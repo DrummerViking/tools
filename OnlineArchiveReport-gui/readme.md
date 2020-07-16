@@ -13,6 +13,8 @@ In this exmaple the script will run, and will ask for a global admin credentials
 It will generate a transcript file.  
 
 ## Version History:
+### 1.24 - 07/16/2020
+- Updated grid to column name "RecoverableItemsSize"
 ### 1.23 - 05/08/2020
  - Updated tool to connect using new EXO Powershell v2 module.
 ### 1.22 - 11/07/2018
