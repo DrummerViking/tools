@@ -105,10 +105,10 @@ Collects info usually requested by Microsoft support to troubleshoot FreeBusy is
 
 ## Get Exchange Server Info Tool  
 
-This script checks the On-Premises Exchange servers for general information by getting:  
+- This script checks the On-Premises Exchange servers for general information by getting:  
 > Server's name, build number (and RU/CU name), AD Site and roles, .NET version, V++ versions.
 
-If you have a mixed environment running multiple versions of Exchange, it is recommended to run the script from your newest version available.  
-Includes a "CASLoad" switch, to collect some Protocol load counters, Netlogon's Semaphores, and check ASA credentials if it is running in a local CAS Server.  
-Includes an "Autodiscover" switch, to collect SCPs.  
+- If you have a mixed environment running multiple versions of Exchange, it is recommended to run the script from your newest version available.  
+- Includes a "CASLoad" switch, to collect some Protocol load counters, Netlogon's Semaphores, and check ASA credentials if it is running in a local CAS Server.  
+- Includes an "Autodiscover" switch, to collect SCPs.  
 [File](/Get-ExchangeServerInfo/)
