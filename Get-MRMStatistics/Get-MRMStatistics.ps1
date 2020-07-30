@@ -43,6 +43,7 @@ function Show-InputBox
 }
 
 #region Import the Assemblies
+Add-Type -AssemblyName Microsoft.VisualBasic
 [reflection.assembly]::loadwithpartialname("System.Drawing") | Out-Null
 [reflection.assembly]::loadwithpartialname("System.Windows.Forms") | Out-Null
 #endregion

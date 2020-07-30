@@ -13,7 +13,7 @@ In this example the script will run, and will ask for a global admin credentials
 
 ## Version History:  
 ### 2.00 - 07/30/2020
- - Added "Get 7 days stats" button. This button performs a daily search to determine if we are receiving more than 1GB data per day. 
+ - Added "Get 7 days stats" button. This button performs a daily search for the last 7 days, to determine if we are receiving more than 1GB data per day. 
 ### 1.90 - 05/11/2020
  - Updated tool to connect to Exchange Online using new EXO v2 module.
 ### 1.80 - 10/08/2017
