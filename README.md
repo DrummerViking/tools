@@ -97,11 +97,17 @@ The resultant file in the user's Desktop, will have the following columns:
 
 ----
 
-## Collect FreeBusy information
+## Collect FreeBusy information  
 Collects info usually requested by Microsoft support to troubleshoot FreeBusy issues.  
 [File](/CollectFBLogs/)
 
 ----
+
+##  Collect SMTP Auth logs  
+Collects info usually requested by Microsoft support to troubleshoot SMTP client submission issues.  
+[File](/CollectSMTPLogs/)  
+
+----  
 
 ## Get Exchange Server Info Tool  
 

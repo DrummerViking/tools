@@ -61,6 +61,7 @@ $buttonGetMRMPolicy = New-Object System.Windows.Forms.Button
 $buttonGetMRMTags = New-Object System.Windows.Forms.Button
 $buttonGetMRMStatsMbx = New-Object System.Windows.Forms.Button
 $buttonGetMRMStatsArchMbx = New-Object System.Windows.Forms.Button
+$buttonGet7daysStats = New-Object System.Windows.Forms.Button
 $buttonStartMFA = New-Object System.Windows.Forms.Button
 $buttonGetMFALogs = New-Object System.Windows.Forms.Button
 
@@ -71,15 +72,6 @@ $InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
 #region connecting to powershell
 
 # Testing if we have a live PSSession of type Exchange
-$livePSSession = Get-PSSession | ?{$_.ConfigurationName -eq "Microsoft.Exchange"}
-if($livePSSession -ne $null){
-    if($livePSSession.ComputerName -eq "outlook.office365.com"){
-         $Global:premise = "office365"
-    }else{
-         $Global:premise = "on-premises"
-        }
-    }else{
-
     # Choosing if connection is to Office 365 or an Exchange on-premises
     $PremiseForm = New-Object System.Windows.Forms.Form
     $radiobutton1 = New-Object System.Windows.Forms.RadioButton
@@ -168,14 +160,20 @@ if($livePSSession -ne $null){
     {return}
     if( $Global:premise -eq "office365")
     {
-        if( (Get-PSSession).Computername -notlike "*outlook*" )
+        if ( (Get-PSSession).Computername -notlike "*outlook*" )
         {
+            $cred = Get-Credential -Message "Insert your Global Admin credentials"
             if ( !(Get-Module ExchangeOnlineManagement -ListAvailable) -and !(Get-Module ExchangeOnlineManagement) ) 
             {
                 Install-Module ExchangeOnlineManagement -Force -ErrorAction Stop
             }
             Import-Module ExchangeOnlineManagement
-            Connect-ExchangeOnline
+            Connect-ExchangeOnline -Credential $cred
+        }
+        if ( $null -eq (Get-Command Get-ComplianceSearch -ErrorAction SilentlyContinue) ){
+            if ($null -eq $cred) { $cred = Get-Credential -Message "Insert your Global Admin credentials" }
+            $Session = New-PSSession -Name SCC -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.compliance.protection.outlook.com/powershell-liveid -Authentication Basic -AllowRedirection -Credential $cred 
+            $null = Import-PSSession $Session -DisableNameChecking -CommandName New-ComplianceSearch, Get-ComplianceSearch, Start-ComplianceSearch
         }
     }else{
         # we will test common endpoints for tentative URLs based on
@@ -199,7 +197,7 @@ if($livePSSession -ne $null){
         $Session = New-PSSession -Name Exchange -ConfigurationName Microsoft.Exchange -ConnectionUri http://$AutoDEndpoint/powershell -Authentication Kerberos -AllowRedirection
         Import-PSSession $Session -AllowClobber -CommandName Get-Mailbox, Get-RetentionPolicy, Get-RetentionPolicyTag, Export-MailboxDiagnosticLogs, Start-ManagedFolderAssistant | Out-Null
     }  
-}
+
      write-host "Warning poped up. Please pay attention" -ForegroundColor white -BackgroundColor Red
      [Microsoft.VisualBasic.Interaction]::MsgBox("This application works when the Primary Mailbox and Archive Mailbox resides in the same premise. 
 Unfortunatelly if the Mailbox is on-premises and Archive Online, you can only connect to on-premises and manage on-premises objects.",[Microsoft.VisualBasic.MsgBoxStyle]::Okonly,"Information Message")
@@ -319,8 +317,53 @@ $processData4=
    $statusBar.Text = "Process Completed"
 }
 
+#Process to get last 7 days growth stats
+$processData5=
+{
+    $statusBar.Text = "Running..."
+    $user = $txtBoxMbxAlias.Text
+    Write-Host "querying user $user content for the last 7 days to determine each day growth" -ForegroundColor Yellow
+    $array = New-Object System.Collections.ArrayList
+
+    1..7 | ForEach-Object {
+        $startDate = (get-date).AddDays(-$_).tostring("MM-dd-yyyy")
+        $endDate = (get-date).AddDays( (-$_ +1) ).toString("MM-dd-yyyy")   
+        $try = Get-ComplianceSearch "$user search$_" -ErrorAction silentlycontinue
+        if ( $null -eq $try){
+            Write-Host "querying user $user content from $startDate to $endDate" -ForegroundColor Green
+            # Search-Mailbox $user -SearchQuery "Received: $startDate..$endDate" -EstimateResultOnly -DoNotIncludeArchive -SearchDumpster:$False
+            $null = New-ComplianceSearch -Name "$user search$_" -ExchangeLocation $user -ContentMatchQuery "Received:$startDate..$endDate"
+        }
+        else{
+            Write-Host "Existing query found for user $user from $startDate to $endDate" -ForegroundColor Green
+        }
+        Start-ComplianceSearch -Identity "$user search$_" -Force
+    }
+    # Sleeping 60 seconds to allow searches to complete
+    Start-Sleep -Seconds 60
+
+    $i=0
+    1..7 | ForEach-Object {
+        $i++
+        $startDate = (get-date).AddDays(-$_).tostring("MM-dd-yyyy")
+        $endDate = (get-date).AddDays( (-$_ +1) ).toString("MM-dd-yyyy")
+        Write-Host "Getting search results for user $user content from $startDate to $endDate" -ForegroundColor Yellow
+             
+        $result = ((Get-ComplianceSearch "$user search$_").SearchStatistics | ConvertFrom-Json).ExchangeBinding.Search | Select-Object `
+        @{N="Name";E={"$user search$i"}},`
+        @{N="Search Date Range";E={"$startDate to $endDate"}},`
+        ContentItems,ContentSize,HasFaults
+        $array.add($result)
+    }
+    $dgResults.datasource = $array
+    $MainWindow.refresh()
+    write-host "Last 7 days growth finished" -ForegroundColor white -BackgroundColor Red
+    $array = $null
+    $statusBar.Text = "Process Completed"
+}
+
 #Process to Start Managed Folder Assistant on mailbox
-$processData5= 
+$processData6= 
 {
     $statusBar.Text = "Running..."
     $mbx = Get-EXOMailbox -Identity $txtBoxMbxAlias.Text -ErrorAction SilentlyContinue
@@ -335,9 +378,8 @@ $processData5=
    $statusBar.Text = "Process Completed"
 }
 
-
 #Process to Get Managed Folder Assistant logs
-$processData6= 
+$processData7= 
 {
     $statusBar.Text = "Running..."
     $mbx = Get-EXOMailbox -Identity $txtBoxMbxAlias.Text -ErrorAction SilentlyContinue
@@ -364,7 +406,7 @@ $OnLoadMainWindow_StateCorrection=
 #main window
 $System_Drawing_Size = New-Object System.Drawing.Size
 $System_Drawing_Size.Height = 500
-$System_Drawing_Size.Width = 1050
+$System_Drawing_Size.Width = 1150
 $MainWindow.ClientSize = $System_Drawing_Size
 $MainWindow.DataBindings.DefaultDataSourceUpdateMode = 0
 $MainWindow.ForeColor = [System.Drawing.Color]::FromArgb(255,0,0,0)
@@ -395,7 +437,7 @@ $dgResults.RowHeadersVisible = $false
 $dgResults.RowHeaderWidth = 60
 $System_Drawing_Size = New-Object System.Drawing.Size
 $System_Drawing_Size.Height = 500
-$System_Drawing_Size.Width = 1045
+$System_Drawing_Size.Width = 1145
 $dgResults.Size = $System_Drawing_Size
 $dgResults.TabIndex = 9
 $dgResults.add_Navigate($handler_dgResults_Navigate)
@@ -431,7 +473,7 @@ $System_Drawing_Size.Height = 20
 $System_Drawing_Size.Width = 87
 $labMbxAlias.Size = $System_Drawing_Size
 $labMbxAlias.TabIndex = 11
-$labMbxAlias.Text = "Manage Mailbox"
+$labMbxAlias.Text = "Check Mailbox"
 
 $MainWindow.Controls.Add($labMbxAlias)
 
@@ -540,14 +582,25 @@ $buttonGetMRMStatsArchMbx.add_Click($processData4)
 
 $MainWindow.Controls.Add($buttonGetMRMStatsArchMbx)
 
+# "Get 7 days stats" button
+$buttonGet7daysStats.DataBindings.DefaultDataSourceUpdateMode = 0
+$buttonGet7daysStats.ForeColor = [System.Drawing.Color]::FromArgb(255,0,0,0)
+$buttonGet7daysStats.Location = New-Object System.Drawing.Point(791, 57)
+$buttonGet7daysStats.Size = New-Object System.Drawing.Size(100,25)
+$buttonGet7daysStats.Name = "7daysStats"
+$buttonGet7daysStats.TabIndex = 1
+$buttonGet7daysStats.Text = "Get 7 days stats"
+$buttonGet7daysStats.UseVisualStyleBackColor = $True
+$buttonGet7daysStats.add_Click($processData5)
 
+$MainWindow.Controls.Add($buttonGet7daysStats)
 
 #"Start MFA" button
 $buttonStartMFA.DataBindings.DefaultDataSourceUpdateMode = 0
 $buttonStartMFA.ForeColor = [System.Drawing.Color]::FromArgb(255,0,0,0)
 
 $System_Drawing_Point = New-Object System.Drawing.Point
-$System_Drawing_Point.X = 796
+$System_Drawing_Point.X = 910
 $System_Drawing_Point.Y = 57
 $buttonStartMFA.Location = $System_Drawing_Point
 $buttonStartMFA.Name = "buttonStartMFA"
@@ -558,7 +611,7 @@ $buttonStartMFA.Size = $System_Drawing_Size
 $buttonStartMFA.TabIndex = 1
 $buttonStartMFA.Text = "Start MFA"
 $buttonStartMFA.UseVisualStyleBackColor = $True
-$buttonStartMFA.add_Click($processData5)
+$buttonStartMFA.add_Click($processData6)
 
 $MainWindow.Controls.Add($buttonStartMFA)
 
@@ -569,7 +622,7 @@ $buttonGetMFALogs.DataBindings.DefaultDataSourceUpdateMode = 0
 $buttonGetMFALogs.ForeColor = [System.Drawing.Color]::FromArgb(255,0,0,0)
 
 $System_Drawing_Point = New-Object System.Drawing.Point
-$System_Drawing_Point.X = 921
+$System_Drawing_Point.X = 1021
 $System_Drawing_Point.Y = 57
 $buttonGetMFALogs.Location = $System_Drawing_Point
 $buttonGetMFALogs.Name = "buttonGetMFALogs"
@@ -579,11 +632,9 @@ $System_Drawing_Size.Width = 100
 $buttonGetMFALogs.Size = $System_Drawing_Size
 $buttonGetMFALogs.Text = "Get MFA Log"
 $buttonGetMFALogs.UseVisualStyleBackColor = $True
-$buttonGetMFALogs.add_Click($processData6)
+$buttonGetMFALogs.add_Click($processData7)
 
 $MainWindow.Controls.Add($buttonGetMFALogs)
-
-
 #endregion Generated Form Code
 
 #Save the initial state of the form
