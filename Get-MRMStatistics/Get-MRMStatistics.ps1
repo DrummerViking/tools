@@ -174,7 +174,7 @@ $InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
         if ( $null -eq (Get-Command Get-ComplianceSearch -ErrorAction SilentlyContinue) ){
             if ($null -eq $cred) { $cred = Get-Credential -Message "Insert your Global Admin credentials" }
             $Session = New-PSSession -Name SCC -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.compliance.protection.outlook.com/powershell-liveid -Authentication Basic -AllowRedirection -Credential $cred 
-            $null = Import-PSSession $Session -DisableNameChecking -CommandName New-ComplianceSearch, Get-ComplianceSearch, Start-ComplianceSearch
+            $null = Import-PSSession $Session -DisableNameChecking -CommandName New-ComplianceSearch, Get-ComplianceSearch, Start-ComplianceSearch, Remove-ComplianceSearch
         }
     }else{
         # we will test common endpoints for tentative URLs based on
@@ -644,6 +644,12 @@ $InitialMainWindowState = $MainWindow.WindowState
 $MainWindow.add_Load($OnLoadMainWindow_StateCorrection)
 #Show the Form
 $MainWindow.ShowDialog()| Out-Null
+if($MainForm.IsDisposed){
+    Write-Host "Removing temporary ComplianceSearches if any" -ForegroundColor Yellow
+    1..7 | ForEach-Object {
+        Remove-ComplianceSearch "$user search$_" -Confirm:$false -ErrorAction SilentlyContinue
+    }
+}
 
 } #End Function
 
