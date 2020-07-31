@@ -12,7 +12,7 @@ Also allows to Get RecoverableItems and Restore items.
 Allow admins to check current MRM Statistics and info for users.  
 App brings Current Retention Policy and Tags.  
 Can get current Managed Folder Assistant Cycle Stats for primary and Archive Mailbox.  
-Recently added a new button, to get statistics on messages received daily in the last 7 days.
+Recently added a new button, to get statistics on messages received daily in the last 7 days.  
 Button available to issue a "Start-ManagedFolderAssistant" on the account.  
 Button available to get ManagedFolderAssistants logs from mailbox.  
 [File](/Get-MRMStatistics/)
