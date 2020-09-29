@@ -6,9 +6,9 @@
 		This script installs the different available tools from github.
 		
 		It does so by ...
-		- downloading the master branch as zip to $env:TEMP
-		- Unpacking that zip file to a folder in $env:TEMP
-		- Moving the tool content to the user's Desktop
+		-downloading the master branch as zip to $env:TEMP
+		-Unpacking that zip file to a folder in $env:TEMP
+		-Moving the tool content to the user's Desktop
 
 	.PARAMETER Tool
 		Specifies the specific tool to be downloaded. The parameter can be auto completed with 'TAB' key and will display the available tools.
@@ -18,10 +18,10 @@
 #>
 [CmdletBinding()]
 Param (
-	[ParameterSet(Mandatory = $true)]
+	[ParameterSet(Mandatory = $false)]
 	[ValidateSet('Collect-DAuthtroubleshootingLogs', 'Collect-OAuthtroubleshootingLogs','DeleteMeetings-Gui','Get-ExchangeServerInfo','Get-MRMRoamingXMLData','Get-MRMStatistics','Manage-FolderPermissionsGUi','Manage-Mobiles-GUI','Manage-UserPhotoGui')]
 	[string]
-	$Tool
+	$Tool = 'Collect-DAuthtroubleshootingLogs'
 )
 
 #region Configuration for cloning script
