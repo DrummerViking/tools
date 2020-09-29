@@ -358,7 +358,7 @@ $processData5=
     }
     $dgResults.datasource = $array
     $MainWindow.refresh()
-    write-host "Last 7 days growth finished" -ForegroundColor white -BackgroundColor Red
+    write-host "Last 7 days growth check finished" -ForegroundColor white -BackgroundColor Red
     $array = $null
     $statusBar.Text = "Process Completed"
 }

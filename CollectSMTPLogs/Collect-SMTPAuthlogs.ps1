@@ -1,5 +1,4 @@
-﻿#Requires -RunAsAdministrator
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+﻿[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
 [CmdletBinding()]
 Param(
     [Parameter(Mandatory = $True, HelpMessage = 'Primary Email Address of a cloud mailbox you want to check...')]
@@ -31,12 +30,6 @@ if ( !(Get-Module PSFramework) -and !(Get-Module PSFramework -ListAvailable) )
 {
     Install-Module PSFramework -Force
 }
-# Installing MS Graph CA module
-
-if ( !(Get-Module Microsoft.Graph.Identity.ConditionalAccess) -and !(Get-Module Microsoft.Graph.Identity.ConditionalAccess -ListAvailable) )
-{
-    Install-Module -Name Microsoft.Graph.Identity.ConditionalAccess -Force
-}
 
 #connecting to Cloud side
 if ( -not (Get-PSSession | Where-Object computername -eq "outlook.office365.com") ) {
@@ -53,7 +46,7 @@ if ( -not (Get-PSSession | Where-Object computername -eq "outlook.office365.com"
 $ts = Get-Date -Format "yyyy-MM-dd hh_mm_ss"
 $FormatEnumerationLimit = -1
 
-#using C:\TEMP\MSlogs folder
+<#using C:\TEMP\MSlogs folder
 Write-PSFHostColor -String  "[$((Get-Date).ToString("HH:mm:ss"))] Checking C:\TEMP\MSlogs Folder"
 $folder = "C:\TEMP\MSlogs" 
 if (-not (Test-path $folder) )
@@ -67,32 +60,27 @@ else
     Write-PSFHostColor -String  "[$((Get-Date).ToString("HH:mm:ss"))] $folder is already created!" -DefaultColor Yellow 
 }
 Set-Location C:\temp\MSlogs
+#>
 
 #setting variables
-if($CloudUser -eq '')     { $CloudUser = Read-Host -Prompt "please enter the Primary Email Address of a cloud mailbox" }
+if($CloudUser -eq '') { $CloudUser = Read-Host -Prompt "please enter the Primary Email Address of a cloud mailbox" }
 
 Write-PSFHostColor -String  "[$((Get-Date).ToString("HH:mm:ss"))] Collecting OrganizationConfig settings"
-Get-OrganizationConfig | Export-Clixml -Path "$ts.OrganizationConfig.xml"
+$orgConfig = Get-OrganizationConfig
 
 Write-PSFHostColor -String  "[$((Get-Date).ToString("HH:mm:ss"))] Collecting TransportConfig settings"
-Get-TransportConfig | Export-Clixml -Path "$ts.Transportconfig.xml"
+$transportConfig = Get-TransportConfig
 
 Write-PSFHostColor -String  "[$((Get-Date).ToString("HH:mm:ss"))] Collecting User's CasMailbox settings"
-Get-EXOCasMailbox $CloudUser -Properties SmtpClientAuthenticationDisabled | Export-Clixml -Path "$ts.CasMailboxInfo.xml"
+$CasMbx = Get-EXOCasMailbox $CloudUser -Properties SmtpClientAuthenticationDisabled
 
 Write-PSFHostColor -String  "[$((Get-Date).ToString("HH:mm:ss"))] Collecting Exchange's Authentication Policies settings"
-Get-AuthenticationPolicy | Export-Clixml -Path "$ts.EXOAuthenticationPolices.xml"
+$AuthPolicies = Get-AuthenticationPolicy
 
-
-$mbx = get-mailbox (read-host -Prompt "enter user alias")
-$orgConfig = Get-OrganizationConfig
-$transportConfig = Get-TransportConfig
-$CasMbx = Get-CASMailbox $mbx.Identity
 [PSCustomObject]$Data = @{
-Mailbox = $mbx.Identity
+Mailbox = $CloudUser
 SMTPLegacyAuthMailboxLevel = -not $CasMbx.SmtpClientAuthenticationDisabled
 ModernAuthEnabled = $orgConfig.OAuth2ClientProfileEnabled
 SMTPLegacyAuthOrganizationLevel = -not $transportConfig.SmtpClientAuthenticationDisabled
-
 }
-$Data | ft -AutoSize
+$Data | Format-Table -AutoSize

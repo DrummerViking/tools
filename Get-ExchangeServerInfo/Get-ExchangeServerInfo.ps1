@@ -212,6 +212,7 @@ Param(
                                 1913 {$exSetupVer += " - CU15"}
                                 1979 {$exSetupVer += " - CU16"}
                                 2044 {$exSetupVer += " - CU17"}
+                                2106 {$exSetupVer += " - CU18"}
                                 default {} 
                             }
                         }
@@ -226,6 +227,7 @@ Param(
                                 0529 {$exSetupVer += " - CU4"}
                                 0595 {$exSetupVer += " - CU5"}
                                 0659 {$exSetupVer += " - CU6"}
+                                0721 {$exSetupVer += " - CU7"}
                                 default {} 
                             }
                         }
