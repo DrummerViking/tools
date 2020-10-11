@@ -6,7 +6,7 @@ Agustin Gallegos
 ## Summary  
 Test AutodiscoverV2 either against Office365 ( default server name ) or Exchange On-premises.  
 You can select one of the available protocols:  
-> "AutodiscoverV2","ActiveSync","Ews","Rest","Substrate","SubstrateNotificationService","SubstrateSearchService","OutlookMeetingScheduler".  
+> AutodiscoverV2,ActiveSync,Ews,Rest,Substrate,SubstrateNotificationService,SubstrateSearchService,OutlookMeetingScheduler.  
 
 ## Examples  
 ### Example 1  
