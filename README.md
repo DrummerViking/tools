@@ -98,6 +98,12 @@ The resultant file in the user's Desktop, will have the following columns:
 
 ----
 
+## Test Autodiscover V2  
+Tests AutodiscoverV2 against Office365 or Exchange On-premises with different protocols available.  
+[File](/Test-Autodiscover/)
+
+----
+
 ## Collect FreeBusy information  
 Collects info usually requested by Microsoft support to troubleshoot FreeBusy issues.  
 [File](/CollectFBLogs/)
