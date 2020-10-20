@@ -11,13 +11,13 @@ You can select one of the available protocols:
 ## Examples  
 ### Example 1  
 ```powershell
-PS C:\> Test-Autodiscover -EmailAddress onpremUser@contoso.com -Protocol AutodiscoverV2
+PS C:\> Test-Autodiscover -EmailAddress onpremUser@contoso.com -Protocol AutodiscoverV2 -ShowQueriedUrl
 ```
 In this example it will show the autodiscover URL for the onpremises user, queried against outlook.office365.com  
 
 ### Example 2  
 ```powershell
-PS C:\> Test-Autodiscover -EmailAddress cloudUser@contoso.com -Protocol EWS -Server mail.contoso.com
+PS C:\> Test-Autodiscover -EmailAddress cloudUser@contoso.com -Protocol EWS -Server mail.contoso.com -ShowQueriedUrl
 ```
 In this example it will show the EWS URL for the cloud user, queried against an on-premises endpoint 'mail.contoso.com'.  
 
