@@ -19,7 +19,7 @@
     This is an optional parameter. It will show the QueriedUrl in case you want to copy and paste into a browser.
     
     .EXAMPLE
-    PS C:\> Test-Autodiscover -EmailAddress onpremUser@contoso.com -Protocol AutodiscoverV2
+    PS C:\> Test-Autodiscover -EmailAddress onpremUser@contoso.com -Protocol AutodiscoverV2 -ShowQueriedUrl
     In this example it will show the autodiscover URL for the onpremises user, queried against outlook.office365.com
 
     .EXAMPLE
@@ -44,6 +44,7 @@
     )
     if ($Protocol -eq "AutodiscoverV2") { $protocolUsed = "AutodiscoverV1"}
     else {$protocolUsed = $Protocol }
+    
     try{
         $URL = "https://$server/autodiscover/autodiscover.json?Email=$EmailAddress&Protocol=$protocolUsed&RedirectCount=5"
         Write-Verbose "URL=$($Url)"
@@ -55,8 +56,8 @@
                 User = $EmailAddress
                 QueriedServer = $Server
                 Protocol = $protocolUsed
-                ResponsedUrl = $response.URL
-                QueryURL = $URL
+                ReturnedUrl = $response.URL
+                QueriedURL = $URL
             } | Format-List
         }
         else {
@@ -64,7 +65,7 @@
                 User = $EmailAddress
                 QueriedServer = $Server
                 Protocol = $protocolUsed
-                ResponsedUrl = $response.URL
+                ReturnedUrl = $response.URL
             } | Format-List
         }
     }
