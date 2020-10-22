@@ -38,7 +38,7 @@
     [ValidateSet("AutodiscoverV2","ActiveSync","Ews","Rest","Substrate","SubstrateNotificationService","SubstrateSearchService","OutlookMeetingScheduler")]
     [String]$Protocol,
 
-    [Parameter( Mandatory=$false, Position=1)]
+    [Parameter( Mandatory=$false, Position=3)]
     [Switch]$ShowQueriedUrl
  
     )
