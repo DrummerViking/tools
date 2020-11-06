@@ -170,7 +170,8 @@ $InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
             }
             Import-Module ExchangeOnlineManagement
             try {
-                Connect-ExchangeOnline -Credential $cred
+                Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Connecting to Exchange Online"
+                Connect-ExchangeOnline -Credential $cred -ShowBanner:$False -ErrorAction Stop
             }
             catch {
                 if ( ( ($_.Exception.GetBaseException()).errorcode | ConvertFrom-Json).error -eq 'interaction_required' ) {
@@ -185,6 +186,7 @@ $InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
         if ( $null -eq (Get-Command Get-ComplianceSearch -ErrorAction SilentlyContinue) ){
             if ($null -eq $cred) { $cred = Get-Credential -Message "Insert your Global Admin credentials" }
             try {
+                Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Connecting to Security And Compliance"
                 Connect-IPPSSession -Credential $cred -ErrorAction Stop -WarningAction SilentlyContinue
             }
             catch {
