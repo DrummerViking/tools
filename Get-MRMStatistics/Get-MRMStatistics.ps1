@@ -161,7 +161,7 @@ $InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
     {return}
     if( $Global:premise -eq "office365")
     {
-        if ( (Get-PSSession).Computername -notlike "*outlook*" )
+        if ( (Get-PSSession).Computername -notcontains "outlook.office365.com" )
         {
             $cred = Get-Credential -Message "Insert your Global Admin credentials"
             if ( !(Get-Module ExchangeOnlineManagement -ListAvailable) -and !(Get-Module ExchangeOnlineManagement) ) 
@@ -169,12 +169,33 @@ $InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
                 Install-Module ExchangeOnlineManagement -Force -ErrorAction Stop
             }
             Import-Module ExchangeOnlineManagement
-            Connect-ExchangeOnline -Credential $cred
+            try {
+                Connect-ExchangeOnline -Credential $cred
+            }
+            catch {
+                if ( ($_.Exception.InnerException.InnerException.InnerException.InnerException.ErrorCode | ConvertFrom-Json).error -eq 'interaction_required' ) {
+                    Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Your are account seems to be requiring MFA to connect to Exchange Online. Requesting to authenticate"
+                    Connect-ExchangeOnline -UserPrincipalName $Credential.Username.toString() -ShowBanner:$False -ErrorAction Stop
+                }
+                else {
+                    return $_
+                }
+            }
         }
         if ( $null -eq (Get-Command Get-ComplianceSearch -ErrorAction SilentlyContinue) ){
             if ($null -eq $cred) { $cred = Get-Credential -Message "Insert your Global Admin credentials" }
-            $Session = New-PSSession -Name SCC -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.compliance.protection.outlook.com/powershell-liveid -Authentication Basic -AllowRedirection -Credential $cred 
-            $null = Import-PSSession $Session -DisableNameChecking -CommandName New-ComplianceSearch, Get-ComplianceSearch, Start-ComplianceSearch, Remove-ComplianceSearch
+            try {
+                Connect-IPPSSession -Credential $Credential -ErrorAction Stop -WarningAction SilentlyContinue
+            }
+            catch {
+                if ( ($_.Exception.InnerException.InnerException.InnerException.InnerException.ErrorCode | ConvertFrom-Json).error -eq 'interaction_required' ) {
+                    Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Your are account seems to be requiring MFA to connect to Security and Compliance. Requesting to authenticate"
+                    Connect-IPPSSession -UserPrincipalName $Credential.Username.toString() -ErrorAction Stop -WarningAction SilentlyContinue
+                }
+                else {
+                    return $_
+                }
+            }
         }
     }else{
         # we will test common endpoints for tentative URLs based on

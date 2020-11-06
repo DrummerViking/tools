@@ -12,6 +12,9 @@ PS C:\> .\Get-MRMStatistics.ps1
 In this example the script will run, and will ask for a global admin credentials.  
 
 ## Version History:  
+
+### 2.20 - 11/06/2020  
+ - Fixing connection methods to allow accounts with MFA.   
 ### 2.00 - 07/30/2020
  - Added "Get 7 days stats" button. This button performs a daily search for the last 7 days, to determine if we are receiving more than 1GB data per day. 
 ### 1.90 - 05/11/2020
