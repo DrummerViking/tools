@@ -175,7 +175,7 @@ $InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
             }
             catch {
                 if ( ( ($_.Exception.GetBaseException()).errorcode | ConvertFrom-Json).error -eq 'interaction_required' ) {
-                    Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Your are account seems to be requiring MFA to connect to Exchange Online. Requesting to authenticate"
+                    Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Your account seems to be requiring MFA to connect to Exchange Online. Requesting to authenticate"
                     Connect-ExchangeOnline -UserPrincipalName $cred.Username.toString() -ShowBanner:$False -ErrorAction Stop
                 }
                 else {
@@ -191,7 +191,7 @@ $InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
             }
             catch {
                 if ( ( ($_.Exception.GetBaseException()).errorcode | ConvertFrom-Json).error -eq 'interaction_required' ) {
-                    Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Your are account seems to be requiring MFA to connect to Security and Compliance. Requesting to authenticate"
+                    Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Your account seems to be requiring MFA to connect to Security and Compliance. Requesting to authenticate"
                     Connect-IPPSSession -UserPrincipalName $cred.Username.toString() -ErrorAction Stop -WarningAction SilentlyContinue
                 }
                 else {

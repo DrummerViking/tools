@@ -232,8 +232,8 @@ if($null -ne $livePSSession){
         
         # Establishing session
         $Session = New-PSSession -Name Exchange -ConfigurationName Microsoft.Exchange -ConnectionUri http://$AutoDEndpoint/powershell -Authentication Kerberos -AllowRedirection
+        Import-PSSession $Session -AllowClobber -WarningAction SilentlyContinue -CommandName Get-Mailbox, Search-Mailbox, Get-ManagementRoleAssignment, New-ManagementRoleAssignment, Add-RoleGroupMember, Get-RecoverableItems, Restore-RecoverableItems | Out-Null
     }
-    Import-PSSession $Session -AllowClobber -WarningAction SilentlyContinue -CommandName Get-Mailbox, Search-Mailbox, Get-ManagementRoleAssignment, New-ManagementRoleAssignment, Add-RoleGroupMember, Get-RecoverableItems, Restore-RecoverableItems | Out-Null
 }
 #endregion
 
