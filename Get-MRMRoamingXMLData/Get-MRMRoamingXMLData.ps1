@@ -8,27 +8,44 @@
 	NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
 	DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-.SYNOPSIS
+
+    .SYNOPSIS
     Get MRM setting stamped in a user's mailbox.
-.DESCRIPTION
+
+    .DESCRIPTION
     Get MRM setting stamped in a user's mailbox.
     Output will be parsed from XML to readable text.
-.PARAMETER DeleteConfigurationMessage
+
+    .PARAMETER TargetSMTPAddress
+    Use this optional parameter, to open a different mailbox. 
+    You need to be assign Impersonation permissions, or FullAccess permisions in order to open another user's mailbox.
+
+    .PARAMETER DeleteConfigurationMessage
     Using this parameter, deletes the IPM.Configuration.MRM message from the user mailbox.
     An Administrator should run 'Start-ManagedFolderAssistant' to issue MRM service and recreate the message.
-.EXAMPLE 
-    PS C:\> Get-MRMRoamingXMLData.ps1
-.EXAMPLE 
-    PS C:\> Get-MRMRoamingXMLData.ps1 -DeleteConfigurationMessage
 
-.COMPONENT
-   STORE, MRM
-.ROLE
-   Support
+    .EXAMPLE 
+    PS C:\> Get-MRMRoamingXMLData.ps1
+    In this example the script will ask for the user's credentials to be checked and get the MRM Roaming XML Data.
+
+    .EXAMPLE 
+    PS C:\> Get-MRMRoamingXMLData.ps1 -DeleteConfigurationMessage
+    In this example the script will delete the 'IPM.Configuration.MRM' message from the user's mailbox.
+    An Administrator should run Start-ManagedFolderAssistant to issue MRM service and recreate the message.
+
+    .EXAMPLE
+    PS C:\> Get-MRMRoamingXMLData.ps1 -TargetSMTPAddress 'anotherUser@domain.com'
+    In this example the script will ask for the Admin's credentials to authenticate. And will actually open 'anotherUser@domain.com' mailbox to check and get the MRM Roaming XML Data.
+
+    .COMPONENT
+    STORE, MRM
+    
+    .ROLE
+    Support
 #>
 [CmdletBinding()]
 param(
-    $TargetSMTPAddress,
+    [String]$TargetSMTPAddress,
 
     [Switch]
     $DeleteConfigurationMessage
