@@ -14,16 +14,15 @@ In this example the script will ask for the user's credentials to be checked and
 ```powershell
 PS C:\> .\Get-MRMRoamingXMLData.ps1 -DeleteConfigurationMessage
 ```
+In this example the script will delete the 'IPM.Configuration.MRM' message from the user's mailbox.  
+An Administrator should run `Start-ManagedFolderAssistant` to issue MRM service and recreate the message. 
 
 ### Example 3  
 ```powershell
 PS C:\> .\Get-MRMRoamingXMLData.ps1 -TargetSMTPAddress 'anotherUser@domain.com'
 ```
 In this example the script will ask for the Admin's credentials to authenticate. And will actually open 'anotherUser@domain.com' mailbox to check and get the MRM Roaming XML Data.  
-
-
-In this example the script will delete the 'IPM.Configuration.MRM' message from the user's mailbox.  
-An Administrator should run `Start-ManagedFolderAssistant` to issue MRM service and recreate the message.  
+ 
 
 ## Version History:  
 ### 2.30 - 11/10/2020
