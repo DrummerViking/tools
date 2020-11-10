@@ -28,6 +28,8 @@
 #>
 [CmdletBinding()]
 param(
+    $TargetSMTPAddress,
+
     [Switch]
     $DeleteConfigurationMessage
 )
@@ -148,6 +150,12 @@ $exchangeCredentials = New-Object Microsoft.Exchange.WebServices.Data.OAuthCrede
 $service.Url = New-Object Uri("https://outlook.office365.com/ews/exchange.asmx")
 $Service.credentials = $exchangeCredentials
 
+if ( $TargetSMTPAddress ){
+    $service.ImpersonatedUserId = New-Object Microsoft.Exchange.WebServices.Data.ImpersonatedUserId([Microsoft.Exchange.WebServices.Data.ConnectingIdType]::SmtpAddress, $TargetSmtpAddress)
+    $service.HttpHeaders.Clear()
+    $service.HttpHeaders.Add("X-AnchorMailbox", $TargetSmtpAddress)
+    $SmtpAddress = $TargetSmtpAddress
+}
 
 if ( $DeleteConfigurationMessage )
 {

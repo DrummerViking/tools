@@ -187,7 +187,7 @@ $ewsdomain = Read-Host -Prompt "Enter EWS endpoint"
 if($ewsdomain -ne "")
 {
     Write-PSFHostColor -String  "[$((Get-Date).ToString("HH:mm:ss"))] Testing OAUTH Connectivity to on-premises EWS service"
-    Test-EOOAuthConnectivity -Service EWS -TargetUri https://$ewsdomain/ews/exchange.asmx -Mailbox $CloudUser -Verbose | export-clixml -path "$ts.Cloud_TestOAuthEWS.xml"
+    Test-EOOAuthConnectivity -Service EWS -TargetUri https://$ewsdomain/metadata/json/1 -Mailbox $CloudUser -Verbose | export-clixml -path "$ts.Cloud_TestOAuthEWS.xml"
 }
 $autodomain = Read-Host -Prompt "Enter Autodiscover endpoint. for example autodiscover.contoso.com"
 if($autodomain -ne "")
