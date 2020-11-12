@@ -12,6 +12,8 @@ PS C:\> .\Get-MRMStatistics.ps1
 In this example the script will run, and will ask for a global admin credentials.  
 
 ## Version History:  
+### 2.26 - 11/12/2020  
+ - Fixing connection order, to connect first to SCC later to EXO if needed.  
 
 ### 2.25 - 11/06/2020  
  - Fixing connection methods.  

@@ -161,9 +161,25 @@ $InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
     {return}
     if( $Global:premise -eq "office365")
     {
+        if ( $null -eq (Get-Command Get-ComplianceSearch -ErrorAction SilentlyContinue) ){
+            if ($null -eq $cred) { $cred = Get-Credential -Message "Insert your Global Admin credentials" }
+            try {
+                Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Connecting to Security And Compliance"
+                Connect-IPPSSession -Credential $cred -ErrorAction Stop -WarningAction SilentlyContinue
+            }
+            catch {
+                if ( ( ($_.Exception.GetBaseException()).errorcode | ConvertFrom-Json).error -eq 'interaction_required' ) {
+                    Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Your account seems to be requiring MFA to connect to Security and Compliance. Requesting to authenticate"
+                    Connect-IPPSSession -UserPrincipalName $cred.Username.toString() -ErrorAction Stop -WarningAction SilentlyContinue
+                }
+                else {
+                    return $_
+                }
+            }
+        }
         if ( (Get-PSSession).Computername -notcontains "outlook.office365.com" )
         {
-            $cred = Get-Credential -Message "Insert your Global Admin credentials"
+            if ($null -eq $cred) { $cred = Get-Credential -Message "Insert your Global Admin credentials" }
             if ( !(Get-Module ExchangeOnlineManagement -ListAvailable) -and !(Get-Module ExchangeOnlineManagement) ) 
             {
                 Install-Module ExchangeOnlineManagement -Force -ErrorAction Stop
@@ -177,22 +193,6 @@ $InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
                 if ( ( ($_.Exception.GetBaseException()).errorcode | ConvertFrom-Json).error -eq 'interaction_required' ) {
                     Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Your account seems to be requiring MFA to connect to Exchange Online. Requesting to authenticate"
                     Connect-ExchangeOnline -UserPrincipalName $cred.Username.toString() -ShowBanner:$False -ErrorAction Stop
-                }
-                else {
-                    return $_
-                }
-            }
-        }
-        if ( $null -eq (Get-Command Get-ComplianceSearch -ErrorAction SilentlyContinue) ){
-            if ($null -eq $cred) { $cred = Get-Credential -Message "Insert your Global Admin credentials" }
-            try {
-                Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Connecting to Security And Compliance"
-                Connect-IPPSSession -Credential $cred -ErrorAction Stop -WarningAction SilentlyContinue
-            }
-            catch {
-                if ( ( ($_.Exception.GetBaseException()).errorcode | ConvertFrom-Json).error -eq 'interaction_required' ) {
-                    Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Your account seems to be requiring MFA to connect to Security and Compliance. Requesting to authenticate"
-                    Connect-IPPSSession -UserPrincipalName $cred.Username.toString() -ErrorAction Stop -WarningAction SilentlyContinue
                 }
                 else {
                     return $_
