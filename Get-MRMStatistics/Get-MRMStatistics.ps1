@@ -292,11 +292,11 @@ $processData3=
     $array = New-Object System.Collections.ArrayList
 
     $mbx = Get-EXOMailbox -Identity $txtBoxMbxAlias.Text -ErrorAction Silentlycontinue -PropertySets StatisticsSeed | select ExchangeGuid
-    if($mbx -ne $null){
+    if($null -ne $mbx){
         $Guid = $mbx.ExchangeGuid.Guid
         $logProps = Export-MailboxDiagnosticLogs $Guid -ExtendedProperties
         $xmlprops = [xml]($logProps.MailboxLog)
-        $output = $xmlprops.Properties.MailboxTable.Property | ?{$_.name -like "ELC*"} | Select Name,Value
+        $output = $xmlprops.Properties.MailboxTable.Property | Where-Object{$_.name -like "ELC*"} | Select Name,Value
         if ($output) {
 	        $array.addrange($output)
 	        $dgResults.datasource = $array
@@ -319,14 +319,14 @@ $processData4=
     $statusBar.Text = "Running..."
     $array = New-Object System.Collections.ArrayList
 
-    $mbx = Get-EXOMailbox -Identity $txtBoxMbxAlias.Text -Archive -ErrorAction SilentlyContinue -PropertySets StatisticsSeed | select ExchangeGuid
-    if($mbx -ne $null){
-        $Guid = $mbx.ExchangeGuid.Guid
-        $logProps = Export-MailboxDiagnosticLogs $Guid -Archive -ExtendedProperties
+    $mbx = Get-EXOMailbox -Identity $txtBoxMbxAlias.Text -Archive -ErrorAction SilentlyContinue -PropertySets Archive | select ArchiveGuid
+    if($null -ne $mbx){
+        $Guid = $mbx.ArchiveGuid.Guid
+        $logProps = Export-MailboxDiagnosticLogs $Guid -ExtendedProperties
         $xmlprops = [xml]($logProps.MailboxLog)
-        $ausgabe = $xmlprops.Properties.MailboxTable.Property | ?{$_.name -like "ELC*"} | Select Name,Value
-        if ($ausgabe) {
-	        $array.addrange($ausgabe)
+        $output = $xmlprops.Properties.MailboxTable.Property | Where-Object{$_.name -like "ELC*"} | Select Name,Value
+        if ($output) {
+	        $array.addrange($output)
 	        $dgResults.datasource = $array
             $MainWindow.refresh()
         }
