@@ -1,4 +1,44 @@
 ﻿#Requires -RunAsAdministrator
+<#
+    .SYNOPSIS
+    Collects info usually requested by Microsoft support to troubleshoot FreeBusy issues.  
+
+    .DESCRIPTION
+    Collects info usually requested by Microsoft support to troubleshoot FreeBusy issues.  
+    Please run these scripts from an Exchange On-premises Powershell Shell. The commands will use the existing session to get on-premises data, and will connect to EXO to get cloud's data.  
+
+    .EXAMPLE
+    PS C:\> .\Collect-DAUTHTroubleshootinglogs.ps1 -OnpremisesUser "onpremuser@contoso.com" -CloudUser "clouduser@contoso.com"
+    In this example will collect OAUTH relevant logs with two sample users data.  
+  
+    .NOTES
+    CollectDAUTHTroubleshootinglogs.ps1 collects:  
+    On-premises data:  
+    >  Federation Trust  
+    > Federated Organization Identifier  
+    > Organization Relationships  
+    > EWS Virtual Directories  
+    > Autodiscover Virtual Directories  
+    > Remote Mailbox info  
+    > On-premises Mailbox info  
+    > Tests Federation Trust  
+    > Tests Federation Trust Certificate  
+    > Availability Address Spaces  
+    > Sharing Policies  
+    > Receive Connectors  
+    > Send Connectors  
+
+    Exchange Online data:  
+    > Federation Trust  
+    > Federated Organization Identifier  
+    > Organization Relationships  
+    > Mail User info  
+    > Cloud's Mailbox info  
+    > Sharing Policies  
+    > Inbound Connectors  
+    > Outbound Connectors  
+    > Domain's Federation Information 
+#>
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
 [CmdletBinding()]
 Param(

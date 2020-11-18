@@ -1,4 +1,43 @@
 ﻿#Requires -RunAsAdministrator
+<#
+    .SYNOPSIS
+    Collects info usually requested by Microsoft support to troubleshoot FreeBusy issues.  
+
+    .DESCRIPTION
+    Collects info usually requested by Microsoft support to troubleshoot FreeBusy issues.  
+    Please run these scripts from an Exchange On-premises Powershell Shell. The commands will use the existing session to get on-premises data, and will connect to EXO to get cloud's data.  
+
+    .EXAMPLE
+    PS C:\> .\Collect-OAUTHTroubleshootinglogs.ps1 -OnpremisesUser "onpremuser@contoso.com" -CloudUser "clouduser@contoso.com"
+    In this example will collect OAUTH relevant logs with two sample users data.  
+  
+    .NOTES
+    CollectOAUTHTroubleshootinglogs.ps1 collects:  
+    On-premises data:  
+    > AuthServer info  
+    > PartnerApplication
+    > EWS Virtual Directories  
+    > Autodiscover Virtual Directories  
+    > IntraOrganizationConnectors
+    > Availability Address Spaces  
+    > Remote Mailbox info  
+    > On-premises Mailbox info  
+    > Tests OAUTH Connectivity to EWS service  
+    > Tests OAUTH Connectivity to AutoD service  
+    > Receive Connectors  
+    > Send Connectors  
+
+    Exchange Online data:  
+    > MSOL Service Principal Credentials  
+    > MSOL Service Principals  
+    > IntraOrganizationConnector  
+    > Mail User info  
+    > Cloud's Mailbox info  
+    > Inbound Connectors  
+    > Outbound Connectors  
+    > Tests OAUTH Connectivity to on-premises EWS service  
+    > Tests OAUTH Connectivity to on-premises AutoD service
+#>
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
 [CmdletBinding()]
 Param(
