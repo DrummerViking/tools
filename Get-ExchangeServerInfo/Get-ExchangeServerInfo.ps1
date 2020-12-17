@@ -154,6 +154,7 @@ Param(
                             0461 {$exSetupVer += " - RU28"}
                             0468 {$exSetupVer += " - RU29"}
                             0496 {$exSetupVer += " - RU30"}
+                            0509 {$exSetupVer += " - RU31"}
                             default {}
                         }
                     }
@@ -213,6 +214,7 @@ Param(
                                 1979 {$exSetupVer += " - CU16"}
                                 2044 {$exSetupVer += " - CU17"}
                                 2106 {$exSetupVer += " - CU18"}
+                                2176 {$exSetupVer += " - CU19"}
                                 default {} 
                             }
                         }
@@ -228,6 +230,7 @@ Param(
                                 0595 {$exSetupVer += " - CU5"}
                                 0659 {$exSetupVer += " - CU6"}
                                 0721 {$exSetupVer += " - CU7"}
+                                0792 {$exSetupVer += " - CU8"}
                                 default {} 
                             }
                         }
