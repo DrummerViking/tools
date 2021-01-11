@@ -8,13 +8,13 @@ Agustin Gallegos
 ```powershell
 PS C:\> .\Get-ExchangeServerInfo.ps1 -Server "EXCHSERVER1"
 ```
-Runs against a single remote Exchange server.  
+Runs against a single Exchange server.  
 
 ### Example 2  
 ```powershell
 PS C:\> .\Get-ExchangeServerInfo.ps1 -Server "EXCHSERVER1" -CASLoad
 ```
-Runs against a single remote Exchange server including CAS related information.  
+Runs against a single Exchange server including CAS related information.  
 
 ### Example 3  
 ```powershell
@@ -23,7 +23,7 @@ PS C:\> .\Get-ExchangeServerInfo.ps1 -Site "Site1"
 Runs against all servers located in the specified Site.  
 
 ## Version History:  
-### 1.105 - 09/29/2020
+### 1.105 - 12/17/2020
  - Updated build versions for December 2020 releases
 ### 1.102 - 09/29/2020
  - Updated build versions for September 2020 releases
