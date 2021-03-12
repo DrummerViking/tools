@@ -163,6 +163,11 @@ $InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
     {
         if ( $null -eq (Get-Command Get-ComplianceSearch -ErrorAction SilentlyContinue) ){
             if ($null -eq $cred) { $cred = Get-Credential -Message "Insert your Global Admin credentials" }
+            if ( !(Get-Module ExchangeOnlineManagement -ListAvailable) -and !(Get-Module ExchangeOnlineManagement) ) 
+            {
+                Install-Module ExchangeOnlineManagement -Force -ErrorAction Stop
+            }
+            Import-Module ExchangeOnlineManagement
             try {
                 Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Connecting to Security And Compliance"
                 Connect-IPPSSession -Credential $cred -ErrorAction Stop -WarningAction SilentlyContinue

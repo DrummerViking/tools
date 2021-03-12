@@ -155,6 +155,7 @@ Param(
                             0468 {$exSetupVer += " - RU29"}
                             0496 {$exSetupVer += " - RU30"}
                             0509 {$exSetupVer += " - RU31"}
+                            0513 {$exSetupVer += " - RU32"}
                             default {}
                         }
                     }

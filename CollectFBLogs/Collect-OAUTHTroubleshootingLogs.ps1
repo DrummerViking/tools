@@ -137,7 +137,7 @@ Write-PSFHostColor -String  "[$((Get-Date).ToString("HH:mm:ss"))] Testing OAUTH 
 Test-OAuthConnectivity -Service EWS -TargetUri https://outlook.office365.com/ews/exchange.asmx -Mailbox $OnpremisesUser -Verbose | export-clixml -path "$ts.OnPrem_TestOAuthEWS.xml"
 
 Write-PSFHostColor -String  "[$((Get-Date).ToString("HH:mm:ss"))] Testing OAUTH Connectivity to AutoD service"
-Test-OAuthConnectivity -Service AutoD  -TargetUri https://autodiscover-s.outlook.com/autodiscover/autodiscover.svc -Mailbox $OnpremisesUser -Verbose | export-clixml -path "$ts.OnPrem_TestOAuthAutoD.xml"
+Test-OAuthConnectivity -Service AutoD -TargetUri https://autodiscover-s.outlook.com/autodiscover/autodiscover.svc -Mailbox $OnpremisesUser -Verbose | export-clixml -path "$ts.OnPrem_TestOAuthAutoD.xml"
 
 Write-PSFHostColor -String  "[$((Get-Date).ToString("HH:mm:ss"))] Collecting Receive Connectors"
 Get-ReceiveConnector | export-clixml -path "$ts.OnPrem_ReceiveConnectors.xml"
