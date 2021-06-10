@@ -9,7 +9,7 @@ Nelson Riera
 ```powershell
 PS C:\> .\Search-GUI.ps1
 ```
-In this exmaple the script will run, and will ask for a global admin credentials.  
+In this example the script will run, and will ask for a global admin credentials.  
 
 ## Version History:
 ### 3.41 - 06/10/2021  

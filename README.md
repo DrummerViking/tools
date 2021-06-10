@@ -1,6 +1,8 @@
 # Exchange Powershell tools
 Exchange Powershell tools mostly use in Exchange Online (Office 365)
 
+[[_TOC_]]
+
 ## Search-GUI tool (Exchange On-prem)
 Allows admins to Search, export and Delete content from mailboxes.  
 Also allows to Get RecoverableItems and Restore items.  
