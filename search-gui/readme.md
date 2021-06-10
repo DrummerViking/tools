@@ -12,6 +12,8 @@ PS C:\> .\Search-GUI.ps1
 In this exmaple the script will run, and will ask for a global admin credentials.  
 
 ## Version History:
+### 3.41 - 06/10/2021  
+ - Update: This tool will only work in Exchange On-premises. It relies on the command "Search-Mailbox" which has been deprecated from Exchange Online.
 ### 3.40 - 05/11/2020
  - Updated tool to connect to Exchange Online using new EXO v2 module.
 ### 3.30 - 01/17/2018
