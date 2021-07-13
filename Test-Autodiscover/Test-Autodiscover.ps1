@@ -1,5 +1,4 @@
-﻿Function Test-Autodiscover {
-    <#
+﻿<#
     .SYNOPSIS
     Function to test Autodiscover V2.
     
@@ -27,64 +26,63 @@
     In this example it will show the EWS URL for the cloud user, queried against an on-premises endpoint 'mail.contoso.com'.
 
     #>
-    Param (
-    [Parameter( Mandatory=$true, Position=0)]
+Param (
+    [Parameter( Mandatory = $true, Position = 0)]
     [String]$EmailAddress,
  
-    [Parameter( Mandatory=$false, Position=1)]
+    [Parameter( Mandatory = $false, Position = 1)]
     [String]$Server = "outlook.office365.com",
  
-    [Parameter( Mandatory=$true, Position=2)]
-    [ValidateSet("AutodiscoverV2","ActiveSync","Ews","Rest","Substrate","SubstrateNotificationService","SubstrateSearchService","OutlookMeetingScheduler")]
+    [Parameter( Mandatory = $true, Position = 2)]
+    [ValidateSet("AutodiscoverV2", "ActiveSync", "Ews", "Rest", "Substrate", "SubstrateNotificationService", "SubstrateSearchService", "OutlookMeetingScheduler")]
     [String]$Protocol,
 
-    [Parameter( Mandatory=$false, Position=3)]
+    [Parameter( Mandatory = $false, Position = 3)]
     [Switch]$ShowQueriedUrl
  
-    )
-    if ($Protocol -eq "AutodiscoverV2") { $protocolUsed = "AutodiscoverV1"}
-    else {$protocolUsed = $Protocol }
+)
+if ($Protocol -eq "AutodiscoverV2") { $protocolUsed = "AutodiscoverV1" }
+else { $protocolUsed = $Protocol }
     
-    try{
-        $URL = "https://$server/autodiscover/autodiscover.json?Email=$EmailAddress&Protocol=$protocolUsed&RedirectCount=5"
-        Write-Verbose "URL=$($Url)"
+try {
+    $URL = "https://$server/autodiscover/autodiscover.json?Email=$EmailAddress&Protocol=$protocolUsed&RedirectCount=5"
+    Write-Verbose "URL=$($Url)"
 
-        $response = Invoke-RestMethod -Uri $Url -UserAgent Teams 
+    $response = Invoke-RestMethod -Uri $Url -UserAgent Teams 
 
-        if ( $ShowQueriedUrl ) {
-            [PSCustomObject]@{
-                User = $EmailAddress
-                QueriedServer = $Server
-                Protocol = $protocolUsed
-                ReturnedUrl = $response.URL
-                QueriedURL = $URL
-            } | Format-List
+    if ( $ShowQueriedUrl ) {
+        [PSCustomObject]@{
+            User          = $EmailAddress
+            QueriedServer = $Server
+            Protocol      = $protocolUsed
+            ReturnedUrl   = $response.URL
+            QueriedURL    = $URL
+        } | Format-List
+    }
+    else {
+        [PSCustomObject]@{
+            User          = $EmailAddress
+            QueriedServer = $Server
+            Protocol      = $protocolUsed
+            ReturnedUrl   = $response.URL
+        } | Format-List
+    }
+}
+catch {
+    #create object
+    $returnValue = New-Object -TypeName PSObject
+    #get all properties from last error
+    $ErrorProperties = $Error[0] | Get-Member -MemberType Property
+    #add existing properties to object
+    foreach ($Property in $ErrorProperties) {
+        if ($Property.Name -eq 'InvocationInfo') {
+            $returnValue | Add-Member -Type NoteProperty -Name 'InvocationInfo' -Value $($Error[0].InvocationInfo.PositionMessage)
         }
         else {
-            [PSCustomObject]@{
-                User = $EmailAddress
-                QueriedServer = $Server
-                Protocol = $protocolUsed
-                ReturnedUrl = $response.URL
-            } | Format-List
+            $returnValue | Add-Member -Type NoteProperty -Name $($Property.Name) -Value $($Error[0].$($Property.Name))
         }
     }
-    catch{
-        #create object
-        $returnValue = New-Object -TypeName PSObject
-        #get all properties from last error
-        $ErrorProperties =$Error[0] | Get-Member -MemberType Property
-        #add existing properties to object
-        foreach ($Property in $ErrorProperties){
-            if ($Property.Name -eq 'InvocationInfo'){
-                $returnValue | Add-Member -Type NoteProperty -Name 'InvocationInfo' -Value $($Error[0].InvocationInfo.PositionMessage)
-            }
-            else {
-                $returnValue | Add-Member -Type NoteProperty -Name $($Property.Name) -Value $($Error[0].$($Property.Name))
-            }
-        }
-        #return object
-        $returnValue
-        break
-    }
+    #return object
+    $returnValue
+    break
 }

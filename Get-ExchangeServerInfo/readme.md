@@ -23,7 +23,9 @@ PS C:\> .\Get-ExchangeServerInfo.ps1 -Site "Site1"
 Runs against all servers located in the specified Site.  
 
 ## Version History:  
-### 1.105 - 03/16/2020
+### 1.109 - 06/29/2021
+ - Updated build versions for June 2021 releases
+### 1.107 - 03/16/2021
  - Updated build versions for March 2021 releases
 ### 1.105 - 12/17/2020
  - Updated build versions for December 2020 releases
