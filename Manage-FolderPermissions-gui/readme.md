@@ -14,6 +14,9 @@ PS C:\> .\Manage-FolderPermissionsGUI.ps1
 In this exmaple the script will run, and will ask for a global admin credentials.  
 
 ## Version History:  
+### 4.32 - 07/26/2021
+ - Updated tool to required PS 5.1 and not allow PS Core. There are some WindowsForms objects that seems to be failing on PS Core.  
+ - Somehow the "connect-ExchangeOnline" was failing to open up the activeX control. Put a tryCatch block to make a retry of it.  
 ### 4.30 - 05/11/2020
  - Updated tool to connect to Exchange Online using new EXO v2 module.
 ### 4.20 - 02/19/2018

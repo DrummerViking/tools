@@ -15,6 +15,8 @@
     It has a simple logic to try to connect to on-premises environments automatically.
     It has been tested in Exchange 2013 and Office 365.
 #>
+#Requires -Version 5.1
+#Requires -PSEdition Desktop
 function GenerateForm {
 
 #Internal function to request inputs using UI instead of Read-Host
@@ -99,7 +101,13 @@ Type 'exit' to quit"
                 Install-Module ExchangeOnlineManagement -Force -ErrorAction Stop
             }
             Import-Module ExchangeOnlineManagement
-            Connect-ExchangeOnline
+            try {
+                Connect-ExchangeOnline -ShowBanner:$False -ErrorAction Stop -OutVariable $out
+            } catch {
+                if ($_.Exception.InnerException.message -like "ActiveX control*") {
+                    Connect-ExchangeOnline -ShowBanner:$False
+                }
+            }
         }
         
         on-premises {
