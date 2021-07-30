@@ -59,7 +59,7 @@ Is not recommended to run against an Organizer Mailbox. There is already a built
 
 ----
 
-## Report Calendar Items  (Exchange On-prem and EXO)  
+## Report Calendar Items  (EXO)  
 Reports how many calendar items, per calendar year, some user/room mailboxes have in Exchange Online.  
 Report can be exported to a DestinationFolderPath or by default to user's Desktop.  
 
