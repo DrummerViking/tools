@@ -62,6 +62,10 @@ Is not recommended to run against an Organizer Mailbox. There is already a built
 ## Report Calendar Items  (Exchange On-prem and EXO)  
 Reports how many calendar items, per calendar year, some user/room mailboxes have in Exchange Online.  
 Report can be exported to a DestinationFolderPath or by default to user's Desktop.  
+
+The report exports the following columns:  
+> Mailbox, Subject, Organizer, Start Time, End Time, Received Time  
+
 [File](/ReportCalendarItems/)
 
 ----
@@ -92,7 +96,7 @@ We grant the option to create a RBAC Role Group, with the minimum permissions to
 Have you ever had a folder in your mailbox with a bunch of Incident report emails? When the time comes to look for all the reports matching a rule, or a sender, you can't just look at your e-mails one by one.  
 With this script, you will read all the e-mail reports in a folder, and extract that content to a CSV, so you can easily open with a spreadsheet editor and perform easier queries against it.  
 The resultant file in the user's Desktop, will have the following columns:  
-> Received Time, Report Id, Message Id, Sender, Subject, To, Rule Hit
+> Received Time, Report Id, Message Id, Sender, Subject, To, Rule Hit  
 
 [File](/Parse-IncidentReports/)
 
