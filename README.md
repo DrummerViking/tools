@@ -48,7 +48,7 @@ Report can be viewed live in powershell interface, or send as HTML report by ema
 Delete Meeting items from attendees when Organizers already left the company, in Exchange Online.  
 You can pass a list of users/room mailboxes, and delete all meetings found from a specific Organizer.  
 
-As this uses EWS, you will need a "master account" with Impersonation permissions. Regularly you can run:  
+As this uses EWS, you will need a "master account" with Impersonation permissions. You can run:  
 ``` powershell
 New-ManagementRoleAssignment –Name:impersonationAssignmentName –Role:ApplicationImpersonation –User:<Account>
 ```  
@@ -62,6 +62,13 @@ Is not recommended to run against an Organizer Mailbox. There is already a built
 ## Report Calendar Items  (Exchange On-prem and EXO)  
 Reports how many calendar items, per calendar year, some user/room mailboxes have in Exchange Online.  
 Report can be exported to a DestinationFolderPath or by default to user's Desktop.  
+
+
+As this uses EWS, you will need a "master account" with Impersonation permissions. You can run:  
+``` powershell
+New-ManagementRoleAssignment –Name:impersonationAssignmentName –Role:ApplicationImpersonation –User:<Account>
+```  
+This will give Impersonation permissions over all mailboxes in the tenant, so is critical that this account is not shared.  
 
 The report exports the following columns:  
 > Mailbox, Subject, Organizer, Start Time, End Time, Received Time  
