@@ -29,8 +29,8 @@
 #>
 param(
     [switch]$EnableTranscript = $false,
-    [Parameter(Mandatory=$false,HelpMessage = 'CSV file must contain a unique header named "PrimarySMTPAddress"')]$CSVFile = $Null,
-    [Parameter(Mandatory=$false,HelpMessage = 'Insert target folder path name like "C:\Temp"')]$DestinationFolderPath = "$home\Desktop"
+    [Parameter(Mandatory = $false, HelpMessage = 'CSV file must contain a unique header named "PrimarySMTPAddress"')]$CSVFile = $Null,
+    [Parameter(Mandatory = $false, HelpMessage = 'Insert target folder path name like "C:\Temp"')]$DestinationFolderPath = "$home\Desktop"
 )
 
 $disclaimer = @"
@@ -55,9 +55,9 @@ Write-Host " "
 
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
-$psCred = Get-Credential -Message "Type your Service account's credentials"
+#$psCred = Get-Credential -Message "Type your Service account's credentials"
 
-if($EnableTranscript){
+if ($EnableTranscript) {
     Start-Transcript
 }
 
@@ -65,65 +65,67 @@ if($EnableTranscript){
 write-host " " 
 Write-Host "This script requires at least EWS API 2.1" -ForegroundColor Yellow 
  
-    # Locating DLL location either in working path, in EWS API 2.1 path or in EWS API 2.2 path
-    $Directory = ".\"
-    $EWS = Join-Path $Directory "Microsoft.Exchange.WebServices.dll"
-    $test = Test-Path -Path $EWS
-    if ($test -eq $False){
-        Write-Host "EWS DLL in local path not found" -ForegroundColor Cyan
-        $test2 = Test-Path -Path "C:\Program Files (x86)\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
-        if ($test2 -eq $False){
-            Write-Host "EWS 2.1 not found" -ForegroundColor Cyan
-            $test3 = Test-Path -Path "C:\Program Files\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
-            if ($test3 -eq $False) {
-                Write-Host "EWS 2.2 not found" -ForegroundColor Cyan
-                }else{
-                Write-Host "EWS 2.2 found" -ForegroundColor Cyan
-                }
-              }else{
-            Write-Host "EWS 2.1 found" -ForegroundColor Cyan
-            }        
-        }else{
-        Write-Host "EWS DLL found in local path" -ForegroundColor Cyan
+# Locating DLL location either in working path, in EWS API 2.1 path or in EWS API 2.2 path
+$Directory = ".\"
+$EWS = Join-Path $Directory "Microsoft.Exchange.WebServices.dll"
+$test = Test-Path -Path $EWS
+if ($test -eq $False) {
+    Write-Host "EWS DLL in local path not found" -ForegroundColor Cyan
+    $test2 = Test-Path -Path "C:\Program Files (x86)\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
+    if ($test2 -eq $False) {
+        Write-Host "EWS 2.1 not found" -ForegroundColor Cyan
+        $test3 = Test-Path -Path "C:\Program Files\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
+        if ($test3 -eq $False) {
+            Write-Host "EWS 2.2 not found" -ForegroundColor Cyan
         }
-    
-    
-    if($test -eq $False -and $test2 -eq $False -and $test3 -eq $False){
-             Write-Host " "
-          Write-Host "You don't seem to have EWS API dll file 'Microsoft.Exchange.WebServices.dll' in the same Directory of this script" -ForegroundColor Red
-          Write-Host "please get a copy of the file or download the whole API from: " -ForegroundColor Red -NoNewline
-          Write-Host "https://www.microsoft.com/en-us/download/details.aspx?id=42951" -ForegroundColor Cyan
-          Write-Host ""
-          Write-Host "we will open your browser in 10 seconds automatically directly to this URL" -ForegroundColor Red
-          sleep 10 
-          Start-Process -FilePath "https://www.microsoft.com/en-us/download/details.aspx?id=42951"
-
-          return
+        else {
+            Write-Host "EWS 2.2 found" -ForegroundColor Cyan
+        }
     }
+    else {
+        Write-Host "EWS 2.1 found" -ForegroundColor Cyan
+    }        
+}
+else {
+    Write-Host "EWS DLL found in local path" -ForegroundColor Cyan
+}
     
-    Write-host "EWS API detected. All good!" -ForegroundColor Cyan
+    
+if ($test -eq $False -and $test2 -eq $False -and $test3 -eq $False) {
+    Write-Host " "
+    Write-Host "You don't seem to have EWS API dll file 'Microsoft.Exchange.WebServices.dll' in the same Directory of this script" -ForegroundColor Red
+    Write-Host "please get a copy of the file or download the whole API from: " -ForegroundColor Red -NoNewline
+    Write-Host "https://www.microsoft.com/en-us/download/details.aspx?id=42951" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "we will open your browser in 10 seconds automatically directly to this URL" -ForegroundColor Red
+    Start-Sleep 10 
+    Start-Process -FilePath "https://www.microsoft.com/en-us/download/details.aspx?id=42951"
+
+    return
+}
+    
+Write-host "EWS API detected. All good!" -ForegroundColor Cyan
             
-    if ($test -eq $True){
-        Add-Type -Path $EWS
-        Write-Host "Using EWS DLL in local path" -ForegroundColor Cyan
-        }
-    elseif($test2 -eq $True){
-        Add-Type -Path "C:\Program Files (x86)\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
-        Write-Host "Using EWS 2.1" -ForegroundColor Cyan
-        }
-    elseif ($test3 -eq $True){
-        Add-Type -Path "C:\Program Files\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
-        Write-Host "Using EWS 2.2" -ForegroundColor Cyan
-        }
-    write-host " "
+if ($test -eq $True) {
+    Add-Type -Path $EWS
+    Write-Host "Using EWS DLL in local path" -ForegroundColor Cyan
+}
+elseif ($test2 -eq $True) {
+    Add-Type -Path "C:\Program Files (x86)\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
+    Write-Host "Using EWS 2.1" -ForegroundColor Cyan
+}
+elseif ($test3 -eq $True) {
+    Add-Type -Path "C:\Program Files\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
+    Write-Host "Using EWS 2.2" -ForegroundColor Cyan
+}
+write-host " "
 #endregion
 
 #region Create Service Object
-$ExchangeVersion = [Microsoft.Exchange.WebServices.Data.ExchangeVersion]::Exchange_2016
+$ExchangeVersion = [Microsoft.Exchange.WebServices.Data.ExchangeVersion]::Exchange2013
 $service = New-Object Microsoft.Exchange.WebServices.Data.ExchangeService($ExchangeVersion)
 #Getting oauth credentials
-if ( !(Get-Module AzureAD -ListAvailable) -and !(Get-Module AzureAD) ) 
-{
+if ( !(Get-Module AzureAD -ListAvailable) -and !(Get-Module AzureAD) ) {
     Install-Module AzureAD -Force -ErrorAction Stop
 }
 $Folderpath = (Get-Module azuread -ListAvailable | Sort-Object Version -Descending)[0].Path
@@ -140,8 +142,7 @@ $authenticationResult = $authenticationContext.AcquireTokenSilentAsync($resource
 while ($authenticationResult.IsCompleted -ne $true) { Start-Sleep -Milliseconds 500 }
 
 # Check if we failed to get the token
-if (!($authenticationResult.IsFaulted -eq $false))
-{
+if (!($authenticationResult.IsFaulted -eq $false)) {
     switch ($authenticationResult.Exception.InnerException.ErrorCode) {
         failed_to_acquire_token_silently {
             # do nothing since we pretty much expect this to fail
@@ -162,11 +163,11 @@ $service.Url = New-Object Uri("https://outlook.office365.com/ews/exchange.asmx")
 #endregion
 
 # Selecting CSV file if it is not pass as a Parameter
-if( $null -eq $CSVFile ){
+if ( $null -eq $CSVFile ) {
     $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
     $OpenFileDialog.initialDirectory = $initialDirectory
     $OpenFileDialog.ShowDialog() | Out-Null
-    if($OpenFileDialog.filename -ne ""){
+    if ($OpenFileDialog.filename -ne "") {
         $CSVFile = $OpenFileDialog.filename
         Write-Host "$((Get-Date).ToString("MM-dd-yyyy HH:mm:ss")) - Select file Operation finished" -ForegroundColor Yellow
     }
@@ -176,7 +177,7 @@ if( $null -eq $CSVFile ){
 $mbxs = Import-Csv -Path $CSVFile
 $mailboxCount = $mbxs.Count
 $i = 0
-foreach($mbx in $mbxs){
+foreach ($mbx in $mbxs) {
     $i++
     Write-Progress -activity "Scanning Users: $i out of $mailboxCount" -status "Percent scanned: " -PercentComplete ($i / $mailboxCount * 100) -ErrorAction SilentlyContinue
 
@@ -190,21 +191,21 @@ foreach($mbx in $mbxs){
     # looping through the last 5 years
     [int]$currentYear = (get-date).Year
     [int]$startYear = (Get-Date).AddYears(-5).Year
-    $currentYear..$startYear | ForEach-Object{
+    $currentYear..$startYear | ForEach-Object {
         $startDate = "01/01/$_"
         $endDate = "12/31/$_"
         [int]$NumOfItems = 10000
         
         $calView = New-Object Microsoft.Exchange.WebServices.Data.CalendarView($startDate, $endDate, $NumOfItems)
-        $calView.PropertySet = New-Object Microsoft.Exchange.WebServices.Data.PropertySet([Microsoft.Exchange.WebServices.Data.AppointmentSchema]::Subject,[Microsoft.Exchange.WebServices.Data.AppointmentSchema]::Start,[Microsoft.Exchange.WebServices.Data.AppointmentSchema]::End,[Microsoft.Exchange.WebServices.Data.AppointmentSchema]::Organizer)
+        $calView.PropertySet = New-Object Microsoft.Exchange.WebServices.Data.PropertySet([Microsoft.Exchange.WebServices.Data.AppointmentSchema]::Subject, [Microsoft.Exchange.WebServices.Data.AppointmentSchema]::Start, [Microsoft.Exchange.WebServices.Data.AppointmentSchema]::End, [Microsoft.Exchange.WebServices.Data.AppointmentSchema]::Organizer)
 
         $Appointments = $Calendarfolder.FindAppointments($calView)
-        foreach ($Appointment in $Appointments){
-            $tempItem = [Microsoft.Exchange.WebServices.Data.Appointment]::Bind($service,$Appointment.Id)
-            $Subject = $tempItem.subject.ToString().replace($tempItem.Organizer.Name,'')
-            $output = $tempItem | Select @{N="Mailbox";E={$tempItem.LastModifiedName}},@{N="Subject";E={$Subject.trimstart()}},organizer,start,end,datetimereceived
+        foreach ($Appointment in $Appointments) {
+            $tempItem = [Microsoft.Exchange.WebServices.Data.Appointment]::Bind($service, $Appointment.Id)
+            $Subject = $tempItem.subject.ToString().replace($tempItem.Organizer.Name, '')
+            $output = $tempItem | Select-Object @{N = "Mailbox"; E = { $tempItem.LastModifiedName } }, @{N = "Subject"; E = { $Subject.trimstart() } }, organizer, start, end, datetimereceived
             $output | export-csv "$DestinationFolderPath\YearList-$_.csv" -NoTypeInformation -Append
         }
     }
 }
-if($EnableTranscript){stop-transcript}
+if ($EnableTranscript) { stop-transcript }
