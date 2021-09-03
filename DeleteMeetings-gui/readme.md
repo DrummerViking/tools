@@ -11,9 +11,17 @@ Copy both .PS1 and .DLL files to the same folder in order to run the script.
 ```powershell
 PS C:\> .\DeleteMeetings-GUI.ps1 -EnableTranscript
 ```
-In this example the script will run and create a transcript file.  
+In this example the script will run and create a transcript file. It will log the exported list of items to the user's desktop. 
 
-## Version History:
+### Example 2  
+```powershell
+PS C:\> .\DeleteMeetings-GUI.ps1 -LogFolder "C:\Temp"
+```
+In this example the script will run and it will log the exported list of items to the 'C:\Temp' folder.  
+
+## Version History:  
+### 2.01 - 09/03/2021  
+ - Updated tool and add an optional parameter to export log files to a custom folder.  
 ### 2.00 - 05/11/2020
  - Updated tool to connect to Exchange Online using oauth authentication.
 ### 1.30 - 01/03/2019

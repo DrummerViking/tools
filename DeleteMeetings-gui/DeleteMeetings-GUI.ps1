@@ -10,6 +10,8 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 .PARAMETER EnableTranscript
     Enable this parameter to write a powershell transcript in your 'Documents' folder.
+.PARAMETER LogFolder
+    Sets the folder to export the logs generated. If this parameter is omitted, logs will be generated in the user's Desktop.
 .SYNOPSIS
     Delete Meetings items for Organizers that already left the company, in Exchange Online.
 .DESCRIPTION
@@ -27,7 +29,9 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
 [CmdletBinding()]
 param(
-    [switch]$EnableTranscript = $false
+    [switch] $EnableTranscript = $false,
+
+    [String] $LogFolder = "$home\Desktop"
 )
 
 $disclaimer = @"
@@ -390,7 +394,7 @@ function GenerateForm {
             }
         }
         $dgResults.datasource = $array
-        $array | export-csv "$home\Desktop\ListMeetings-$organizer $((Get-Date).ToString("yyyy-MM-dd HH_mm")).csv" -NoTypeInformation
+        $array | export-csv "$LogFolder\ListMeetings-$organizer $((Get-Date).ToString("yyyy-MM-dd HH_mm")).csv" -NoTypeInformation
         $dgResults.Visible = $True
         $txtBoxResults.Visible = $False
         $dgResults.AutoResizeColumns()
@@ -445,7 +449,7 @@ function GenerateForm {
                 }
             }
         }
-        $array | export-csv "$home\Desktop\DeletedMeetings-$organizer $((Get-Date).ToString("yyyy-MM-dd HH_mm")).csv" -NoTypeInformation
+        $array | export-csv "$LogFolder\DeletedMeetings-$organizer $((Get-Date).ToString("yyyy-MM-dd HH_mm")).csv" -NoTypeInformation
         $display = "Deletion completed. Please check your resultant file in your Desktop"
         $txtBoxResults.Text = $display
         $txtBoxResults.Visible = $True
