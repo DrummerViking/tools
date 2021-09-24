@@ -54,8 +54,7 @@ write-host " "
 Write-Host "This script requires at least EWS API 2.1" -ForegroundColor Yellow 
  
     # Locating DLL location either in working path, in EWS API 2.1 path or in EWS API 2.2 path
-    $Directory = ".\"
-    $EWS = Join-Path $Directory "Microsoft.Exchange.WebServices.dll"
+    $EWS = "$PsscriptRoot\Microsoft.Exchange.WebServices.dll"
     $test = Test-Path -Path $EWS
     if ($test -eq $False){
         Write-Host "EWS DLL in local path not found" -ForegroundColor Cyan
@@ -88,6 +87,7 @@ Write-Host "This script requires at least EWS API 2.1" -ForegroundColor Yellow
     Write-host "EWS API detected. All good!" -ForegroundColor Cyan
             
     if ($test -eq $True){
+        Unblock-File -Path $EWS -Confirm:$false
         Add-Type -Path $EWS
         Write-Host "Using EWS DLL in local path" -ForegroundColor Cyan
         }
