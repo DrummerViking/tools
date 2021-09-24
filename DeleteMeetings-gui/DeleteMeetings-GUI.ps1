@@ -119,8 +119,7 @@ function GenerateForm {
     Write-Host "This script requires at least EWS API 2.1" -ForegroundColor Yellow 
  
     # Locating DLL location either in working path, in EWS API 2.1 path or in EWS API 2.2 path
-    $Directory = ".\"
-    $EWS = Join-Path $Directory "Microsoft.Exchange.WebServices.dll"
+    $EWS = "$psscriptroot\Microsoft.Exchange.WebServices.dll"
     $test = Test-Path -Path $EWS
     if ($test -eq $False) {
         Write-Host "EWS DLL in local path not found" -ForegroundColor Cyan
@@ -160,6 +159,7 @@ function GenerateForm {
     Write-host "EWS API detected. All good!" -ForegroundColor Cyan
             
     if ($test -eq $True) {
+        Unblock-File -Path $EWS -Confirm:$false
         Add-Type -Path $EWS
         Write-Host "Using EWS DLL in local path" -ForegroundColor Cyan
     }
@@ -468,7 +468,7 @@ function GenerateForm {
 
     $handler_labImpersonationHelp_Click = {
         [Microsoft.VisualBasic.Interaction]::MsgBox("In order to use Impersonation, we must first assign proper ManagementRole to the 'administrative' account that run the different options.
-New-ManagementRoleAssignment –Name:impersonationAssignmentName –Role:ApplicationImpersonation –User:<Account>
+New-ManagementRoleAssignment -Name:impersonationAssignmentName -Role:ApplicationImpersonation -User:<Account>
 
 More info at: https://msdn.microsoft.com/en-us/library/bb204095(exchg.140).aspx
 
