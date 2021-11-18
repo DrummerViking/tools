@@ -14,7 +14,7 @@
 	Allow admins to upload user Photos to Exchange Online using a GUI.
     We grant the option to create a RBAC Role Group, with the minimum permissions to list mailboxes and manage UserPhotos. This is intended for a help desk assignment.
 #>
-
+#requires -PSEdition "Desktop"
 $script:nl = "`r`n"
 
 $disclaimer = @"

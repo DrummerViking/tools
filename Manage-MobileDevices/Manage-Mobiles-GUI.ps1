@@ -18,7 +18,8 @@
     .\Manage-Mobiles-GUI.ps1
 .EXAMPLE
     .\Manage-Mobiles-GUI.ps1 -EnableTranscript
-    #>
+#>
+#requires -PSEdition "Desktop"
 param(
     [switch]$EnableTranscript = $false
 )

@@ -208,6 +208,7 @@ Function Get-ServerVersion {
                 2176 { $exSetupVer += " - CU19" }
                 2242 { $exSetupVer += " - CU20" }
                 2308 { $exSetupVer += " - CU21" }
+                2375 { $exSetupVer += " - CU22" }
                 default {} 
             }
         }
@@ -226,6 +227,7 @@ Function Get-ServerVersion {
             0792 { $exSetupVer += " - CU8" }
             0858 { $exSetupVer += " - CU9" }
             0922 { $exSetupVer += " - CU10" }
+            0986 { $exSetupVer += " - CU11" }
             default {} 
         }
     }

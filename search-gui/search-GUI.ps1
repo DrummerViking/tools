@@ -13,6 +13,7 @@
 .DESCRIPTION
 	Allow admins to Search and Delete content in GUI
 #>
+#requires -PSEdition "Desktop"
 
 $script:nl = "`r`n"
 $ProgressPreference = "SilentlyContinue"

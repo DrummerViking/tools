@@ -16,6 +16,7 @@
     Can get current Managed Folder Assistant Cycle Stats for primary and Archive Mailbox
     Button available to issue a "Start-ManagedFolderAssistant" on the account
 #>
+#requires -PSEdition "Desktop"
 function GenerateForm {
 
 #Internal function to request inputs using UI instead of Read-Host

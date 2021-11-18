@@ -26,6 +26,7 @@
 .ROLE
    Support
 #>
+#requires -PSEdition "Desktop"
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
 [CmdletBinding()]
 param(

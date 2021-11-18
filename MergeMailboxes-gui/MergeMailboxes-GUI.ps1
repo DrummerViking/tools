@@ -22,6 +22,7 @@
 .ROLE
    Support
 #>
+#requires -PSEdition "Desktop"
 param(
     [switch]$EnableTranscript = $false
 )
