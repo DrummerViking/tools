@@ -26,7 +26,6 @@
 .ROLE
    Support
 #>
-#requires -PSEdition "Desktop"
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
 [CmdletBinding()]
 param(
@@ -115,64 +114,68 @@ function GenerateForm {
         Start-Transcript
     }
 
-    #region load EWS API DLL
-    write-host " " 
-    Write-Host "This script requires at least EWS API 2.1" -ForegroundColor Yellow 
- 
-    # Locating DLL location either in working path, in EWS API 2.1 path or in EWS API 2.2 path
-    $EWS = "$psscriptroot\Microsoft.Exchange.WebServices.dll"
-    $test = Test-Path -Path $EWS
-    if ($test -eq $False) {
-        Write-Host "EWS DLL in local path not found" -ForegroundColor Cyan
-        $test2 = Test-Path -Path "C:\Program Files (x86)\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
-        if ($test2 -eq $False) {
-            Write-Host "EWS 2.1 not found" -ForegroundColor Cyan
-            $test3 = Test-Path -Path "C:\Program Files\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
-            if ($test3 -eq $False) {
-                Write-Host "EWS 2.2 not found" -ForegroundColor Cyan
+    #region import EWS DLL file
+    Function Import-EWSDll{
+        write-host " " 
+        Write-Host "This script requires at least EWS API 2.1" -ForegroundColor Yellow 
+    
+        # Locating DLL location either in working path, in EWS API 2.1 path or in EWS API 2.2 path
+        $EWS = "$psscriptroot\Microsoft.Exchange.WebServices.dll"
+        $test = Test-Path -Path $EWS
+        if ($test -eq $False) {
+            Write-Host "EWS DLL in local path not found" -ForegroundColor Cyan
+            $test2 = Test-Path -Path "C:\Program Files (x86)\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
+            if ($test2 -eq $False) {
+                Write-Host "EWS 2.1 not found" -ForegroundColor Cyan
+                $test3 = Test-Path -Path "C:\Program Files\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
+                if ($test3 -eq $False) {
+                    Write-Host "EWS 2.2 not found" -ForegroundColor Cyan
+                }
+                else {
+                    Write-Host "EWS 2.2 found" -ForegroundColor Cyan
+                }
             }
             else {
-                Write-Host "EWS 2.2 found" -ForegroundColor Cyan
-            }
+                Write-Host "EWS 2.1 found" -ForegroundColor Cyan
+            }        
         }
         else {
-            Write-Host "EWS 2.1 found" -ForegroundColor Cyan
-        }        
-    }
-    else {
-        Write-Host "EWS DLL found in local path" -ForegroundColor Cyan
-    }
-    
-    
-    if ($test -eq $False -and $test2 -eq $False -and $test3 -eq $False) {
-        Write-Host " "
-        Write-Host "You don't seem to have EWS API dll file 'Microsoft.Exchange.WebServices.dll' in the same Directory of this script" -ForegroundColor Red
-        Write-Host "please get a copy of the file or download the whole API from: " -ForegroundColor Red -NoNewline
-        Write-Host "https://www.microsoft.com/en-us/download/details.aspx?id=42951" -ForegroundColor Cyan
-        Write-Host ""
-        Write-Host "we will open your browser in 10 seconds automatically directly to this URL" -ForegroundColor Red
-        Start-Sleep 10 
-        Start-Process -FilePath "https://www.microsoft.com/en-us/download/details.aspx?id=42951"
+            Write-Host "EWS DLL found in local path" -ForegroundColor Cyan
+        }
+        
+        
+        if ($test -eq $False -and $test2 -eq $False -and $test3 -eq $False) {
+            Write-Host " "
+            Write-Host "You don't seem to have EWS API dll file 'Microsoft.Exchange.WebServices.dll' in the same Directory of this script" -ForegroundColor Red
+            Write-Host "please get a copy of the file or download the whole API from: " -ForegroundColor Red -NoNewline
+            Write-Host "https://www.microsoft.com/en-us/download/details.aspx?id=42951" -ForegroundColor Cyan
+            Write-Host ""
+            Write-Host "we will open your browser in 10 seconds automatically directly to this URL" -ForegroundColor Red
+            Start-Sleep 10 
+            Start-Process -FilePath "https://www.microsoft.com/en-us/download/details.aspx?id=42951"
 
-        return
+            return
+        }
+        
+        Write-host "EWS API detected. All good!" -ForegroundColor Cyan
+                
+        if ($test -eq $True) {
+            Unblock-File -Path $EWS -Confirm:$false
+            Add-Type -Path $EWS
+            Write-Host "Using EWS DLL in local path" -ForegroundColor Cyan
+        }
+        elseif ($test2 -eq $True) {
+            Add-Type -Path "C:\Program Files (x86)\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
+            Write-Host "Using EWS 2.1" -ForegroundColor Cyan
+        }
+        elseif ($test3 -eq $True) {
+            Add-Type -Path "C:\Program Files\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
+            Write-Host "Using EWS 2.2" -ForegroundColor Cyan
+        }
+        write-host " "
     }
-    
-    Write-host "EWS API detected. All good!" -ForegroundColor Cyan
-            
-    if ($test -eq $True) {
-        Unblock-File -Path $EWS -Confirm:$false
-        Add-Type -Path $EWS
-        Write-Host "Using EWS DLL in local path" -ForegroundColor Cyan
-    }
-    elseif ($test2 -eq $True) {
-        Add-Type -Path "C:\Program Files (x86)\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
-        Write-Host "Using EWS 2.1" -ForegroundColor Cyan
-    }
-    elseif ($test3 -eq $True) {
-        Add-Type -Path "C:\Program Files\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
-        Write-Host "Using EWS 2.2" -ForegroundColor Cyan
-    }
-    write-host " "
+
+    Import-EWSDll
     #endregion
 
 
@@ -235,15 +238,9 @@ function GenerateForm {
     #"Go" button
     $buttonGo.DataBindings.DefaultDataSourceUpdateMode = 0
     $buttonGo.ForeColor = [System.Drawing.Color]::FromArgb(255, 0, 0, 0)
-    $System_Drawing_Point = New-Object System.Drawing.Point
-    $System_Drawing_Point.X = 170
-    $System_Drawing_Point.Y = 20
-    $buttonGo.Location = $System_Drawing_Point
+    $buttonGo.Location = New-Object System.Drawing.Point(170,20)
+    $buttonGo.Size = New-Object System.Drawing.Size(50,25)
     $buttonGo.Name = "Go"
-    $System_Drawing_Size = New-Object System.Drawing.Size
-    $System_Drawing_Size.Height = 25
-    $System_Drawing_Size.Width = 50
-    $buttonGo.Size = $System_Drawing_Size
     $buttonGo.Text = "Go"
     $buttonGo.UseVisualStyleBackColor = $True
     $buttonGo.add_Click( {
@@ -258,15 +255,9 @@ function GenerateForm {
     #"Exit" button
     $buttonExit.DataBindings.DefaultDataSourceUpdateMode = 0
     $buttonExit.ForeColor = [System.Drawing.Color]::FromArgb(255, 0, 0, 0)
-    $System_Drawing_Point = New-Object System.Drawing.Point
-    $System_Drawing_Point.X = 170
-    $System_Drawing_Point.Y = 50
-    $buttonExit.Location = $System_Drawing_Point
+    $buttonExit.Location = New-Object System.Drawing.Point(170,50)
+    $buttonExit.Size = New-Object System.Drawing.Size(50,25)
     $buttonExit.Name = "Exit"
-    $System_Drawing_Size = New-Object System.Drawing.Size
-    $System_Drawing_Size.Height = 25
-    $System_Drawing_Size.Width = 50
-    $buttonExit.Size = $System_Drawing_Size
     $buttonExit.Text = "Exit"
     $buttonExit.UseVisualStyleBackColor = $True
     $buttonExit.add_Click( { $PremiseForm.Close() ; $buttonExit.Dispose() })
@@ -284,40 +275,23 @@ function GenerateForm {
  
     if ($radiobutton4.Checked) {
         #Getting oauth credentials
-        if ( !(Get-Module AzureAD -ListAvailable) -and !(Get-Module AzureAD) ) {
-            Install-Module AzureAD -Force -ErrorAction Stop
+        if ( !(Get-Module Microsoft.Identity.Client -ListAvailable) -and !(Get-Module Microsoft.Identity.Client) ) {
+            Install-Module Microsoft.Identity.Client -Force -ErrorAction Stop
         }
-        $Folderpath = (Get-Module azuread -ListAvailable | Sort-Object Version -Descending)[0].Path
-        $path = join-path (split-path $Folderpath -parent) 'Microsoft.IdentityModel.Clients.ActiveDirectory.dll'
-        Add-Type -Path $path
-
-        $authenticationContext = New-Object Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext("https://login.windows.net/common", $False)
-        $platformParameters = New-Object Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters([Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior]::Always)
-        $resourceUri = "https://outlook.office365.com"
+        Import-Module Microsoft.Identity.Client
         $AppId = "8799ab60-ace5-4bda-b31f-621c9f6668db"
-        $redirectUri = New-Object Uri("http://localhost/code")
-
-        $authenticationResult = $authenticationContext.AcquireTokenSilentAsync($resourceUri, $AppId)
-        while ($authenticationResult.IsCompleted -ne $true) { Start-Sleep -Milliseconds 500 }
-
-        # Check if we failed to get the token
-        if (!($authenticationResult.IsFaulted -eq $false)) {
-            switch ($authenticationResult.Exception.InnerException.ErrorCode) {
-                failed_to_acquire_token_silently {
-                    # do nothing since we pretty much expect this to fail
-                    $authenticationResult = $authenticationContext.AcquireTokenAsync($resourceUri, $AppId, $redirectUri, $platformParameters)
-                    while ($authenticationResult.IsCompleted -ne $true) { Start-Sleep -Milliseconds 500 }
-                }
-                multiple_matching_tokens_detected {
-                    # we could clear the cache here since we don't have a UPN, but we are just going to move on to prompting
-                    $authenticationResult = $authenticationContext.AcquireTokenAsync($resourceUri, $AppId, $redirectUri, $platformParameters)
-                    while ($authenticationResult.IsCompleted -ne $true) { Start-Sleep -Milliseconds 500 }
-                }
-                Default { Write-host "Unknown Token Error $($authenticationResult.Exception.InnerException.ErrorCode). Error message: $_" }
-            }
-        }
-        $Global:email = $authenticationResult.Result.UserInfo.DisplayableId
-        $exchangeCredentials = New-Object Microsoft.Exchange.WebServices.Data.OAuthCredentials($authenticationResult.Result.AccessToken)
+        $pcaOptions = [Microsoft.Identity.Client.PublicClientApplicationOptions]::new()
+        $pcaOptions.ClientId = $AppId
+        $pcaOptions.RedirectUri = "http://localhost/code"
+        $pcaBuilder = [Microsoft.Identity.Client.PublicClientApplicationBuilder]::CreateWithApplicationOptions($pcaOptions)
+        $pca = $pcaBuilder.Build()
+        $scopes = New-Object System.Collections.Generic.List[string]
+        $scopes.Add("https://outlook.office365.com/.default")
+        #$scopes.Add("https://outlook.office.com/EWS.AccessAsUser.All")
+        $authResult = $pca.AcquireTokenInteractive($scopes)
+        $token = $authResult.ExecuteAsync()
+        $exchangeCredentials = New-Object Microsoft.Exchange.WebServices.Data.OAuthCredentials($Token.Result.AccessToken)
+        $Global:email = $Token.Result.Account.Username
         $service.Url = New-Object Uri("https://outlook.office365.com/ews/exchange.asmx")
     }
     else {
@@ -488,10 +462,13 @@ You should list a unique Primary Email Address per line.", [Microsoft.VisualBasi
     #region Generated Form Code
 
     #Form
-    $statusBar = New-Object System.Windows.Forms.StatusBar
+    $statusStrip = New-Object System.Windows.Forms.StatusStrip
+    $statusStrip.name = "StatusStrip"
+    $statusBar = New-Object System.Windows.Forms.ToolStripStatusLabel
+    $null = $statusStrip.Items.Add($statusBar)
     $statusBar.Name = "statusBar"
     $statusBar.Text = "Ready..."
-    $MainForm.Controls.Add($statusBar)
+    $MainForm.Controls.Add($statusStrip)
     $MainForm.ClientSize = New-Object System.Drawing.Size(1000, 600)
     $MainForm.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation 
     $MainForm.Name = "form1"
@@ -627,8 +604,8 @@ You should list a unique Primary Email Address per line.", [Microsoft.VisualBasi
     #
     # Label "Help"
     #
-    $labelHelp.Location = New-Object System.Drawing.Point(940, 20)
-    $labelHelp.Size = New-Object System.Drawing.Size(50, 25)
+    $labelHelp.Location = New-Object System.Drawing.Point(940, 40)
+    $labelHelp.Size = New-Object System.Drawing.Size(50, 35)
     $labelHelp.Text = "Help Me!"
     $labelHelp.ForeColor = "Blue"
     $labelHelp.add_Click($handler_labImpersonationHelp_Click)
@@ -638,8 +615,8 @@ You should list a unique Primary Email Address per line.", [Microsoft.VisualBasi
     #
     $buttonExit.DataBindings.DefaultDataSourceUpdateMode = 0
     $buttonExit.ForeColor = [System.Drawing.Color]::FromArgb(255, 0, 0, 0)
-    $buttonExit.Location = New-Object System.Drawing.Point(940, 50)
-    $buttonExit.Size = New-Object System.Drawing.Size(50, 25)
+    $buttonExit.Location = New-Object System.Drawing.Point(940, 10)
+    $buttonExit.Size = New-Object System.Drawing.Size(40, 25)
     $buttonExit.TabIndex = 17
     $buttonExit.Name = "Exit"
     $buttonExit.Text = "Exit"

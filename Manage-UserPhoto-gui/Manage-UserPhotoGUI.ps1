@@ -14,7 +14,6 @@
 	Allow admins to upload user Photos to Exchange Online using a GUI.
     We grant the option to create a RBAC Role Group, with the minimum permissions to list mailboxes and manage UserPhotos. This is intended for a help desk assignment.
 #>
-#requires -PSEdition "Desktop"
 $script:nl = "`r`n"
 
 $disclaimer = @"
@@ -62,17 +61,21 @@ function Show-InputBox
 
 function GenerateForm { 
 #region Import the Assemblies
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
 Add-Type -AssemblyName Microsoft.VisualBasic
-[reflection.assembly]::loadwithpartialname("System.Drawing") | Out-Null
-[reflection.assembly]::loadwithpartialname("System.Windows.Forms") | Out-Null
+[System.Windows.Forms.Application]::EnableVisualStyles()
 #endregion
  
 #region Generated Form Objects
 $MainWindow = New-Object System.Windows.Forms.Form
-$statusBar = New-Object System.Windows.Forms.StatusBar
+$statusStrip = New-Object System.Windows.Forms.StatusStrip
+$statusStrip.name = "StatusStrip"
+$statusBar = New-Object System.Windows.Forms.ToolStripStatusLabel
+$null = $statusStrip.Items.Add($statusBar)
 $statusBar.Name = "statusBar"
 $statusBar.Text = "Ready..."
-$MainWindow.Controls.Add($statusBar)
+$MainWindow.Controls.Add($statusStrip)
 
 $labelMenu = New-Object System.Windows.Forms.Label
 $pictureBox = new-object Windows.Forms.PictureBox
@@ -300,7 +303,6 @@ $MainWindow.KeyPreview = $true
 $MainWindow.Add_KeyDown({
     if($_.KeyCode -eq "Escape"){$MainWindow.Close()}
 })
-$Icon = [system.drawing.icon]::ExtractAssociatedIcon($PSHOME + "\powershell.exe")
 $MainWindow.Icon = $Icon
 $MainWindow.add_Load($handler_MainWindow_Load)
  

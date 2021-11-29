@@ -128,42 +128,23 @@ $ExchangeVersion = [Microsoft.Exchange.WebServices.Data.ExchangeVersion]::Exchan
 $Service = New-Object Microsoft.Exchange.WebServices.Data.ExchangeService($ExchangeVersion) 
 
 #Getting oauth credentials
-if ( !(Get-Module AzureAD -ListAvailable) -and !(Get-Module AzureAD) ) 
+if ( !(Get-Module Microsoft.Identity.Client -ListAvailable) -and !(Get-Module Microsoft.Identity.Client) ) 
 {
-    Install-Module AzureAD -Force -ErrorAction Stop
+    Install-Module Microsoft.Identity.Client -Force -ErrorAction Stop
 }
-$Folderpath = (Get-Module azuread -ListAvailable | Sort-Object Version -Descending)[0].Path
-$path = join-path (split-path $Folderpath -parent) 'Microsoft.IdentityModel.Clients.ActiveDirectory.dll'
-Add-Type -Path $path
-
-$authenticationContext = New-Object Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext("https://login.windows.net/common", $False)
-$platformParameters = New-Object Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters([Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior]::Always)
-$resourceUri = "https://outlook.office365.com"
+Import-Module Microsoft.Identity.Client
 $AppId = "8799ab60-ace5-4bda-b31f-621c9f6668db"
-$redirectUri = New-Object Uri("http://localhost/code")
-
-$authenticationResult = $authenticationContext.AcquireTokenSilentAsync($resourceUri, $AppId)
-while ($authenticationResult.IsCompleted -ne $true) { Start-Sleep -Milliseconds 500 }
-
-# Check if we failed to get the token
-if (!($authenticationResult.IsFaulted -eq $false))
-{
-    switch ($authenticationResult.Exception.InnerException.ErrorCode) {
-        failed_to_acquire_token_silently {
-            # do nothing since we pretty much expect this to fail
-            $authenticationResult = $authenticationContext.AcquireTokenAsync($resourceUri, $AppId, $redirectUri, $platformParameters)
-            while ($authenticationResult.IsCompleted -ne $true) { Start-Sleep -Milliseconds 500 }
-        }
-        multiple_matching_tokens_detected {
-            # we could clear the cache here since we don't have a UPN, but we are just going to move on to prompting
-            $authenticationResult = $authenticationContext.AcquireTokenAsync($resourceUri, $AppId, $redirectUri, $platformParameters)
-            while ($authenticationResult.IsCompleted -ne $true) { Start-Sleep -Milliseconds 500 }
-        }
-        Default { Write-host "Unknown Token Error $($authenticationResult.Exception.InnerException.ErrorCode). Error message: $_" }
-    }
-}
-$Global:email = $authenticationResult.Result.UserInfo.DisplayableId
-$exchangeCredentials = New-Object Microsoft.Exchange.WebServices.Data.OAuthCredentials($authenticationResult.Result.AccessToken)
+$pcaOptions = [Microsoft.Identity.Client.PublicClientApplicationOptions]::new()
+$pcaOptions.ClientId = $AppId
+$pcaOptions.RedirectUri = "http://localhost/code"
+$pcaBuilder = [Microsoft.Identity.Client.PublicClientApplicationBuilder]::CreateWithApplicationOptions($pcaOptions)
+$pca = $pcaBuilder.Build()
+$scopes = New-Object System.Collections.Generic.List[string]
+$scopes.Add("https://outlook.office365.com/.default")
+#$scopes.Add("https://outlook.office.com/EWS.AccessAsUser.All")
+$authResult = $pca.AcquireTokenInteractive($scopes)
+$token = $authResult.ExecuteAsync()
+$exchangeCredentials = New-Object Microsoft.Exchange.WebServices.Data.OAuthCredentials($Token.Result.AccessToken)
 $service.Url = New-Object Uri("https://outlook.office365.com/ews/exchange.asmx")
 $Service.credentials = $exchangeCredentials
 

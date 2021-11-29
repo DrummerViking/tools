@@ -15,8 +15,6 @@
     It has a simple logic to try to connect to on-premises environments automatically.
     It has been tested in Exchange 2013 and Office 365.
 #>
-#Requires -Version 5.1
-#Requires -PSEdition Desktop
 function GenerateForm {
 
     #Internal function to request inputs using UI instead of Read-Host
@@ -51,10 +49,13 @@ function GenerateForm {
 
     #region Generated Form Objects
     $MainWindow = New-Object System.Windows.Forms.Form
-    $statusBar = New-Object System.Windows.Forms.StatusBar
+    $statusStrip = New-Object System.Windows.Forms.StatusStrip
+    $statusStrip.name = "StatusStrip"
+    $statusBar = New-Object System.Windows.Forms.ToolStripStatusLabel
+    $null = $statusStrip.Items.Add($statusBar)
     $statusBar.Name = "statusBar"
     $statusBar.Text = "Ready..."
-    $MainWindow.Controls.Add($statusBar)
+    $MainWindow.Controls.Add($statusStrip)
     $labAssignMbxPermHeader = New-Object System.Windows.Forms.Label
     $labMbxAlias = New-Object System.Windows.Forms.Label
     $txtBoxMbxAlias = New-Object System.Windows.Forms.TextBox
@@ -73,7 +74,7 @@ function GenerateForm {
     $comboBoxFolderName_GetPerm = New-Object System.Windows.Forms.ComboBox
     $buttonGo2 = New-Object System.Windows.Forms.Button
 
-    $dgResults = New-Object System.Windows.Forms.DataGrid
+    $dgResults = New-Object System.Windows.Forms.DataGridView
     $InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
     #endregion Generated Form Objects
 
@@ -134,8 +135,8 @@ Type 'exit' to quit"
                 $MainWindow.Text = "Select manual URL"
                 $MainWindow.KeyPreview = $true
                 $MainWindow.Add_KeyDown( {
-                        if ($_.KeyCode -eq "Escape") { $MainWindow.Close() }
-                    })
+                    if ($_.KeyCode -eq "Escape") { $MainWindow.Close() }
+                })
                 $MainWindow.add_Load($handler_MainWindow_Load)
             
                 $labText.Location = New-Object System.Drawing.Point(5, 5)
@@ -396,20 +397,16 @@ URL:"
     #
     #dataGrid
     #
-    $dgResults.AllowSorting = $true
     $dgResults.Anchor = 15
     $dgResults.DataBindings.DefaultDataSourceUpdateMode = 0
     $dgResults.DataMember = ""
-    $dgResults.HeaderForeColor = [System.Drawing.Color]::FromArgb(255, 0, 0, 0)
     $dgResults.Location = New-Object System.Drawing.Point(3, 200)
     $dgResults.Size = New-Object System.Drawing.Size(990, 500)
     $dgResults.Name = "dgResults"
-    $dgResults.PreferredColumnWidth = 200
     $dgResults.ReadOnly = $True
-    $dgResults.RowHeadersVisible = $false
-    $dgResults.RowHeaderWidth = 60
-    $dgResults.TabIndex = 9
-    $dgResults.add_Navigate($handler_dgResults_Navigate)
+    $dgResults.RowHeadersVisible = $false    
+    $dgResults.AllowUserToOrderColumns = $True
+    $dgResults.AllowUserToResizeColumns = $True
     $MainWindow.Controls.Add($dgResults)
     #
     #Label "Assigning Mailbox Permissions" title

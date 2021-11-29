@@ -19,7 +19,6 @@
 .EXAMPLE
     .\Manage-Mobiles-GUI.ps1 -EnableTranscript
 #>
-#requires -PSEdition "Desktop"
 param(
     [switch]$EnableTranscript = $false
 )
@@ -37,7 +36,8 @@ Add-Type -AssemblyName Microsoft.VisualBasic
 
 #region Generated Form Objects
 $Global:Form = New-Object System.Windows.Forms.Form
-$statusBar = New-Object System.Windows.Forms.StatusBar
+$statusStrip = New-Object System.Windows.Forms.StatusStrip
+$statusBar = New-Object System.Windows.Forms.ToolStripStatusLabel
 $radiobutton1 = New-Object System.Windows.Forms.RadioButton
 $radiobutton2 = New-Object System.Windows.Forms.RadioButton
 $radiobutton3 = New-Object System.Windows.Forms.RadioButton
@@ -199,10 +199,11 @@ $Form.Add_KeyDown({if ($_.KeyCode -eq "Escape"){$Form.Close()} })
 #
 # Status Bar
 #
-$statusBar = New-Object System.Windows.Forms.StatusBar
+$statusStrip.name = "StatusStrip"
+$null = $statusStrip.Items.Add($statusBar)
 $statusBar.Name = "statusBar"
 $statusBar.Text = "Ready..."
-$Form.Controls.Add($statusBar)
+$Form.Controls.Add($statusStrip)
 #
 # radiobutton1
 #

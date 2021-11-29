@@ -13,7 +13,6 @@
 .DESCRIPTION
 	Allow admins to Search and Delete content in GUI
 #>
-#requires -PSEdition "Desktop"
 
 $script:nl = "`r`n"
 $ProgressPreference = "SilentlyContinue"
@@ -51,10 +50,13 @@ function Show-InputBox
 
 #region Generated Form Objects
 $MainWindow = New-Object System.Windows.Forms.Form
-$statusBar = New-Object System.Windows.Forms.StatusBar
+$statusStrip = New-Object System.Windows.Forms.StatusStrip
+$statusStrip.name = "StatusStrip"
+$statusBar = New-Object System.Windows.Forms.ToolStripStatusLabel
+$null = $statusStrip.Items.Add($statusBar)
 $statusBar.Name = "statusBar"
 $statusBar.Text = "Ready..."
-$MainWindow.Controls.Add($statusBar)
+$MainWindow.Controls.Add($statusStrip)
 $labelSearchMenu = New-Object System.Windows.Forms.Label
 $labMbxAlias = New-Object System.Windows.Forms.Label
 $txtBoxMbxAlias = New-Object System.Windows.Forms.TextBox
@@ -1107,7 +1109,6 @@ $MainWindow.KeyPreview = $true
 $MainWindow.Add_KeyDown({
     if($_.KeyCode -eq "Escape"){$MainWindow.Close()}
 })
-$Icon = [system.drawing.icon]::ExtractAssociatedIcon($PSHOME + "\powershell.exe")
 $MainWindow.Icon = $Icon
 $MainWindow.add_Load($handler_MainWindow_Load)
 
