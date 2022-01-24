@@ -93,8 +93,6 @@ $buttonUserToAdd = New-Object System.Windows.Forms.Button
 $buttonUserToRemove = New-Object System.Windows.Forms.Button
 $buttonCreateRoleGroup = New-Object System.Windows.Forms.Button
 $buttonGetRoleGroup = New-Object System.Windows.Forms.Button
-
-$InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
 #endregion Generated Form Objects
  
 #region connecting to powershell
