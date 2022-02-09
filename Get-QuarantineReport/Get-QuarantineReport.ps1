@@ -1,13 +1,7 @@
 ﻿<#
 .NOTES
-	Name: Start-QuarantineReport.ps1
-	Authors: Agustin Gallegos
-	Version History:
-    2.00 - 01/24/2022 - Updated script to Github repository.
-                      - Updated script to use new EXO PS module.
-                      - Added additional modules dependency.
-    1.00 - 03/02/2018 - First Release
-	1.00 - 03/02/2018 - Project start    
+	Name: Get-QuarantineReport.ps1
+	Authors: Agustin Gallegos 
 
 	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
 	BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -25,7 +19,7 @@
 .PARAMETER GroupAddress     
     Group Alias you want to get the list of members of
 
-.PARAMETER recipients
+.PARAMETER Recipients
     comma separated list of recipients to which the report should be sent to.
 
 .PARAMETER OrgAdmins
@@ -34,14 +28,18 @@
 .PARAMETER EmailtoGroupMembers
     This is a switch Parameter. Using it, will send the report to the group you are collecting the report for.
 
+.PARAMETER ReportFilePath
+    Path where the HTML report will be saved. By default will be in the user's desktop named "Quarantine report.html".
+
 .EXAMPLE 
-    .\QuarantinePerGroupReport.ps1 -GroupAddress InfoSecurity -Recipients "agallego@Outlook.com"
+    .\Get-QuarantineReport.ps1 -GroupAddress InfoSecurity -Recipients "externalUser@Outlook.com"
  
 .EXAMPLE 
-    .\QuarantinePerGroupReport.ps1 -GroupAddress HR -OrgAdmins -EmailtoGroupMembers
+    .\Get-QuarantineReport.ps1 -GroupAddress HR -OrgAdmins -EmailtoGroupMembers
 
 .COMPONENT
    AntiSpam
+
 .ROLE
    Support
 #>
@@ -49,12 +47,18 @@
 Param(
     [Parameter(Position = 1, Mandatory = $True, HelpMessage = 'The group SMTP address you want to get members of...')]
     [string]$GroupAddress = '',
+    
     [Parameter(Position = 2, Mandatory = $False, HelpMessage = 'The email address you want the report to be sent to...')]
-    [string]$Recipients = '',
+    [string[]]$Recipients,
+    
     [Parameter(Position = 3, Mandatory = $False, HelpMessage = 'send report to Organization Admins detected...')]
     [Switch]$OrgAdmins = $False,
+    
     [Parameter(Position = 4, Mandatory = $False, HelpMessage = 'The group you want to get members of...')]
-    [Switch]$EmailToGroupMembers = $False
+    [Switch]$EmailToGroupMembers = $False,
+
+    [Parameter(Position = 5, Mandatory = $False, HelpMessage = 'Path where the HTML report will be saved. By default will be in the users desktop named "Quarantine report.html"...')]
+    [String]$ReportFilePath = "$Home\Desktop\Quarantine Report.html"
 )
 
 $disclaimer = @"
@@ -89,6 +93,10 @@ if ((Get-PSSession).Computername -notlike "*outlook*") {
     }
     Import-Module ExchangeOnlineManagement
     Connect-ExchangeOnline
+}
+# Install additional modules
+if ( !(Get-Module BurntToast -ListAvailable) -and !(Get-Module BurntToast) ) {
+    Install-Module BurntToast -Force -ErrorAction Stop
 }
 
 Write-Host "Getting list of Group members and formatting to HTML"
@@ -132,36 +140,39 @@ $HTML = $HTML.replace('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
 $HTML = $HTML.Replace('</tr> <tr>', '</tr> <tr style=''background-color:#BBD9EE''>')
 
 #region parameters
-$listrecipients = New-Object System.Collections.ArrayList
-
+$recipientsList = New-Object System.Collections.ArrayList
+if ( $null -ne $Recipients) {
+    $null = $recipientsList.AddRange($Recipients)
+}
 #if EmailtoGroupMembers is in use, we will add group's email address to the recipients list
 if ($EmailtoGroupMembers -eq $True) {
-    $Recipients = $Recipients + ", " + $GroupAddress
+    $null = $recipientsList.add($GroupAddress)
 }
 # If Switch $OrgAdmins is in use, we will check current admins and include them to the recipients list
 if ($OrgAdmins -eq $True) {
-    $TenantAdmins = Get-RoleGroupMember "Organization Management"
-    foreach ($admin in (Get-RoleGroupMember $TenantAdmins.Name)) {
-        if ($Recipients -ne '') {
-            $Recipients = $Recipients + ", "
-        }
-        $Recipients = $Recipients + (Get-Mailbox $admin.Name).PrimarySmtpAddress
+    $TenantAdmins = Get-RoleGroupMember ((Get-RoleGroup tenantadmins_*).name)
+    foreach ( $admin in $TenantAdmins.Name ) {
+        $null = $recipientsList.Add( (Get-EXOMailbox $admin).PrimarySmtpAddress )
     }
 }
-$listrecipients = ("$Recipients").Split(",")
 #endregion parameters
 
 # generating Subject
 $Subject = "Quarantine Group Report $((Get-Date).ToString("yyyy-MM-dd HH:mm:ss"))"
 
 # Saving report in desktop
-Write-Host "Saving report to $Home\Desktop\Quarantine Report.html"
-$html | Add-Content -Path "$Home\Desktop\Quarantine Report.html" -Force
+Write-Host "Saving report to $ReportFilePath"
+if ( Test-Path $ReportFilePath ) {
+    Remove-Item $ReportFilePath -Force
+}
+$html | Add-Content -Path $ReportFilePath
+$bt = New-BTButton -Content "Quarantine Report" -Arguments $ReportFilePath
+New-BurntToastNotification -Text "Quarantine Report", "Report available at $ReportFilePath." -Button $bt
 
 # sending message
-Write-Host "Sending Report by e-mail to" $recipients
+Write-Host "Sending Report by e-mail to" $($recipientsList -join ", ")
 Write-Host
 if ($Null -eq $cred) {
     $cred = Get-Credential -Message "Type your Sender's credentials"
 }
-Send-MailMessage -From $cred.UserName -To $listrecipients -Body $html -BodyasHtml -SmtpServer smtp.office365.com -UseSsl -Port 587 -Subject $Subject -Credential $cred
+Send-MailMessage -From $cred.UserName -To $recipientsList -Body $html -BodyasHtml -SmtpServer smtp.office365.com -UseSsl -Port 587 -Subject $Subject -Credential $cred

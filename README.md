@@ -109,6 +109,15 @@ The resultant file in the user's Desktop, will have the following columns:
 
 ----
 
+## Get Quarantine Report based on group members  
+
+Automatically generate HTML report listing quarantine messages for a Security Group and its members.  
+This report will be send by e-mail to a list of recipients and saved to the user's desktop.  
+
+[File](Get-QuarantineRerport/)  
+
+----
+
 ## Test Autodiscover V2  
 Tests AutodiscoverV2 against Office365 or Exchange On-premises with different protocols available.  
 [File](/Test-Autodiscover/)
