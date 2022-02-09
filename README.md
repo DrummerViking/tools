@@ -111,8 +111,9 @@ The resultant file in the user's Desktop, will have the following columns:
 
 ## Get Quarantine Report based on group members (EXO)  
 
-Automatically generate HTML report listing quarantine messages for a Security Group and its members.  
-This report will be send by e-mail to a list of recipients and saved to the user's desktop.  
+Generate HTML report listing quarantine messages for a Security Group and its members.  
+This report will can be sent by e-mail to a list of recipients and/or tenant Admins and/or to the group member themselves.  
+The report will be saved to the user's desktop by default or can be modified the ReportFilePath.  
 
 [File](Get-QuarantineRerport/)  
 
