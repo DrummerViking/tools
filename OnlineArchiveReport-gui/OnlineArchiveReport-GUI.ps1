@@ -195,7 +195,7 @@ td.fail{background: #CC0000; color: #ffffff;}
 </style>
 <title>Mailboxes Report</title>
 <body>
-<h3 style=''color:#C0C0C0;''>v1.20 (10/09/2018)</h3>
+<h3 style=''color:#C0C0C0;''>v1.27 (02/09/2022)</h3>
 <h2 align=''left''>Mailbox Report</h2>
 ')
         $HTML = $HTML.Replace('</tr> <tr>', '</tr> <tr style=''background-color:#BBD9EE''>')
