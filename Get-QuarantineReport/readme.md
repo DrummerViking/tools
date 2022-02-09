@@ -24,7 +24,7 @@ It will ask for a global admin credentials.
 It will generate the report file and save it to "C:\Temp\Quarantine Report.html".  
 Later will send the report by email to the tenant's Global Admin group.  
 
-<b>### PARAMETER GroupAddress</b>  
+### PARAMETER GroupAddress  
 Group Alias you want to get the list of members of
 
 ### PARAMETER Recipients
