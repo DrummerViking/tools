@@ -11,7 +11,6 @@ PS C:\> .\MergeMailboxes-GUI.ps1
 ```
 In this exmaple the script will run, and will ask for a global admin credentials.  
 
-
 ## Version History:
 ### 2.20 - 05/11/2020
  - Updated tool to connect to Exchange Online using new EXO v2 module.

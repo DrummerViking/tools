@@ -33,6 +33,8 @@ It will use the CSV file "D:\Temp\rooms.csv" for the mailboxes to be read.
 The resultant file will be generated in the "C:\Reports" folder.  
 It will create a transcript file.  
 
+## Parameters list  
+
 ### PARAMETER EnableTranscript  
 Enable this parameter to write a powershell transcript in your 'Documents' folder.  
 

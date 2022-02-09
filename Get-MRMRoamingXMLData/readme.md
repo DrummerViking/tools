@@ -26,6 +26,8 @@ PS C:\> .\Get-MRMRoamingXMLData.ps1 -TargetSMTPAddress 'anotherUser@domain.com'
 ```
 In this example the script will ask for the Admin's credentials to authenticate. And will actually open 'anotherUser@domain.com' mailbox to check and get the MRM Roaming XML Data.  
 
+## Parameters list  
+
 ### PARAMETER TargetSMTPAddress  
 Use this optional parameter, to open a different mailbox.  
 You need to be assign Impersonation permissions, or FullAccess permisions in order to open another user's mailbox.  

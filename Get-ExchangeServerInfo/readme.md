@@ -22,6 +22,8 @@ PS C:\> .\Get-ExchangeServerInfo.ps1 -Site "Site1"
 ```
 Runs against all servers located in the specified Site.  
 
+## Parameters list  
+
 ### PARAMETER Autodiscover  
 This optional parameter provides information about Autodiscover in the selected CAS servers.  
 It will provide Server name, RU, Server's Site, SCP Endpoint, and Autodiscover SiteScope.  

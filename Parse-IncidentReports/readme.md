@@ -21,6 +21,8 @@ PS C:\> .\Parse-IncidentReports.ps1 -OrgAdmins -Recipients "ExternalAuditing@Aud
 In this exmaple the script will run, and will ask for a global admin credentials.  
 Once the report is ready, it will send it to all Global Admins found in the tenant as well as to the external account "ExternalAuditing@Audits.com".  
 
+## Parameters list  
+
 ### PARAMETER Recipients  
 The email address you want the report to be sent to.  
 

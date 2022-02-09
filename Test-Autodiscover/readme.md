@@ -21,6 +21,8 @@ PS C:\> Test-Autodiscover -EmailAddress cloudUser@contoso.com -Protocol EWS -Ser
 ```
 In this example it will show the EWS URL for the cloud user, queried against an on-premises endpoint 'mail.contoso.com'.  
 
+## Parameters list  
+
 ### PARAMETER EmailAddress  
 Email address of the user account you want to test.  
 
