@@ -21,6 +21,18 @@ PS C:\> Test-Autodiscover -EmailAddress cloudUser@contoso.com -Protocol EWS -Ser
 ```
 In this example it will show the EWS URL for the cloud user, queried against an on-premises endpoint 'mail.contoso.com'.  
 
+### PARAMETER EmailAddress  
+Email address of the user account you want to test.  
+
+### PARAMETER Server
+This is an optional parameter. In case you want to specifically test AutodiscoverV2 against an on-premises FQDN or Office 365. The default value is "Outlook.office365.com".  
+
+### PARAMETER Protocol  
+Select one of the following mandatory values: "AutodiscoverV2","ActiveSync","Ews","Rest","Substrate","SubstrateNotificationService","SubstrateSearchService","OutlookMeetingScheduler".  
+
+### PARAMETER ShowQueriedUrl  
+This is an optional parameter. It will show the QueriedUrl in case you want to copy and paste into a browser.  
+
 ## Version History: 
 ### 1.00 - 10/11/2020
  - First Release

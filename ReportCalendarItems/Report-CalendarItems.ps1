@@ -13,6 +13,12 @@
 .DESCRIPTION
     Reports how many calendar items, per calendar year, some user/room mailboxes have in Exchange Online.
     Report can be exported to a DestinationFolderPath or by default to user's Desktop.
+.PARAMETER EnableTranscript
+    Enable this parameter to write a powershell transcript in your 'Documents' folder.
+.PARAMETER CSVFile
+    CSV file must contain a unique header named "PrimarySMTPAddress".
+.PARAMETER DestinationFolderPath
+    Insert target folder path name like "C:\Temp".
 .EXAMPLE 
     .\Report-CalendarItems.ps1
 .EXAMPLE 
@@ -29,7 +35,9 @@
 #>
 param(
     [switch]$EnableTranscript = $false,
+
     [Parameter(Mandatory = $false, HelpMessage = 'CSV file must contain a unique header named "PrimarySMTPAddress"')]$CSVFile = $Null,
+    
     [Parameter(Mandatory = $false, HelpMessage = 'Insert target folder path name like "C:\Temp"')]$DestinationFolderPath = "$home\Desktop"
 )
 

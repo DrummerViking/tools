@@ -33,6 +33,15 @@ It will use the CSV file "D:\Temp\rooms.csv" for the mailboxes to be read.
 The resultant file will be generated in the "C:\Reports" folder.  
 It will create a transcript file.  
 
+### PARAMETER EnableTranscript  
+Enable this parameter to write a powershell transcript in your 'Documents' folder.  
+
+### PARAMETER CSVFile  
+CSV file must contain a unique header named "PrimarySMTPAddress".  
+
+### PARAMETER DestinationFolderPath  
+Insert target folder path name like "C:\Temp".  
+
 ## Version History:
 ### 2.00 - 05/11/2020
  - Updated tool to connect to Exchange Online using oauth authentication. 

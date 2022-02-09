@@ -22,6 +22,26 @@ PS C:\> .\Get-ExchangeServerInfo.ps1 -Site "Site1"
 ```
 Runs against all servers located in the specified Site.  
 
+### PARAMETER Autodiscover  
+This optional parameter provides information about Autodiscover in the selected CAS servers.  
+It will provide Server name, RU, Server's Site, SCP Endpoint, and Autodiscover SiteScope.  
+
+### PARAMETER Server  
+This optional parameter allows the target Exchange server to be specified.  
+If it is not, it will look up for all servers in the Organization.  
+
+### PARAMETER Site  
+This optional parameter allows the target Site to be specified, so the script will look up for all servers in the specified Site.  
+If it is not, it will look up for all servers in the Organization.  
+
+### PARAMETER CASLoad  
+This optional switch allows to collect CAS related information. Servers without the CAS role will be skipped.  
+It will check for Netlogon's semaphores timeouts.  
+It will check for the most common protocols user load.  
+
+### PARAMETER CheckASACredentails  
+This optional switch allows to check for ASA Credentails in the environment.  
+
 ## Version History:  
 ### 1.109 - 06/29/2021
  - Updated build versions for June 2021 releases

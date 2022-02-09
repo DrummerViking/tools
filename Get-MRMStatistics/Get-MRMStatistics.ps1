@@ -26,17 +26,16 @@ function GenerateForm {
             [Parameter(Mandatory = $true)]
             [string]
             $Prompt,
-        
+
             [Parameter(Mandatory = $false)]
             [string]
             $DefaultValue = '',
-        
+
             [Parameter(Mandatory = $false)]
             [string]
             $Title = 'Windows PowerShell'
         )
-    
-    
+
         Add-Type -AssemblyName Microsoft.VisualBasic
         [Microsoft.VisualBasic.Interaction]::InputBox($Prompt, $Title, $DefaultValue)
     }

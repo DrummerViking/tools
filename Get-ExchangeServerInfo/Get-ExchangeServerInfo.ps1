@@ -41,7 +41,7 @@
     .\Get-ExchangeServerInfo.ps1 -Site SITENAME
     Run against all servers located in the specified Site.
 #>
- 
+
 Param(
     $Server = '*',
     $Site = '*',
@@ -67,13 +67,13 @@ Function Get-ServerVersion {
     # Read Rollup Update information from servers
     # Set Registry constants
     $VALUE1 = "MsiInstallPath"
- 
+
     # Open remote registry
     $reg = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey('LocalMachine', $CAS)
- 
+
     # Set regKey for MsiInstallPath
     $regKey = $reg.OpenSubKey($Reg_ExSetup)
- 
+
     # Get Install Path from Registry and replace : with $
     $installPath = ($regKey.getvalue($VALUE1) | ForEach-Object { $_ -replace (":", "`$") })
     # Set ExSetup.exe path
@@ -209,7 +209,7 @@ Function Get-ServerVersion {
                 2242 { $exSetupVer += " - CU20" }
                 2308 { $exSetupVer += " - CU21" }
                 2375 { $exSetupVer += " - CU22" }
-                default {} 
+                default {}
             }
         }
         # Determine CU version for Exchange 2019 builds
@@ -228,7 +228,7 @@ Function Get-ServerVersion {
             0858 { $exSetupVer += " - CU9" }
             0922 { $exSetupVer += " - CU10" }
             0986 { $exSetupVer += " - CU11" }
-            default {} 
+            default {}
         }
     }
                     
@@ -239,8 +239,8 @@ $totalOutlook = 0
 $totalOA = 0
 $totalMapiHTTP = 0
 $totalOWA = 0
-$netver = '' 
- 
+$netver = ''
+
 # If the Switch "CheckASACredentials" is in place, we will look up for an ASA credential locally
 if ($CheckASACredentials -eq $true) {
     $CAS = get-ExchangeServer $env:COMPUTERNAME

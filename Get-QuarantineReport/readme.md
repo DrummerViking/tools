@@ -40,7 +40,7 @@ This is a switch Parameter. Using it, will send the report to the group you are 
 Path where the HTML report will be saved. By default will be in the user's desktop named "Quarantine report.html".  
 
 ## Version History:
-### 1.27 - 02/09/2022
+### 2.00 - 02/09/2022
  - Updated script to Github repository.
  - Updated script to use new EXO PS module.
  - Added additional modules dependency.

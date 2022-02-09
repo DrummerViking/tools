@@ -31,7 +31,7 @@ $script:nl = "`r`n"
 
 $disclaimer = @"
 #################################################################################
-# 
+#
 # The sample scripts are not supported under any Microsoft standard support
 # program or service. The sample scripts are provided AS IS without warranty
 # of any kind. Microsoft further disclaims all implied warranties including, without
@@ -43,7 +43,7 @@ $disclaimer = @"
 # profits, business interruption, loss of business information, or other pecuniary loss)
 # arising out of the use of or inability to use the sample scripts or documentation,
 # even if Microsoft has been advised of the possibility of such damages.
-#  
+# 
 #################################################################################
 "@
 Write-Host $disclaimer -foregroundColor Yellow
@@ -83,7 +83,7 @@ if ($test -eq $False -and $test2 -eq $False -and $test3 -eq $False) {
     Write-Host "You don't seem to have EWS API dll file 'Microsoft.Exchange.WebServices.dll' in the same Directory of this script" -ForegroundColor Red
     Write-Host "please get a copy of the file or download the whole API from: " -ForegroundColor Red -NoNewline
     Write-Host "https://www.microsoft.com/en-us/download/details.aspx?id=42951" -ForegroundColor Cyan
- 
+
     return
 }
     
@@ -131,7 +131,7 @@ $service.Url = New-Object Uri("https://outlook.office365.com/ews/exchange.asmx")
 $Service.Credentials = $exchangeCredentials
 
 [int]$option = $null
- 
+
 while ($Option -ne "0") {
     $Option = $null
     Write-Host ""
@@ -143,7 +143,7 @@ while ($Option -ne "0") {
     Write-Host "5- Generate Parsed incident reports in a folder to CSV file" -ForegroundColor Green
     Write-Host "0- To Exit" -ForegroundColor Green
     $Option = Read-Host -Prompt "Select your number"
-    
+
     If ($Option -ge "1" -and $Option -le "4") {
         switch ($option) {
             1 { $Wellknownfolder = "MsgFolderRoot" }
@@ -186,9 +186,9 @@ while ($Option -ne "0") {
 
         $folderid = new-object Microsoft.Exchange.WebServices.Data.FolderId($sourceFolderText)
         $Folder = [Microsoft.Exchange.WebServices.Data.Folder]::Bind($service, $folderid)
- 
+
         $ivItemView = New-Object Microsoft.Exchange.WebServices.Data.ItemView(250)  
-	 
+
         $fiItems = $null  
         do {  
             $fiItems = $service.FindItems($Folder.Id, $ivItemView)  
@@ -213,7 +213,7 @@ while ($Option -ne "0") {
                     $RuleHit = $RuleHit.Replace("$nl", "")
                     $RuleHit = $RuleHit.TrimEnd()
                 }
-						
+
                 $ReportId = $ReportId.Substring($ReportId.IndexOf(':') + 2)
                 $MessageID = $MessageID.Substring($MessageID.IndexOf(':') + 2)
                 $MessageID = $MessageID.Replace("&lt;", "<")

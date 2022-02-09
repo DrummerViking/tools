@@ -28,7 +28,7 @@ param(
 
 $disclaimer = @"
 #################################################################################
-# 
+#
 # The sample scripts are not supported under any Microsoft standard support
 # program or service. The sample scripts are provided AS IS without warranty
 # of any kind. Microsoft further disclaims all implied warranties including, without
@@ -40,17 +40,17 @@ $disclaimer = @"
 # profits, business interruption, loss of business information, or other pecuniary loss 
 # arising out of the use of or inability to use the sample scripts or documentation,
 # even if Microsoft has been advised of the possibility of such damages.
-#  
+# 
 #################################################################################
 "@
 Write-Host $disclaimer -foregroundColor Yellow
 Write-Host " " 
- 
+
 $script:nl = "`r`n"
 $ProgressPreference = "SilentlyContinue"
 
 function GenerateForm {
-  
+
     #region Import the Assemblies
     Add-Type -AssemblyName System.Windows.Forms
     Add-Type -AssemblyName System.Drawing
@@ -85,12 +85,12 @@ function GenerateForm {
     $buttonGo = New-Object System.Windows.Forms.Button
     $buttonExit = New-Object System.Windows.Forms.Button
 
-    $dgResults = New-Object System.Windows.Forms.DataGridView 
-    $dgResults2 = New-Object System.Windows.Forms.DataGridView 
+    $dgResults = New-Object System.Windows.Forms.DataGridView
+    $dgResults2 = New-Object System.Windows.Forms.DataGridView
     $txtBoxResults = New-Object System.Windows.Forms.Label
     $InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
     #endregion Generated Form Objects
- 
+
     if ($EnableTranscript) { Start-Transcript }
 
     #region Connect to EXO if no existing Session available

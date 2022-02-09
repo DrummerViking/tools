@@ -19,6 +19,12 @@ PS C:\> .\DeleteMeetings-GUI.ps1 -LogFolder "C:\Temp"
 ```
 In this example the script will run and it will log the exported list of items to the 'C:\Temp' folder.  
 
+### PARAMETER EnableTranscript  
+Enable this parameter to write a powershell transcript in your 'Documents' folder.  
+
+### PARAMETER LogFolder  
+Sets the folder to export the logs generated. If this parameter is omitted, logs will be generated in the user's Desktop.  
+
 ## Version History:  
 ### 2.01 - 09/03/2021  
  - Updated tool and add an optional parameter to export log files to a custom folder.  
