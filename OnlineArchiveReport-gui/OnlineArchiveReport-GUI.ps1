@@ -138,7 +138,7 @@ function GenerateForm {
 
                 Foreach ($MbxLoc in $MbxLocation) {
                     $j++
-                    $output = "Checking user: $i out of: $($mbxcount)"
+                    $output = "Checking user: $i out of: $mbxcount"
                     $output = $output + $nl + "Checking Mailbox object: $j out of: $($MbxLocation.count)"
                     $output = $output + $nl + "This window will refresh automatically ..."
                     $txtBoxResults.Text = $output
@@ -167,7 +167,7 @@ function GenerateForm {
             $dgResults.Visible = $True
             $txtBoxResults.Visible = $False
             $MainForm.refresh()
-            Clear-Variable i,j
+            Clear-Variable i,j,output,txtBoxResults
             Write-Host "$((Get-Date).ToString("MM-dd-yyyy HH:mm:ss")) - Collecting user's statistics done" -ForegroundColor Yellow
         }
         $statusBar.Text = "Ready"
@@ -201,7 +201,6 @@ td.fail{background: #CC0000; color: #ffffff;}
         $HTML = $HTML.Replace('</tr> <tr>', '</tr> <tr style=''background-color:#BBD9EE''>')
 
         $listrecipients = New-Object System.Collections.ArrayList
-        #$templist = $txtBoxRecipients.text
         if ( $txtBoxRecipients.text -ne '') {
             $null = $listrecipients.Add($txtBoxRecipients.text)
         }
@@ -212,7 +211,6 @@ td.fail{background: #CC0000; color: #ffffff;}
                 $null = $listrecipients.Add( (Get-EXOMailbox $admin).PrimarySmtpAddress )
             }
         }
-        #$listrecipients = ("$templist").Split(",")
         $Subject = "Mailbox Report $((Get-Date).ToString("yyyy-MM-dd HH:mm:ss"))"
         if ($Null -eq $cred) {
             $Global:cred = Get-Credential -Message "Type your Sender's credentials"
