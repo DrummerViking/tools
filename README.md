@@ -115,7 +115,7 @@ Generate HTML report listing quarantine messages for a Security Group and its me
 This report can be sent by e-mail to a list of recipients and/or tenant Admins and/or to the group member themselves.  
 The report will be saved to the user's desktop by default or can be modified the ReportFilePath.  
 
-[File](Get-QuarantineRerport/)  
+[File](Get-QuarantineReport/)  
 
 ----
 
