@@ -20,7 +20,7 @@
 
 .DESCRIPTION
     Automatically generate HTML report listing quarantine messages for a Security Group and its members.
-    This report will be send by e-mail to a list of recipients.
+    This report will be send by e-mail to a list of recipients and saved to the user's desktop.
 
 .PARAMETER GroupAddress     
     Group Alias you want to get the list of members of
@@ -35,10 +35,10 @@
     This is a switch Parameter. Using it, will send the report to the group you are collecting the report for.
 
 .EXAMPLE 
-    .\QuarantinePerGroupReport.ps1 -GroupAlias InfoSecurity -Recipients "agallego@Outlook.com"
+    .\QuarantinePerGroupReport.ps1 -GroupAddress InfoSecurity -Recipients "agallego@Outlook.com"
  
 .EXAMPLE 
-    .\QuarantinePerGroupReport.ps1 -GroupAlias HR -OrgAdmins -EmailtoGroupMembers
+    .\QuarantinePerGroupReport.ps1 -GroupAddress HR -OrgAdmins -EmailtoGroupMembers
 
 .COMPONENT
    AntiSpam

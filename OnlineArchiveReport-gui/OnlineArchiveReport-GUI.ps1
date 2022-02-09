@@ -32,7 +32,7 @@ param(
 
 $disclaimer = @"
 #################################################################################
-# 
+#
 # The sample scripts are not supported under any Microsoft standard support
 # program or service. The sample scripts are provided AS IS without warranty
 # of any kind. Microsoft further disclaims all implied warranties including, without
@@ -44,24 +44,22 @@ $disclaimer = @"
 # profits, business interruption, loss of business information, or other pecuniary loss 
 # arising out of the use of or inability to use the sample scripts or documentation,
 # even if Microsoft has been advised of the possibility of such damages.
-#  
+# 
 #################################################################################
 "@
 Write-Host $disclaimer -foregroundColor Yellow
 Write-Host " " 
- 
+
 $script:nl = "`r`n"
 $ProgressPreference = "SilentlyContinue"
 
 function GenerateForm {
- 
     #region Import the Assemblies
     Add-Type -AssemblyName System.Windows.Forms
     Add-Type -AssemblyName System.Drawing
     Add-Type -AssemblyName Microsoft.VisualBasic
     [System.Windows.Forms.Application]::EnableVisualStyles() 
     #endregion
-
 
     #region Generated Form Objects
     $MainForm = New-Object System.Windows.Forms.Form
@@ -84,7 +82,7 @@ function GenerateForm {
     $txtBoxResults = New-Object System.Windows.Forms.Label
     $InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
     #endregion Generated Form Objects
- 
+
     if ($EnableTranscript) {
         Start-Transcript
     }
@@ -108,14 +106,14 @@ function GenerateForm {
         $txtBoxResults.Visible = $True
 
         if ($radiobutton1.Checked) {
-            $mbxs = Get-EXOmailbox -Identity $txtBoxMbxAlias.text -Archive -PropertySets Quota -ErrorAction SilentlyContinue | Select-Object UserPrincipalname, RecoverableItemsQuota
+            $mbxs = Get-EXOmailbox -Identity $txtBoxMbxAlias.text -PropertySets Quota -ErrorAction SilentlyContinue | Select-Object UserPrincipalname, RecoverableItemsQuota
         }
         elseif ($radiobutton2.Checked) {
             $csv = Import-Csv -Path $filename
-            $mbxs = $csv | ForEach-Object { get-EXOmailbox -Identity $_.UserPrincipalName -Archive -PropertySets Quota -ErrorAction SilentlyContinue | Select-Object UserPrincipalname, RecoverableItemsQuota }
+            $mbxs = $csv | ForEach-Object { get-EXOmailbox -Identity $_.UserPrincipalName -PropertySets Quota -ErrorAction SilentlyContinue | Select-Object UserPrincipalname, RecoverableItemsQuota }
         }
         elseif ($radiobutton3.Checked) {
-            $mbxs = Get-EXOMailbox -Archive -ResultSize unlimited -PropertySets Quota -ErrorAction SilentlyContinue | Select-Object UserPrincipalName, RecoverableItemsQuota
+            $mbxs = Get-EXOMailbox -ResultSize unlimited -PropertySets Quota -ErrorAction SilentlyContinue | Select-Object UserPrincipalName, RecoverableItemsQuota
         }
 
         if ($null -eq $mbxs) {
@@ -169,6 +167,7 @@ function GenerateForm {
             $dgResults.Visible = $True
             $txtBoxResults.Visible = $False
             $MainForm.refresh()
+            Clear-Variable i,j
             Write-Host "$((Get-Date).ToString("MM-dd-yyyy HH:mm:ss")) - Collecting user's statistics done" -ForegroundColor Yellow
         }
         $statusBar.Text = "Ready"
@@ -202,19 +201,19 @@ td.fail{background: #CC0000; color: #ffffff;}
         $HTML = $HTML.Replace('</tr> <tr>', '</tr> <tr style=''background-color:#BBD9EE''>')
 
         $listrecipients = New-Object System.Collections.ArrayList
-        $templist = $txtBoxRecipients.text
+        #$templist = $txtBoxRecipients.text
+        if ( $txtBoxRecipients.text -ne '') {
+            $null = $listrecipients.Add($txtBoxRecipients.text)
+        }
         # If Switch $OrgAdmins is in use, we will check current admins and include them to the recipients list
         if ($checkboxOrgAdmins.Checked -eq $True) {
-            $TenantAdmins = Get-RoleGroupMember "Organization Management"
-            foreach ($admin in (Get-RoleGroupMember $TenantAdmins.Name)) {
-                if ($templist -ne '') {
-                    $templist = $templist + ", "
-                }
-                $templist = $templist + (Get-Mailbox $admin.Name).PrimarySmtpAddress
+            $TenantAdmins = Get-RoleGroupMember ((Get-RoleGroup tenantadmins_*).name)
+            foreach ( $admin in $TenantAdmins.Name ) {
+                $null = $listrecipients.Add( (Get-EXOMailbox $admin).PrimarySmtpAddress )
             }
         }
-        $listrecipients = ("$templist").Split(",")
-        $Subject = "Archive Mailbox Report $((Get-Date).ToString("yyyy-MM-dd HH:mm:ss"))"
+        #$listrecipients = ("$templist").Split(",")
+        $Subject = "Mailbox Report $((Get-Date).ToString("yyyy-MM-dd HH:mm:ss"))"
         if ($Null -eq $cred) {
             $Global:cred = Get-Credential -Message "Type your Sender's credentials"
         }
@@ -254,8 +253,6 @@ td.fail{background: #CC0000; color: #ffffff;}
 You should list a unique UserPrincipalName per line.", [Microsoft.VisualBasic.MsgBoxStyle]::Okonly, "Information Message")
     }
     #endregion
-
-
 
     #----------------------------------------------
     #region Generated Form Code

@@ -13,6 +13,10 @@ In this exmaple the script will run, and will ask for a global admin credentials
 It will generate a transcript file.  
 
 ## Version History:
+### 1.27 - 02/09/2022
+- Fixed call to Get-RoleGroupMember
+- Fixed recipient List for Email report
+- Removed Archive mailbox requirement
 ### 1.24 - 07/16/2020
 - Updated grid to column name "RecoverableItemsSize"
 ### 1.23 - 05/08/2020
