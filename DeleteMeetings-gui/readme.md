@@ -3,9 +3,6 @@
 ## Author:  
 Agustin Gallegos  
 
-## Info:  
-Copy both .PS1 and .DLL files to the same folder in order to run the script.  
-
 ## Examples:  
 ### Example 1  
 ```powershell

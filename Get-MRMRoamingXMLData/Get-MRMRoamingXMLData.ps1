@@ -72,58 +72,28 @@ Write-Host " "
 write-host " " 
 Write-Host "This script requires at least EWS API 2.1" -ForegroundColor Yellow 
 
-# Locating DLL location either in working path, in EWS API 2.1 path or in EWS API 2.2 path
-$EWS = "$PsscriptRoot\Microsoft.Exchange.WebServices.dll"
+#region import EWS DLL file# Locating DLL location either in working path, in EWS API 2.1 path or in EWS API 2.2 path
+$EWS = "$pwd\Microsoft.Exchange.WebServices.dll"
 $test = Test-Path -Path $EWS
-if ($test -eq $False){
+if ($test -eq $False) {
     Write-Host "EWS DLL in local path not found" -ForegroundColor Cyan
-    $test2 = Test-Path -Path "C:\Program Files (x86)\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
-    if ($test2 -eq $False){
-        Write-Host "EWS 2.1 not found" -ForegroundColor Cyan
-        $test3 = Test-Path -Path "C:\Program Files\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
-        if ($test3 -eq $False) {
-            Write-Host "EWS 2.2 not found" -ForegroundColor Cyan
-        }else{
-            Write-Host "EWS 2.2 found" -ForegroundColor Cyan
-        }
-    }else{
-        Write-Host "EWS 2.1 found" -ForegroundColor Cyan
+    $ewspkg = Get-Package Microsoft.Exchange.WebServices -ErrorAction SilentlyContinue
+    if ( $null -eq $ewspkg ) {
+        Write-Host "Downloading EWS DLL Nuget package and installing it" -ForegroundColor Cyan
+        $null = Register-PackageSource -Name MyNuGet -Location https://www.nuget.org/api/v2 -ProviderName NuGet -Trusted -Force
+        $null = Install-Package Microsoft.Exchange.WebServices -requiredVersion 2.2.0 -Scope CurrentUser
+        $ewspkg = Get-Package Microsoft.Exchange.WebServices -ErrorAction SilentlyContinue
     }        
-}else{
-    Write-Host "EWS DLL found in local path" -ForegroundColor Cyan
+    $EWSPath = $ewspkg.Source.Replace("\Microsoft.Exchange.WebServices.2.2.nupkg","")
+    Write-Host "EWS DLL found in package folder path" -ForegroundColor Cyan
+    $EWS = "$EWSPath\lib\40\Microsoft.Exchange.WebServices.dll"
 }
-
-
-if($test -eq $False -and $test2 -eq $False -and $test3 -eq $False){
-    Write-Host " "
-    Write-Host "You don't seem to have EWS API dll file 'Microsoft.Exchange.WebServices.dll' in the same Directory of this script" -ForegroundColor Red
-    Write-Host "please get a copy of the file or download the whole API from: " -ForegroundColor Red -NoNewline
-    Write-Host "https://www.microsoft.com/en-us/download/details.aspx?id=42951" -ForegroundColor Cyan
- 
-    return
+else {
+    Write-Host "EWS DLL found in current folder path" -ForegroundColor Cyan
 }
+Add-Type -Path $EWS
+#endregion
 
-Write-host "EWS API detected. All good!" -ForegroundColor Cyan
-        
-if ($test -eq $True){
-    Unblock-File -Path $EWS -Confirm:$false
-    Add-Type -Path $EWS
-    Write-Host "Using EWS DLL in local path" -ForegroundColor Cyan
-    }
-elseif($test2 -eq $True){
-    Add-Type -Path "C:\Program Files (x86)\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
-    Write-Host "Using EWS 2.1" -ForegroundColor Cyan
-    }
-elseif ($test3 -eq $True){
-    Add-Type -Path "C:\Program Files\Microsoft\Exchange\Web Services\2.*\Microsoft.Exchange.WebServices.dll"
-    Write-Host "Using EWS 2.2" -ForegroundColor Cyan
-    }
-write-host " "
-
-# if EWS DLL is missing, we will exit the Process
-if ($test -eq $False -and $test2 -eq $False -and $test3 -eq $False) {
-    return
-}
 $ExchangeVersion = [Microsoft.Exchange.WebServices.Data.ExchangeVersion]::Exchange2016
 $Service = New-Object Microsoft.Exchange.WebServices.Data.ExchangeService($ExchangeVersion) 
 
