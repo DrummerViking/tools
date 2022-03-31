@@ -270,7 +270,7 @@ function GenerateForm {
         $statusBar.Text = "Running..."
 
         $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
-        $OpenFileDialog.initialDirectory = $initialDirectory
+        $OpenFileDialog.initialDirectory = $PSScriptRoot
         $OpenFileDialog.ShowDialog() | Out-Null
         if ($OpenFileDialog.filename -ne "") {
             $Global:Filename = $OpenFileDialog.filename
