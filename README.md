@@ -57,7 +57,24 @@ We recommend that y ou use the tool initially for a single user/room mailbox, an
 Is not recommended to run against an Organizer Mailbox. There is already a builtin command in Exchange Online service for this: `Remove-CalendarEvents`  
 [File](/DeleteMeetings-gui/)
 
-----
+----  
+
+## Replace Room locations in meetings for new ones (EXO)  
+There are times that organizations needs to delete some Room Mailboxes, but if those mailboxes have some meeting items already scheduled,  
+we actually need to replace for a new Room Mailbox.  
+This is usually a tedous task that every meeting Organizer should do, by removing the previous Room mailbox, add the new one, and send the update to all attendees.  
+We have made this script in order ease this task for admins.  
+
+As this uses EWS, you will need a "master account" with Impersonation permissions on your mailboxes. You can run:  
+``` powershell
+New-ManagementRoleAssignment –Name:impersonationAssignmentName –Role:ApplicationImpersonation –User:<Account>
+```  
+This will give Impersonation permissions over all mailboxes in the tenant, so is critical that this account is not shared.  
+
+More info and details here:  
+[File](/Replace-RoomsInMeetings/)  
+
+----  
 
 ## Report Calendar Items  (EXO)  
 Reports how many calendar items, per calendar year, some user/room mailboxes have in Exchange Online.  
