@@ -52,6 +52,7 @@ Begin {
 }
 
 process {
+    #region Selecting CSV file
     if ( $CSVFilePath.Length -eq 0 ) {
         Write-Host "[$((Get-Date).ToString("HH:mm:ss"))] Please pick up the CSV files with the list of previous and new rooms to replace."
         Add-Type -AssemblyName System.Windows.Forms
@@ -71,7 +72,9 @@ process {
         Write-Host "[$((Get-Date).ToString("HH:mm:ss"))] CSV file does not contain the necessary columns. Please check you have 'PreviousRoom, NewRoom' columns and try again." -ForegroundColor Red
         return
     }
-    
+    #endregion
+
+    #region Validate if room mailboxes exists as valid recipients
     if ( $ValidateRoomsExistence ) {
         if ( (Get-PSSession).Computername -notcontains "outlook.office365.com" ) {
             if ( -not(Get-Module ExchangeOnlineManagement -ListAvailable) ) {
@@ -83,21 +86,24 @@ process {
         }
         foreach ($line in $csv) {
             try {
-                Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Checking if Room mailbox $($line.NewRoom) exists"
-                $null = Get-EXOMailbox $line.newRoom -ErrorAction Stop
-                Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Checking if Room mailbox $($line.PreviousRoom) exists"
-                $null = Get-EXOMailbox $line.PreviousRoom -ErrorAction Stop
+                Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Checking if Room mailbox $($line.NewRoom) exists..." -NoNewline
+                $null = Get-EXORecipient $line.newRoom -ErrorAction Stop
+                Write-host "Ok." -ForegroundColor Green
+
+                Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Checking if Room mailbox $($line.PreviousRoom) exists..." -NoNewline
+                $null = Get-EXORecipient $line.PreviousRoom -ErrorAction Stop
+                Write-host "Ok." -ForegroundColor Green
             }
             catch {
-                $failedAlias = $_.ErrorRecord.InvocationInfo.Line.Split(" ")[2]
-                Write-Host "[$((Get-Date).ToString("HH:mm:ss"))] Room mailbox $failedAlias not found. Exiting script"
+                Write-host "Failed." -ForegroundColor Red
+                $failedAlias = $_.Exception.Message.split("'")[2]
+                Write-Host "[$((Get-Date).ToString("HH:mm:ss"))] Room mailbox $failedAlias not found. Exiting script." -ForegroundColor Red
                 exit
             }
-        }
+        }      
     }
 
-
-    <#creating service object
+    #creating service object
     $ExchangeVersion = [Microsoft.Exchange.WebServices.Data.ExchangeVersion]::Exchange2013_SP1
     $service = New-Object Microsoft.Exchange.WebServices.Data.ExchangeService($ExchangeVersion)
     
@@ -116,14 +122,15 @@ process {
     $scopes.Add("https://outlook.office365.com/.default")
     #$scopes.Add("https://outlook.office.com/EWS.AccessAsUser.All")
     $authResult = $pca.AcquireTokenInteractive($scopes)
-    $token = $authResult.ExecuteAsync()
+    $global:token = $authResult.WithPrompt()
+    if ($Token.Status -eq "faulted") {
+        Write-Host "[$((Get-Date).ToString("HH:mm:ss"))] Failed to obtain authentication token. Exiting script." -ForegroundColor Red
+        exit
+    }
     $exchangeCredentials = New-Object Microsoft.Exchange.WebServices.Data.OAuthCredentials($Token.Result.AccessToken)
-    $Global:email = $Token.Result.Account.Username
     $service.Url = New-Object Uri("https://outlook.office365.com/ews/exchange.asmx")
     $Service.Credentials = $exchangeCredentials
     #endregion
-    #>
-
 }
 
 End {
