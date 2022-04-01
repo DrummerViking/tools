@@ -11,7 +11,7 @@ Sets the Rooms mapping file path. This file should have 2 columns named "Previou
 ### PARAMETER MailboxesCSVFilePath  
 Sets the users file path. This file should have 1 column named "PrimarySMTPAddress".  
 
-### PARAMETER startDate  
+### PARAMETER StartDate  
 Sets the start date to look for meeting item in the user mailboxes. By default is the current date.  
 
 ### PARAMETER EndDate  
@@ -24,7 +24,7 @@ If this Switch parameter is used, the script will not only connect using EWS, bu
 If this Switch parameter is used, all information displayed in the Powershell console, will be exported to the transcript file usually saved in "Documents" folder.  
 
 ## How to use the mapping file  
-when composing the CSV for the rooms mailboxes mapping file, the script expects 2 columns.  
+When composing the CSV for the rooms mailboxes mapping file, the script expects 2 columns.  
 First column is the current Room mailbox being used in the meeting, and second column is the new room mailbox that will replace the one on the left.  
 For example:  
 | PreviousRoom | NewRoom |
@@ -48,6 +48,13 @@ PS C:\> .\Replace-RoomsInMeetings.ps1 -RoomsCSVFilePath C:\Temp\RoomsMappingFile
 In this example the script read the Rooms mapping file from "C:\Temp\RoomsMappingFile.csv".  
 Then will pop-up and prompt for the CSV file for the users where to replace the rooms.  
 the script will look for meeting items since the current day and 1 year forward.  
+
+### Example 3  
+```powershell
+PS C:\> .\Replace-RoomsInMeetings.ps1 -RoomsCSVFilePath C:\Temp\RoomsMappingFile.csv -MailboxesCSVFilePath C:\Temp\Users.Csv -EndDate 01/01/2025
+```
+In this example the script read the Rooms mapping file from "C:\Temp\RoomsMappingFile.csv" and user's list from "C:\Temp\Users.Csv".  
+the script will look for meeting items since the current day through January 1st 2025.  
 
 ## Version History:
 ### 1.00 - 04/01/2022

@@ -61,7 +61,7 @@ Is not recommended to run against an Organizer Mailbox. There is already a built
 
 ## Replace Room locations in meetings for new ones (EXO)  
 There are times that organizations needs to delete some Room Mailboxes, but if those mailboxes have some meeting items already scheduled, we actually need to replace for a new Room Mailbox.  
-This is usually a tedous task that every meeting Organizer should do, by removing the previous Room mailbox, add the new one, and send the update to all attendees.  
+This is usually a tedious task that every meeting Organizer should do, by removing the previous Room mailbox, add the new one, and send the update to all attendees.  
 We have made this script in order ease this task for admins.  
 
 As this uses EWS, you will need a "master account" with Impersonation permissions on your mailboxes. You can run:  
