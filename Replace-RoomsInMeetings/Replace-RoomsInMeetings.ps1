@@ -17,6 +17,9 @@
     .PARAMETER EndDate
     Sets the end date to look for meeting item in the user mailboxes. By default is 1 year after the current date.
     
+    .PARAMETER ValidateUsersExistence
+    If this Switch parameter is used, the script will not only connect using EWS, but will attempt to connect to EXO Powershell module and validate the user mailboxes exists as valid mailboxes in Exchange Online.
+
     .PARAMETER ValidateRoomsExistence
     If this Switch parameter is used, the script will not only connect using EWS, but will attempt to connect to EXO Powershell module and validate the room mailboxes exists as valid recipients in Exchange Online.
     
@@ -52,6 +55,8 @@ param(
     [DateTime]$StartDate = (get-date).ToShortDateString(),
 
     [DateTime]$EndDate = (get-date).AddYears(1).ToShortDateString(),
+
+    [switch] $ValidateUsersExistence,
 
     [switch] $ValidateRoomsExistence,
 
@@ -181,6 +186,32 @@ process {
     $Service.Credentials = $exchangeCredentials
     #endregion
 
+    #region Validate if user mailboxes exists as valid recipients in EXO
+    if ( $ValidateUsersExistence ) {
+        if ( (Get-PSSession).Computername -notcontains "outlook.office365.com" ) {
+            if ( -not(Get-Module ExchangeOnlineManagement -ListAvailable) ) {
+                Install-Module ExchangeOnlineManagement -Force -Scope CurrentUser -ErrorAction Stop
+            }
+            Import-Module ExchangeOnlineManagement
+            Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Connecting to Exchange Online. Please insert credentials with Exchange Admin Role."
+            Connect-ExchangeOnline -ShowBanner:$False -ErrorAction Stop
+        }
+        foreach ($user in $mbxs) {
+            try {
+                Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Checking if user mailbox $($user.PrimarySMTPAddress) exists..." -NoNewline
+                $null = Get-EXOMailbox $user.PrimarySMTPAddress -ErrorAction Stop
+                Write-host "Ok." -ForegroundColor Green
+            }
+            catch {
+                Write-host "Failed." -ForegroundColor Red
+                $failedAlias = $_.Exception.Message.split("'")[2]
+                Write-Host "[$((Get-Date).ToString("HH:mm:ss"))] User mailbox '$failedAlias' not found. Exiting script." -ForegroundColor Red
+                exit
+            }
+        }      
+    }
+    #endregion
+    
     #region Validate if room mailboxes exists as valid recipients in EXO
     if ( $ValidateRoomsExistence ) {
         if ( (Get-PSSession).Computername -notcontains "outlook.office365.com" ) {
@@ -204,7 +235,7 @@ process {
             catch {
                 Write-host "Failed." -ForegroundColor Red
                 $failedAlias = $_.Exception.Message.split("'")[2]
-                Write-Host "[$((Get-Date).ToString("HH:mm:ss"))] Room mailbox $failedAlias not found. Exiting script." -ForegroundColor Red
+                Write-Host "[$((Get-Date).ToString("HH:mm:ss"))] Room mailbox '$failedAlias' not found. Exiting script." -ForegroundColor Red
                 exit
             }
         }      
@@ -213,6 +244,7 @@ process {
 
     $i = 0
     foreach ($mbx in $mbxs) {
+        Remove-Variable Appointments -Force -ErrorAction SilentlyContinue
         $i++
         $j = 0
         Write-Progress -Id 0 -Activity "Scanning mailbox $i out of $($mbxs.count)" -status "Percent scanned: " -PercentComplete ($i * 100 / $($mbxs.Count)) -ErrorAction SilentlyContinue
@@ -223,7 +255,14 @@ process {
         $service.HttpHeaders.Clear()
         $service.HttpHeaders.Add("X-AnchorMailbox", $TargetSmtpAddress)
     
-        $Calendarfolder = [Microsoft.Exchange.WebServices.Data.Folder]::Bind($service, [Microsoft.Exchange.WebServices.Data.WellKnownFolderName]::Calendar)
+        try {
+            $Calendarfolder = [Microsoft.Exchange.WebServices.Data.Folder]::Bind($service, [Microsoft.Exchange.WebServices.Data.WellKnownFolderName]::Calendar)
+        }
+        catch {
+            Write-Host "[$((Get-Date).ToString("HH:mm:ss"))] Something failed to connect to the mailbox: $($mbx.PrimarySMTPAddress)" -ForegroundColor Red
+            continue
+        }
+        
         [int]$NumOfItems = 100
 
         $calView = New-Object Microsoft.Exchange.WebServices.Data.CalendarView($startDate, $endDate, $NumOfItems)
