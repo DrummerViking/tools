@@ -17,7 +17,7 @@ Sets the start date to look for meeting item in the user mailboxes. By default i
 ### PARAMETER EndDate  
 Sets the end date to look for meeting item in the user mailboxes. By default is 1 year after the current date.  
 
-### PARAMETER ValidateUserExistence  
+### PARAMETER ValidateUsersExistence  
 If this Switch parameter is used, the script will not only connect using EWS, but will attempt to connect to EXO Powershell module and validate the users exists as valid mailboxes in Exchange Online.  
 
 ### PARAMETER ValidateRoomsExistence  
@@ -64,7 +64,7 @@ the script will look for meeting items since the current day through January 1st
 ## Version History:
 ### 1.01 - 04/04/2022
  - Fixed: Fixed dual connection to EWS and EXO if selecting Switch parameter "ValidateRoomExistence".
- - Added: Added functionally to validate user mailboxes as well with new Switch paramenter "ValidateUserExistence".
+ - Added: Added functionally to validate user mailboxes as well with new Switch parameter "ValidateUsersExistence".
 ### 1.00 - 04/01/2022
  - First Release.
 ### 1.00 - 03/31/2022
