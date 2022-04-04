@@ -71,7 +71,7 @@ New-ManagementRoleAssignment –Name:impersonationAssignmentName –Role:Applica
 This will give Impersonation permissions over all mailboxes in the tenant, so is critical that this account is not shared.  
 
 More info and details here:  
-[File](/Replace-RoomsInMeetings/)  
+[File](/Replace-RoomsInMeetings/) [Download](https://raw.githubusercontent.com/agallego-css/tools/master/Replace-RoomsInMeetings/Replace-RoomsInMeetings.ps1)  
 
 ----  
 
