@@ -57,7 +57,7 @@ In this example the script reads the Rooms mapping file from "C:\Temp\RoomsMappi
 the script will look for meeting items since the current day through January 1st 2025.  
 
 ## Known issues  
-There is current a known issue that if we attempt to connect to both EWS and EXO Powershell, we have some issues with the MSAL authentication token.  
+There is currently a known issue that if we attempt to connect to both EWS and EXO Powershell, we have some issues with the MSAL authentication token.  
 So if the script is run with the parameter 'ValidateRoomsExistence' it will connect successfully to EXO and validate the room mailboxes existence, but later it will fail to connect to EWS.  
 There is still work in progress to fix this.  
 
