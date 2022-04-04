@@ -1,4 +1,49 @@
-﻿[CmdletBinding()]
+﻿<#
+    .SYNOPSIS
+    Script to replace room locations in user's meeting, with a new room location.
+    
+    .DESCRIPTION
+    Script to replace room locations in user's meeting, with a new room location.
+    
+    .PARAMETER RoomsCSVFilePath
+    Sets the Rooms mapping file path. This file should have 2 columns named "PreviousRoom","newRoom".
+    
+    .PARAMETER MailboxesCSVFilePath
+    Sets the users file path. This file should have 1 column named "PrimarySMTPAddress".
+    
+    .PARAMETER StartDate
+    Sets the start date to look for meeting item in the user mailboxes. By default is the current date.
+    
+    .PARAMETER EndDate
+    Sets the end date to look for meeting item in the user mailboxes. By default is 1 year after the current date.
+    
+    .PARAMETER ValidateRoomsExistence
+    If this Switch parameter is used, the script will not only connect using EWS, but will attempt to connect to EXO Powershell module and validate the room mailboxes exists as valid recipients in Exchange Online.
+    
+    .PARAMETER EnableTranscript
+    If this Switch parameter is used, all information displayed in the Powershell console, will be exported to the transcript file usually saved in "Documents" folder.
+    
+    .EXAMPLE
+    PS C:\> .\Replace-RoomsInMeetings.ps1 -ValidateRoomExistence
+
+    In this example the script will pop-up and prompt for the CSV with the mapping file for room accounts, and the CSV file for the users where to replace the rooms.
+    Aside of connecting to EWS, the script will connect to EXO Powershell (it might ask for credentials again) and validate the rooms detailed in the mapping file exists as recipients in EXO.
+    the script will look for meeting items since the current day and 1 year forward.
+
+    .EXAMPLE
+    PS C:\> .\Replace-RoomsInMeetings.ps1 -RoomsCSVFilePath C:\Temp\RoomsMappingFile.csv
+
+    In this example the script reads the Rooms mapping file from "C:\Temp\RoomsMappingFile.csv".
+    Then will pop-up and prompt for the CSV file for the users where to replace the rooms.
+    the script will look for meeting items since the current day and 1 year forward.
+
+    .EXAMPLE
+    PS C:\> .\Replace-RoomsInMeetings.ps1 -RoomsCSVFilePath C:\Temp\RoomsMappingFile.csv -MailboxesCSVFilePath C:\Temp\Users.Csv -EndDate 01/01/2025
+
+    In this example the script reads the Rooms mapping file from "C:\Temp\RoomsMappingFile.csv" and user's list from "C:\Temp\Users.Csv".
+    the script will look for meeting items since the current day through January 1st 2025.
+#>
+[CmdletBinding()]
 param(
     [String] $RoomsCSVFilePath,
 
@@ -106,14 +151,44 @@ process {
     }
     #endregion
 
+    #creating service object
+    $ExchangeVersion = [Microsoft.Exchange.WebServices.Data.ExchangeVersion]::Exchange2013_SP1
+    $service = New-Object Microsoft.Exchange.WebServices.Data.ExchangeService($ExchangeVersion)
+    
+    #region Getting oauth credentials using MSAL
+    Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Connecting to EWS. Please insert user credentials with Impersonation permissions."
+    if ( -not(Get-Module Microsoft.Identity.Client -ListAvailable) ) {
+        Install-Module Microsoft.Identity.Client -Force -ErrorAction Stop
+    }
+    Import-Module Microsoft.Identity.Client -Force -ErrorAction SilentlyContinue
+    $AppId = "8799ab60-ace5-4bda-b31f-621c9f6668db"
+    $pcaOptions = [Microsoft.Identity.Client.PublicClientApplicationOptions]::new()
+    $pcaOptions.ClientId = $AppId
+    $pcaOptions.RedirectUri = "http://localhost/code"
+    $pcaBuilder = [Microsoft.Identity.Client.PublicClientApplicationBuilder]::CreateWithApplicationOptions($pcaOptions)
+    $pca = $pcaBuilder.Build()
+    $scopes = New-Object System.Collections.Generic.List[string]
+    $scopes.Add("https://outlook.office365.com/.default")
+    #$scopes.Add("https://outlook.office.com/EWS.AccessAsUser.All")
+    $authResult = $pca.AcquireTokenInteractive($scopes)
+    $token = $authResult.ExecuteAsync()
+    if ($token.Status -eq "faulted") {
+        Write-Host "[$((Get-Date).ToString("HH:mm:ss"))] Failed to obtain authentication token. Exiting script." -ForegroundColor Red
+        exit
+    }
+    $exchangeCredentials = New-Object Microsoft.Exchange.WebServices.Data.OAuthCredentials($Token.Result.AccessToken)
+    $service.Url = New-Object Uri("https://outlook.office365.com/ews/exchange.asmx")
+    $Service.Credentials = $exchangeCredentials
+    #endregion
+
     #region Validate if room mailboxes exists as valid recipients in EXO
     if ( $ValidateRoomsExistence ) {
         if ( (Get-PSSession).Computername -notcontains "outlook.office365.com" ) {
             if ( -not(Get-Module ExchangeOnlineManagement -ListAvailable) ) {
-                Install-Module ExchangeOnlineManagement -Force -ErrorAction Stop
+                Install-Module ExchangeOnlineManagement -Force -Scope CurrentUser -ErrorAction Stop
             }
             Import-Module ExchangeOnlineManagement
-            Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Connecting to Exchange Online"
+            Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Connecting to Exchange Online. Please insert credentials with Exchange Admin Role."
             Connect-ExchangeOnline -ShowBanner:$False -ErrorAction Stop
         }
         foreach ($line in $csv) {
@@ -134,35 +209,6 @@ process {
             }
         }      
     }
-    #endregion
-
-    #creating service object
-    $ExchangeVersion = [Microsoft.Exchange.WebServices.Data.ExchangeVersion]::Exchange2013_SP1
-    $service = New-Object Microsoft.Exchange.WebServices.Data.ExchangeService($ExchangeVersion)
-    
-    #region Getting oauth credentials using MSAL
-    if ( -not(Get-Module Microsoft.Identity.Client -ListAvailable) ) {
-        Install-Module Microsoft.Identity.Client -Force -ErrorAction Stop
-    }
-    Import-Module Microsoft.Identity.Client -Force -ErrorAction SilentlyContinue
-    $AppId = "8799ab60-ace5-4bda-b31f-621c9f6668db"
-    $pcaOptions = [Microsoft.Identity.Client.PublicClientApplicationOptions]::new()
-    $pcaOptions.ClientId = $AppId
-    $pcaOptions.RedirectUri = "http://localhost/code"
-    $pcaBuilder = [Microsoft.Identity.Client.PublicClientApplicationBuilder]::CreateWithApplicationOptions($pcaOptions)
-    $pca = $pcaBuilder.Build()
-    $scopes = New-Object System.Collections.Generic.List[string]
-    $scopes.Add("https://outlook.office365.com/.default")
-    #$scopes.Add("https://outlook.office.com/EWS.AccessAsUser.All")
-    $authResult = $pca.AcquireTokenInteractive($scopes)
-    $global:token = $authResult.ExecuteAsync()
-    if ($Token.Status -eq "faulted") {
-        Write-Host "[$((Get-Date).ToString("HH:mm:ss"))] Failed to obtain authentication token. Exiting script." -ForegroundColor Red
-        exit
-    }
-    $exchangeCredentials = New-Object Microsoft.Exchange.WebServices.Data.OAuthCredentials($Token.Result.AccessToken)
-    $service.Url = New-Object Uri("https://outlook.office365.com/ews/exchange.asmx")
-    $Service.Credentials = $exchangeCredentials
     #endregion
 
     $i = 0
