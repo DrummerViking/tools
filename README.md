@@ -1,6 +1,8 @@
 # Exchange Powershell tools
 Exchange Powershell tools mostly use in Exchange Online (Office 365)
 
+1. [Replace Room locations in meetings for new ones (EXO)](#replace-room-locations-in-meetings-for-new-ones-exo)
+
 
 ## Search-GUI tool (Exchange On-prem)
 Allows admins to Search, export and Delete content from mailboxes.  
