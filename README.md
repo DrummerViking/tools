@@ -1,8 +1,22 @@
 # Exchange Powershell tools
 Exchange Powershell tools mostly use in Exchange Online (Office 365)
 
-1. [Replace Room locations in meetings for new ones (EXO)](#replace-room-locations-in-meetings-for-new-ones-exo)
-
+1. [Search-GUI tool (Exchange On-prem)](#search-gui-tool-exchange-on-prem)
+2. [Get MRM Statistics Tool (Exchange On-prem and EXO)](#get-mrm-statistics-tool-exchange-on-prem-and-exo)
+3. [Get MRM Romaing XML Stream from Mailbox (Exchange On-prem and EXO)](#get-mrm-romaing-xml-stream-from-mailbox-exchange-on-prem-and-exo)
+4. [Merge SoftDeleted Mailboxes using a GUI (EXO)](#merge-softdeleted-mailboxes-using-a-gui-exo)
+5. [Online Mailbox and Archive report using a GUI  (EXO)](#online-mailbox-and-archive-report-using-a-gui-exo)
+6. [Delete Meetings using a GUI  (Exchange On-prem and EXO)](#delete-meetings-using-a-gui-exchange-on-prem-and-exo)
+7. [Replace Room locations in meetings for new ones (EXO)](#replace-room-locations-in-meetings-for-new-ones-exo)
+8. [Report Calendar Items (EXO)](#report-calendar-items-exo)
+9. [Manage Mobile Devices using a GUI (EXO)](#manage-mobile-devices-using-a-gui-exo)
+10. [Manage Folder Permisions for Admins using a GUI (Exchange On-prem and EXO)](#manage-folder-permisions-for-admins-using-a-gui-exchange-on-prem-and-exo)
+11. [ Manage UserPhoto using a GUI (Exchange On-prem and EXO)](#manage-userphoto-using-a-gui-exchange-on-prem-and-exo)
+12. [Parse Incident reports emails (Exchange On-prem and EXO)](#parse-incident-reports-emails-exchange-on-prem-and-exo)
+13. [Get Quarantine Report based on group members (EXO)](#get-quarantine-report-based-on-group-members-exo)
+14. [Test Autodiscover V2](#test-autodiscover-v2)
+15. [Collect FreeBusy information (Exchange On-prem and EXO)](#collect-freebusy-information-exchange-on-prem-and-exo)
+16. [Get Exchange Server Info Tool (Exchange On-prem)](#get-exchange-server-info-tool-exchange-on-prem)
 
 ## Search-GUI tool (Exchange On-prem)
 Allows admins to Search, export and Delete content from mailboxes.  
@@ -77,7 +91,7 @@ More info and details here:
 
 ----  
 
-## Report Calendar Items  (EXO)  
+## Report Calendar Items (EXO)  
 Reports how many calendar items, per calendar year, some user/room mailboxes have in Exchange Online.  
 Report can be exported to a DestinationFolderPath or by default to user's Desktop.  
 
@@ -95,13 +109,13 @@ The report exports the following columns:
 
 ----
 
-## Manage Mobile Devices using a GUI  (EXO)  
+## Manage Mobile Devices using a GUI (EXO)  
 Allows admins to manage mobile devices in Exchange Online with a simplified GUI, and 'allow' or 'block' them in bulk.  
 [File](/Manage-MobileDevices/) - [Download (Right click and select 'Save link as')](https://raw.githubusercontent.com/agallego-css/tools/master/Manage-MobileDevices/Manage-Mobiles-GUI.ps1)  
 
 ----
 
-## Manage Folder Permisions for Admins using a GUI  (Exchange On-prem and EXO)  
+## Manage Folder Permisions for Admins using a GUI (Exchange On-prem and EXO)  
 This file loads a GUI (Powershell Forms) to allow an admin to manage their user's mailbox folder permissions. It allows to add, remove and get permissions.  
 It has a simple logic to try to connect to on-premises environments automatically.  
 It has been tested in Exchange 2013 and Office 365.  
@@ -109,14 +123,14 @@ It has been tested in Exchange 2013 and Office 365.
 
 ----
 
-## Manage UserPhoto using a GUI  (Exchange On-prem and EXO)  
+## Manage UserPhoto using a GUI (Exchange On-prem and EXO)  
 Allow admins to upload user Photos to Exchange Online using a GUI.  
 We grant the option to create a RBAC Role Group, with the minimum permissions to list mailboxes and manage UserPhotos. This is intended for a help desk assignment.  
 [File](/Manage-UserPhoto-gui/) - [Download (Right click and select 'Save link as')](https://raw.githubusercontent.com/agallego-css/tools/master/Manage-UserPhoto-gui/Manage-UserPhotoGUI.ps1)  
 
 ----
 
-## Parse Incident reports emails  (Exchange On-prem and EXO)  
+## Parse Incident reports emails (Exchange On-prem and EXO)  
 
 Have you ever had a folder in your mailbox with a bunch of Incident report emails? When the time comes to look for all the reports matching a rule, or a sender, you can't just look at your e-mails one by one.  
 With this script, you will read all the e-mail reports in a folder, and extract that content to a CSV, so you can easily open with a spreadsheet editor and perform easier queries against it.  
@@ -143,19 +157,19 @@ Tests AutodiscoverV2 against Office365 or Exchange On-premises with different pr
 
 ----
 
-## Collect FreeBusy information  (Exchange On-prem and EXO)  
+## Collect FreeBusy information (Exchange On-prem and EXO)  
 Collects info usually requested by Microsoft support to troubleshoot FreeBusy issues.  
 [File](/CollectFBLogs/)
 
 ----
 
-##  Collect SMTP Auth logs  (under construction)  
+##  Collect SMTP Auth logs (under construction)  
 Collects info usually requested by Microsoft support to troubleshoot SMTP client submission issues.  
 [File](/CollectSMTPLogs/)  
 
 ----  
 
-## Get Exchange Server Info Tool  (Exchange On-prem)  
+## Get Exchange Server Info Tool (Exchange On-prem)  
 
 - This script checks the On-Premises Exchange servers for general information by getting:  
 > Server's name, build number (and RU/CU name), AD Site and roles, .NET version, V++ versions.
