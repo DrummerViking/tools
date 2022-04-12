@@ -53,14 +53,14 @@ Allows to select and combine if we involve Archive Mailboxes.
 
 ----
 
-## Online Mailbox and Archive report using a GUI  (EXO)  
+## Online Mailbox and Archive report using a GUI (EXO)  
 Get reports for Mailboxes and Archives hosted in Exchange Online.  
 Report can be viewed live in powershell interface, or send as HTML report by email.  
 [More Info](/OnlineArchiveReport-gui/) - [Download (Right click and select 'Save link as')](https://raw.githubusercontent.com/agallego-css/tools/master/OnlineArchiveReport-gui/OnlineArchiveReport-GUI.ps1)  
 
 ----
 
-## Delete Meetings using a GUI  (Exchange On-prem and EXO)  
+## Delete Meetings using a GUI (Exchange On-prem and EXO)  
 Delete Meeting items from attendees when Organizers already left the company, in Exchange Online.  
 You can pass a list of users/room mailboxes, and delete all meetings found from a specific Organizer.  
 
