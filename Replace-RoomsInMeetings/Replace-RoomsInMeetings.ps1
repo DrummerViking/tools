@@ -60,7 +60,7 @@ param(
 
     [switch] $ValidateRoomsExistence,
 
-    [switch] $EnableTranscript = $false
+    [switch] $EnableTranscript
 )
 
 Begin {
@@ -263,7 +263,7 @@ process {
             continue
         }
         
-        [int]$NumOfItems = 100
+        [int]$NumOfItems = 10000
 
         $calView = New-Object Microsoft.Exchange.WebServices.Data.CalendarView($startDate, $endDate, $NumOfItems)
         $calView.PropertySet = New-Object Microsoft.Exchange.WebServices.Data.PropertySet([Microsoft.Exchange.WebServices.Data.AppointmentSchema]::Subject, [Microsoft.Exchange.WebServices.Data.AppointmentSchema]::Start, [Microsoft.Exchange.WebServices.Data.AppointmentSchema]::End, [Microsoft.Exchange.WebServices.Data.AppointmentSchema]::Organizer)
@@ -273,12 +273,26 @@ process {
             $j++
             Write-Progress -Id 0 -Activity "Scanning item $j out of $($Appointments.Items.count)" -status "Percent scanned: " -PercentComplete ($j * 100 / $($Appointments.Items.count)) -ErrorAction SilentlyContinue
             try {
-                $global:tempItem = [Microsoft.Exchange.WebServices.Data.Appointment]::Bind($service, $Appointment.Id)
+                $tempItem = [Microsoft.Exchange.WebServices.Data.Appointment]::Bind($service, $Appointment.Id)
+                Write-Verbose "[$((Get-Date).ToString("HH:mm:ss"))] Scanning item: '$($tempItem.Subject)'"
                 $roomFound = $csv.previousRoom -eq $tempItem.Resources.Address
+                # If appointment is a recurrent meeting
                 # If resources is empty
                 # OR If resources is not empty but does not contain any of the PreviousRoom accounts we want to replace
                 # OR if the user being scanned is not the current Organizer, then we will continue to the next calendar item
-                if ( $tempItem.Resources.Count -eq 0 -or $roomFound.count -eq 0 -or $tempItem.Organizer.Address -ne $TargetSmtpAddress) {
+                if ( $tempItem.IsRecurring -eq $true -or $tempItem.Resources.Count -eq 0 -or $roomFound.count -eq 0 -or $tempItem.Organizer.Address -ne $TargetSmtpAddress) {
+                    if ( $tempItem.IsRecurring -eq $true ) {
+                        Write-Verbose "[$((Get-Date).ToString("HH:mm:ss"))] Skipping meeting '$($tempItem.Subject)' because is a recurrent meeting or occurrence item."
+                    }
+                    elseif ($tempItem.Resources.Count -eq 0) {
+                        Write-Verbose "[$((Get-Date).ToString("HH:mm:ss"))] Skipping item '$($tempItem.Subject)' because it doesn't have resources, looks to be a single appointment."
+                    }
+                    elseif ($roomFound.count -eq 0) {
+                        Write-Verbose "[$((Get-Date).ToString("HH:mm:ss"))] Skipping meeting '$($tempItem.Subject)' because it doesn't have any resources listed in the rooms mapping CSV file."
+                    }
+                    elseif ($tempItem.Organizer.Address -ne $TargetSmtpAddress) {
+                        Write-Verbose "[$((Get-Date).ToString("HH:mm:ss"))] Skipping meeting '$($tempItem.Subject)' because current working mailbox is not the organizer and cannot update the meeting."
+                    }
                     continue
                 }
                 

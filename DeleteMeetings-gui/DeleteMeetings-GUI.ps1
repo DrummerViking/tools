@@ -114,10 +114,9 @@ function GenerateForm {
         Start-Transcript
     }
 
-    #region import EWS DLL file# Locating DLL location either in working path, in EWS API 2.1 path or in EWS API 2.2 path
+    #region Locating DLL location either in working path, or installing package from the internet
     $EWS = "$pwd\Microsoft.Exchange.WebServices.dll"
-    $test = Test-Path -Path $EWS
-    if ($test -eq $False) {
+    if ( -not(Test-Path -Path $EWS) ) {
         Write-Host "EWS DLL in local path not found" -ForegroundColor Cyan
         $ewspkg = Get-Package Microsoft.Exchange.WebServices -ErrorAction SilentlyContinue
         if ( $null -eq $ewspkg ) {
@@ -135,7 +134,6 @@ function GenerateForm {
     }
     Add-Type -Path $EWS
     #endregion
-
 
     #region Select Exchange version and establish connection
 
