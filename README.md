@@ -162,7 +162,7 @@ Use this script to inject messages into the user Archive's Inbox.
 
 ## Inject test messages into a Public Folder   
 
-Use this script to inject messages into a desired Public Folder.
+Use this script to inject messages into a desired Public Folder.  
 [More Info](/Inject-MailItemsIntoPF/) - [Download (Right click and select 'Save link as')](https://raw.githubusercontent.com/agallego-css/tools/master/Inject-MailItemsIntoPF/Inject-MailItemsIntoPF.ps1)  
 
 ----  
