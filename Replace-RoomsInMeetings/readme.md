@@ -62,6 +62,9 @@ the script will look for meeting items since the current day through January 1st
 
 
 ## Version History:
+### 1.03 - 04/18/2022
+ - Fixed: Added logic to skip recurrent meetings. Still need to find some handling of recurrent meetings.
+ - Added: Added Verbose output with more details.
 ### 1.01 - 04/04/2022
  - Fixed: Fixed dual connection to EWS and EXO if selecting Switch parameter "ValidateRoomExistence".
  - Added: Added functionally to validate user mailboxes as well with new Switch parameter "ValidateUsersExistence".
