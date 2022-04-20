@@ -14,9 +14,11 @@ Exchange Powershell tools mostly use in Exchange Online (Office 365)
 11. [ Manage UserPhoto using a GUI (Exchange On-prem and EXO)](#manage-userphoto-using-a-gui-exchange-on-prem-and-exo)
 12. [Parse Incident reports emails (Exchange On-prem and EXO)](#parse-incident-reports-emails-exchange-on-prem-and-exo)
 13. [Get Quarantine Report based on group members (EXO)](#get-quarantine-report-based-on-group-members-exo)
-14. [Test Autodiscover V2](#test-autodiscover-v2)
-15. [Collect FreeBusy information (Exchange On-prem and EXO)](#collect-freebusy-information-exchange-on-prem-and-exo)
-16. [Get Exchange Server Info Tool (Exchange On-prem)](#get-exchange-server-info-tool-exchange-on-prem)
+14. [Inject test messages into the Archive's Inbox](#inject-test-messages-into-the-archives-inbox)
+15. [Inject test messages into a Public Folder](#inject-test-messages-into-a-public-folder)
+16. [Test Autodiscover V2](#test-autodiscover-v2)
+17. [Collect FreeBusy information (Exchange On-prem and EXO)](#collect-freebusy-information-exchange-on-prem-and-exo)
+18. [Get Exchange Server Info Tool (Exchange On-prem)](#get-exchange-server-info-tool-exchange-on-prem)
 
 ## Search-GUI tool (Exchange On-prem)
 Allows admins to Search, export and Delete content from mailboxes.  
@@ -147,9 +149,23 @@ Generate HTML report listing quarantine messages for a Security Group and its me
 This report can be sent by e-mail to a list of recipients and/or tenant Admins and/or to the group member themselves.  
 The report will be saved to the user's desktop by default or can be modified in the ReportFilePath parameter.  
 
-[More Info](Get-QuarantineReport/) - [Download (Right click and select 'Save link as')](https://raw.githubusercontent.com/agallego-css/tools/master/Get-QuarantineReport/Get-QuarantineReport.ps1)  
+[More Info](/Get-QuarantineReport/) - [Download (Right click and select 'Save link as')](https://raw.githubusercontent.com/agallego-css/tools/master/Get-QuarantineReport/Get-QuarantineReport.ps1)  
 
 ----
+
+## Inject test messages into the Archive's inbox   
+
+Use this script to inject messages into the user Archive's Inbox.  
+[More Info](/Inject-MailItemsIntoArchive/) - [Download (Right click and select 'Save link as')](https://raw.githubusercontent.com/agallego-css/tools/master/Inject-MailItemsIntoArchive/Inject-MailItemsIntoArchive.ps1)  
+
+----  
+
+## Inject test messages into a Public Folder   
+
+Use this script to inject messages into a desired Public Folder.
+[More Info](/Inject-MailItemsIntoPF/) - [Download (Right click and select 'Save link as')](https://raw.githubusercontent.com/agallego-css/tools/master/Inject-MailItemsIntoPF/Inject-MailItemsIntoPF.ps1)  
+
+----  
 
 ## Test Autodiscover V2  
 Tests AutodiscoverV2 against Office365 or Exchange On-premises with different protocols available.  
