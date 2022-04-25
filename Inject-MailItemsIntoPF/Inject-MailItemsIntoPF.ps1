@@ -7,7 +7,6 @@
     It requires a Target Public Folder path, and will be validated.
     You can pass a sample file, or if ommitted we will create a test file of 34MB.
     The script will attempt to inject the amount of messages defined in NumberOfMessages.
-
     Optionally can use BasicAuth (by default will attempt Modern Auth) and enable Transcript.
     
     .PARAMETER TargetPublicFolder
@@ -26,13 +25,15 @@
     Use this Switch parameter to connect to EWS using Basic Auth. By default the script will attempt to connect using Modern Auth.
     
     .EXAMPLE
-    PS C:\> Inject-MailItemsIntoPF.ps1 -TargetPublicFolder "\My Company Root\folder1" -NumberOfMessages 10
+    PS C:\> .\Inject-MailItemsIntoPF.ps1 -TargetPublicFolder "\My Company Root\folder1" -NumberOfMessages 10
+
     The script will request the user credentials.
     Will validate the folder path exists.
     Will attempt to inject 10 messages into the target folder "\My Company Root\folder1".
 
     .EXAMPLE
-    PS C:\> Inject-MailItemsIntoPF.ps1 -TargetPublicFolder "\Corp\subfolder2" -EnableTranscript -UseBasicAuth
+    PS C:\> .\Inject-MailItemsIntoPF.ps1 -TargetPublicFolder "\Corp\subfolder2" -EnableTranscript -UseBasicAuth
+
     The script will request the user credentials.
     Will validate the folder path exists.
     Will attempt to inject 100 messages (default value) into the target folder.

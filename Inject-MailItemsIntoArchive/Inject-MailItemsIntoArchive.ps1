@@ -7,7 +7,6 @@
     You can optionally use a TargetSMTPAddress if you have the proper Impersonation Permission.
     You can pass a sample file, or if ommitted we will create a test file of 34MB.
     The script will attempt to inject the amount of messages defined in NumberOfMessages.
-
     Optionally can use BasicAuth (by default will attempt Modern Auth) and enable Transcript.
     
     .PARAMETER TargetSmtpAddress
@@ -26,12 +25,14 @@
     Use this Switch parameter to connect to EWS using Basic Auth. By default the script will attempt to connect using Modern Auth.
     
     .EXAMPLE
-    PS C:\> Inject-MailItemsIntoArchive.ps1 -NumberOfMessages 10
+    PS C:\> .\Inject-MailItemsIntoArchive.ps1 -NumberOfMessages 10
+
     The script will request the user's credentials.
     Will attempt to inject 10 messages into the Archive's Inbox.
 
     .EXAMPLE
-    PS C:\> Inject-MailItemsIntoPF.ps1 -TargetSMTPAddress "impersonatedUser@contoso.com" -EnableTranscript -UseBasicAuth
+    PS C:\> .\Inject-MailItemsIntoPF.ps1 -TargetSMTPAddress "impersonatedUser@contoso.com" -EnableTranscript -UseBasicAuth
+
     The script will request the user's credentials with the Impersonation permissions to connect to the user "impersonatedUser@contoso.com".
     Will attempt to inject 100 messages (default value) into the Arvhive's Inbox folder.
     Will save all powershell output to Transcript file.
