@@ -36,7 +36,7 @@ PS C:\> Inject-MailItemsIntoPF.ps1 -TargetSMTPAddress "impersonated@contoso.com"
 The script will request the user credentials which have impersonation permissions to open mailbox "impersonated@contoso.com".  
 Will attempt to inject 100 messages (default value) into the user Archive's Inbox.  
 Will save all powershell output to the Transcript file.  
-
+Will connect to EWS using Basic Auth instead of Modern Auth.  
 
 ## Version History:  
 ### 1.00 - 04/20/2022
