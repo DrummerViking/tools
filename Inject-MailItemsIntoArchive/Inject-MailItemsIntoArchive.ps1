@@ -124,8 +124,9 @@ if ( $UseBasicAuth ){
     #$scopes.Add("https://outlook.office.com/EWS.AccessAsUser.All")
     $authResult = $pca.AcquireTokenInteractive($scopes)
     $token = $authResult.ExecuteAsync()
-    while ( $token.IsCompleted -eq $False ) { <# Waiting or token auth flow to complete #>}
-    if ($token.Status -eq "faulted") {
+    while ( $token.IsCompleted -eq $False ) { <# Waiting for token auth flow to complete #>}
+    if ($token.Status -eq "Faulted" -and $token.Exception.Message.StartsWith("One or more errors occurred. (ActiveX control '8856f961-340a-11d0-a96b-00c04fd705a2'")) {
+        Write-Host "[$((Get-Date).ToString("HH:mm:ss"))] Known issue occurred. There is work in progress to fix authentication flow." -ForegroundColor red
         Write-Host "[$((Get-Date).ToString("HH:mm:ss"))] Failed to obtain authentication token. Exiting script." -ForegroundColor Red
         exit
     }
