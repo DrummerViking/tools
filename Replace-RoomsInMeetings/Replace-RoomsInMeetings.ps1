@@ -246,11 +246,15 @@ process {
 
     # loop through each mailbox user looking for meeting items
     $i = 0
+    $mbxsCount = 1
+    if ( $mbxs.Count -gt 0 ) {
+        $mbxsCount = $mbxs.count
+    }
     foreach ($mbx in $mbxs) {
         Remove-Variable Appointments -Force -ErrorAction SilentlyContinue
         $i++
         $j = 0
-        Write-Progress -Id 0 -Activity "Scanning mailbox $i out of $($mbxs.count)" -status "Percent scanned: " -PercentComplete ($i * 100 / $($mbxs.Count)) -ErrorAction SilentlyContinue
+        Write-Progress -Id 0 -Activity "Scanning mailbox $i out of $mbxsCount" -status "Percent scanned: " -PercentComplete ($i * 100 / $mbxsCount) -ErrorAction SilentlyContinue
         Write-Host "[$((Get-Date).ToString("HH:mm:ss"))] Working on mailbox: $($mbx.PrimarySMTPAddress)" -ForegroundColor Green
         # Setting impersonation address to target mailbox
         $TargetSmtpAddress = $mbx.PrimarySMTPAddress
@@ -280,6 +284,12 @@ process {
                 $tempItem = [Microsoft.Exchange.WebServices.Data.Appointment]::Bind($service, $Appointment.Id)
                 Write-Verbose "[$((Get-Date).ToString("HH:mm:ss"))] Scanning item: '$($tempItem.Subject)'"
                 $roomFound = $csv.previousRoom -eq $tempItem.Resources.Address
+                if ( $roomFound.GetType().name -eq "Boolean" -and $True -eq $roomFound ) {
+                    $roomFound = $csv.previousRoom
+                }
+                elseif ($roomFound.GetType().name -eq "Boolean" -and $False -eq $roomFound) {
+                    $roomFound = @()
+                }
                 # If resources is empty
                 # OR If resources is not empty but does not contain any of the PreviousRoom accounts we want to replace
                 # OR if the user being scanned is not the current Organizer
