@@ -23,9 +23,9 @@ If this Switch parameter is used, the script will not only connect using EWS, bu
 ### PARAMETER ValidateRoomsExistence  
 If this Switch parameter is used, the script will not only connect using EWS, but will attempt to connect to EXO Powershell module and validate the room mailboxes exists as valid recipients in Exchange Online.  
 
-### PARAMETER EnableTranscript  
-If this Switch parameter is used, all information displayed in the Powershell console, will be exported to the transcript file usually saved in "Documents" folder.  
-
+### .PARAMETER NoTranscript  
+If this Switch parameter is used, No Powershell Transcript will be created. By Default all information displayed in the Powershell console, will be exported to the transcript file usually saved in "Documents" folder.  
+   
 ## How to use the mapping file  
 When composing the CSV for the rooms mailboxes mapping file, the script expects 2 columns.  
 First column is the current Room mailbox being used in the meeting, and second column is the new room mailbox that will replace the one on the left.  
@@ -44,6 +44,7 @@ PS C:\> .\Replace-RoomsInMeetings.ps1 -ValidateRoomExistence
 In this example the script will pop-up and prompt for the CSV with the mapping file for room accounts, and the CSV file for the users where to replace the rooms.  
 Aside of connecting to EWS, the script will connect to EXO Powershell (it might ask for credentials again) and validate the rooms detailed in the mapping file exists as recipients in EXO.  
 the script will look for meeting items since the current day and 1 year forward.  
+A transcript file will be created in the user's Documents folder.  
 
 ### Example 2  
 ```powershell
@@ -52,6 +53,7 @@ PS C:\> .\Replace-RoomsInMeetings.ps1 -RoomsCSVFilePath C:\Temp\RoomsMappingFile
 In this example the script reads the Rooms mapping file from "C:\Temp\RoomsMappingFile.csv".  
 Then will pop-up and prompt for the CSV file for the users where to replace the rooms.  
 the script will look for meeting items since the current day and 1 year forward.  
+A transcript file will be created in the user's Documents folder.  
 
 ### Example 3  
 ```powershell
@@ -59,10 +61,11 @@ PS C:\> .\Replace-RoomsInMeetings.ps1 -RoomsCSVFilePath C:\Temp\RoomsMappingFile
 ```
 In this example the script reads the Rooms mapping file from "C:\Temp\RoomsMappingFile.csv" and user's list from "C:\Temp\Users.Csv".  
 the script will look for meeting items since the current day through January 1st 2025.  
-
+A transcript file will be created in the user's Documents folder.  
 
 ## Version History:
 ### 1.05 - 04/28/2022
+ - Updated: Change script to enable PS Transcript by default. The user can use the optional parameter "NoTranscript".  
  - Fixed: Object types when the CSV files contains just one line instead of a collection of items.
  - Fixed: Mailbox count variable for write progress operation.
  - Fixed: Recurrent meetings handling. The script now should be updating the whole series.  
