@@ -314,7 +314,7 @@ process {
                 $newRoomAttendee.Name = $recipientResolved.mailbox.Name
 
                 if ( $tempItem.IsRecurring -eq $true ) {
-                    Write-Verbose "[$((Get-Date).ToString("HH:mm:ss"))] Processing recurrent meeting '$($tempItem.Subject)'."
+                    Write-Verbose "[$((Get-Date).ToString("HH:mm:ss"))] Processing item as a recurrent meeting '$($tempItem.Subject)'. Updating Recurring Master item."
                     $tempItem = [Microsoft.Exchange.WebServices.Data.Appointment]::BindToRecurringMaster($service, $tempItem.Id)
                 }
                 $tempItem.Resources.Clear()
