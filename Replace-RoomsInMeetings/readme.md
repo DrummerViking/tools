@@ -62,6 +62,8 @@ the script will look for meeting items since the current day through January 1st
 
 
 ## Version History:
+### 1.04 - 04/28/2022
+ - Fixed: Fixed recurrent meetings handling. The script now should be updating the whole series.  
 ### 1.03 - 04/18/2022
  - Fixed: Added logic to skip recurrent meetings. Still need to find some handling of recurrent meetings.
  - Added: Added Verbose output with more details.

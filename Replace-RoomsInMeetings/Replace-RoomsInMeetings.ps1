@@ -244,6 +244,7 @@ process {
     }
     #endregion
 
+    # loop through each mailbox user looking for meeting items
     $i = 0
     foreach ($mbx in $mbxs) {
         Remove-Variable Appointments -Force -ErrorAction SilentlyContinue
@@ -270,6 +271,7 @@ process {
         $calView = New-Object Microsoft.Exchange.WebServices.Data.CalendarView($startDate, $endDate, $NumOfItems)
         $calView.PropertySet = New-Object Microsoft.Exchange.WebServices.Data.PropertySet([Microsoft.Exchange.WebServices.Data.AppointmentSchema]::Subject, [Microsoft.Exchange.WebServices.Data.AppointmentSchema]::Start, [Microsoft.Exchange.WebServices.Data.AppointmentSchema]::End, [Microsoft.Exchange.WebServices.Data.AppointmentSchema]::Organizer)
 
+        # loop through each calendar item in the current mailbox
         $Appointments = $Calendarfolder.FindAppointments($calView)
         foreach ($Appointment in $Appointments) {
             $j++
@@ -278,15 +280,12 @@ process {
                 $tempItem = [Microsoft.Exchange.WebServices.Data.Appointment]::Bind($service, $Appointment.Id)
                 Write-Verbose "[$((Get-Date).ToString("HH:mm:ss"))] Scanning item: '$($tempItem.Subject)'"
                 $roomFound = $csv.previousRoom -eq $tempItem.Resources.Address
-                # If appointment is a recurrent meeting
                 # If resources is empty
                 # OR If resources is not empty but does not contain any of the PreviousRoom accounts we want to replace
-                # OR if the user being scanned is not the current Organizer, then we will continue to the next calendar item
-                if ( $tempItem.IsRecurring -eq $true -or $tempItem.Resources.Count -eq 0 -or $roomFound.count -eq 0 -or $tempItem.Organizer.Address -ne $TargetSmtpAddress) {
-                    if ( $tempItem.IsRecurring -eq $true ) {
-                        Write-Verbose "[$((Get-Date).ToString("HH:mm:ss"))] Skipping meeting '$($tempItem.Subject)' because is a recurrent meeting or occurrence item."
-                    }
-                    elseif ($tempItem.Resources.Count -eq 0) {
+                # OR if the user being scanned is not the current Organizer
+                #   THEN we will continue to the next calendar item
+                if ( $tempItem.Resources.Count -eq 0 -or $roomFound.count -eq 0 -or $tempItem.Organizer.Address -ne $TargetSmtpAddress) {
+                    if ($tempItem.Resources.Count -eq 0) {
                         Write-Verbose "[$((Get-Date).ToString("HH:mm:ss"))] Skipping item '$($tempItem.Subject)' because it doesn't have resources, looks to be a single appointment."
                     }
                     elseif ($roomFound.count -eq 0) {
@@ -297,14 +296,18 @@ process {
                     }
                     continue
                 }
-                
-                #$tempItem | Select-Object subject,@{N="Organizer";E={$tempItem.Organizer.Address}},RequiredAttendees,@{N="Resources";E={$tempItem.Resources.address}} | ft -a
                 Write-host "[$((Get-Date).ToString("HH:mm:ss"))] Previous room $roomFound found in meeting '$($tempItem.Subject)'." -ForegroundColor Cyan
-                $tempItem.Resources.Clear()
+                # doing a Check Name against the new Room mailbox
                 $recipientResolved = $service.ResolveName($rooms[$roomFound])
                 $newRoomAttendee = New-Object Microsoft.Exchange.WebServices.Data.Attendee($recipientResolved.mailbox.Address)
                 $newRoomAttendee.RoutingType = $recipientResolved.mailbox.RoutingType
                 $newRoomAttendee.Name = $recipientResolved.mailbox.Name
+
+                if ( $tempItem.IsRecurring -eq $true ) {
+                    Write-Verbose "[$((Get-Date).ToString("HH:mm:ss"))] Processing recurrent meeting '$($tempItem.Subject)'."
+                    $tempItem = [Microsoft.Exchange.WebServices.Data.Appointment]::BindToRecurringMaster($service, $tempItem.Id)
+                }
+                $tempItem.Resources.Clear()
                 $null = $tempItem.Resources.Add($newRoomAttendee)
                 $tempItem.Location = $newRoomAttendee.Name
                 #$tempItem | Select-Object subject,@{N="Organizer";E={$tempItem.Organizer.Address}},RequiredAttendees,@{N="Resources";E={$tempItem.Resources.address}} | ft -a
