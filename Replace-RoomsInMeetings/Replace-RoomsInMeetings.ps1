@@ -315,7 +315,8 @@ process {
                 $newRoomAttendee = New-Object Microsoft.Exchange.WebServices.Data.Attendee($recipientResolved.mailbox.Address)
                 $newRoomAttendee.RoutingType = $recipientResolved.mailbox.RoutingType
                 $newRoomAttendee.Name = $recipientResolved.mailbox.Name
-
+                
+                # if the calendar item is a recurring meeting, we are binding to the recurrening Master item, in order to successfully update the whole series.
                 if ( $tempItem.IsRecurring -eq $true ) {
                     Write-Verbose "[$((Get-Date).ToString("HH:mm:ss"))] Processing item as a recurrent meeting '$($tempItem.Subject)'. Updating Recurring Master item."
                     $tempItem = [Microsoft.Exchange.WebServices.Data.Appointment]::BindToRecurringMaster($service, $tempItem.Id)
@@ -323,7 +324,6 @@ process {
                 $tempItem.Resources.Clear()
                 $null = $tempItem.Resources.Add($newRoomAttendee)
                 $tempItem.Location = $newRoomAttendee.Name
-                #$tempItem | Select-Object subject,@{N="Organizer";E={$tempItem.Organizer.Address}},RequiredAttendees,@{N="Resources";E={$tempItem.Resources.address}} | ft -a
                 $tempItem.Update([Microsoft.Exchange.WebServices.Data.ConflictResolutionMode]::AutoResolve, [Microsoft.Exchange.WebServices.Data.SendInvitationsOrCancellationsMode]::SendToAllAndSaveCopy)
                 write-host "[$((Get-Date).ToString("HH:mm:ss"))] Replacing $roomFound for $($rooms[$roomFound])" -ForegroundColor Cyan
             }
