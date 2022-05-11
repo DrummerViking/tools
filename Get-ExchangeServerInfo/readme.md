@@ -45,6 +45,8 @@ It will check for the most common protocols user load.
 This optional switch allows to check for ASA Credentails in the environment.  
 
 ## Version History:  
+### 1.111 - 05/11/2022
+ - Updated build versions for May 2022 releases
 ### 1.109 - 06/29/2021
  - Updated build versions for June 2021 releases
 ### 1.107 - 03/16/2021

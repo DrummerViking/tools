@@ -182,8 +182,8 @@ Function Get-ServerVersion {
                 1497 { $exSetupVer += " - CU23" }
                 default {}
             }
-            # Determine CU version for Exchange 2016 builds
         }
+        # Determine CU version for Exchange 2016 builds
         elseif ($CAS.AdminDisplayVersion.Minor -eq "1") {
             switch ($CU) {
                 0225 { $exSetupVer += " - RTM" }
@@ -209,11 +209,12 @@ Function Get-ServerVersion {
                 2242 { $exSetupVer += " - CU20" }
                 2308 { $exSetupVer += " - CU21" }
                 2375 { $exSetupVer += " - CU22" }
+                2507 { $exSetupVer += " - CU23" }
                 default {}
             }
         }
-        # Determine CU version for Exchange 2019 builds
     }
+    # Determine CU version for Exchange 2019 builds
     elseif ($CAS.AdminDisplayVersion.Minor -eq "2") {
         switch ($CU) {
             0221 { $exSetupVer += " - RTM" }
@@ -228,6 +229,7 @@ Function Get-ServerVersion {
             0858 { $exSetupVer += " - CU9" }
             0922 { $exSetupVer += " - CU10" }
             0986 { $exSetupVer += " - CU11" }
+            1118 { $exSetupVer += " - CU12" }
             default {}
         }
     }
