@@ -34,7 +34,7 @@ Param (
     [String]$Server = "outlook.office365.com",
  
     [Parameter( Mandatory = $true, Position = 2)]
-    [ValidateSet("AutodiscoverV2", "ActiveSync", "Ews", "Rest", "Substrate", "SubstrateNotificationService", "SubstrateSearchService", "OutlookMeetingScheduler")]
+    [ValidateSet("AutodiscoverV2", "ActiveSync", "Ews", "Rest", "Substrate", "SubstrateNotificationService", "SubstrateSearchService", "OutlookMeetingScheduler", "OutlookPay", "Actions", "Connectors", "ConnectorsProcessors", "ConnectorsWebhook", "NotesClient", "OwaPoweredExperience", "ToDo", "Weve", "OutlookLocationsService", "OutlookCloudSettingsService", "OutlookTailoredExperiences", "OwaPoweredExperienceV2", "Speedway", "SpeechAndLanguagePersonalization", "SubstrateSignalService")]
     [String]$Protocol,
 
     [Parameter( Mandatory = $false, Position = 3)]
