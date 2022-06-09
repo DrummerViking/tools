@@ -66,6 +66,8 @@ Report can be viewed live in powershell interface, or send as HTML report by ema
 Delete Meeting items from attendees when Organizers already left the company, in Exchange Online.  
 You can pass a list of users/room mailboxes, and delete all meetings found from a specific Organizer.  
 
+There is also a Graph Powershell script that can be used as well [here](https://github.com/agallego-css/GraphTools#remove-graphusercalendarevents).
+
 As this uses EWS, you will need a "master account" with Impersonation permissions. You can run:  
 ``` powershell
 New-ManagementRoleAssignment –Name:impersonationAssignmentName –Role:ApplicationImpersonation –User:<Account>
