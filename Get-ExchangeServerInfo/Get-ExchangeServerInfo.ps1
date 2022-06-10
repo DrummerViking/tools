@@ -400,6 +400,8 @@ if ($CASLoad -eq $true -and $Autodiscover -eq $false) {
                 528040 { $netver = ".NET Framework 4.8" }
                 528049 { $netver = ".NET Framework 4.8" }
                 528209 { $netver = ".NET Framework 4.8" }
+                528372 { $netver = ".NET Framework 4.8" }
+                528449 { $netver = ".NET Framework 4.8" }
             }
             $tempServer | Add-Member -Type NoteProperty -Name ".NET version" -Value $netver
 
@@ -530,6 +532,8 @@ elseif ($CASLoad -eq $false -and $CheckASACredentials -eq $false -and $Autodisco
                 528040 { $netver = ".NET Framework 4.8" }
                 528049 { $netver = ".NET Framework 4.8" }
                 528209 { $netver = ".NET Framework 4.8" }
+                528372 { $netver = ".NET Framework 4.8" }
+                528449 { $netver = ".NET Framework 4.8" }
             }
 
             $tempServer | Add-Member -Type NoteProperty -Name ".NET version" -Value $netver
