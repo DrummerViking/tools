@@ -245,7 +245,7 @@ function GenerateForm {
         $scopes.Add("https://outlook.office365.com/.default")
         #$scopes.Add("https://outlook.office.com/EWS.AccessAsUser.All")
         $authResult = $pca.AcquireTokenInteractive($scopes)
-        $global:token = $authResult.ExecuteAsync()
+        $token = $authResult.ExecuteAsync()
         while ( $token.IsCompleted -eq $False ) { <# Waiting for token auth flow to complete #>}
         if ($token.Status -eq "Faulted" -and $token.Exception.Message.StartsWith("One or more errors occurred. (ActiveX control '8856f961-340a-11d0-a96b-00c04fd705a2'")) {
             Write-Host "Known issue occurred. There is work in progress to fix authentication flow." -ForegroundColor red
