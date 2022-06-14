@@ -316,7 +316,7 @@ process {
                 $newRoomAttendee.RoutingType = $recipientResolved.mailbox.RoutingType
                 $newRoomAttendee.Name = $recipientResolved.mailbox.Name
                 
-                # if the calendar item is a recurring meeting, we are binding to the recurrening Master item, in order to successfully update the whole series.
+                # if the calendar item is a recurring meeting, we are binding to the recurring Master item, in order to successfully update the whole series.
                 if ( $tempItem.IsRecurring -eq $true ) {
                     Write-Verbose "[$((Get-Date).ToString("HH:mm:ss"))] Processing item as a recurrent meeting '$($tempItem.Subject)'. Updating Recurring Master item."
                     $tempItem = [Microsoft.Exchange.WebServices.Data.Appointment]::BindToRecurringMaster($service, $tempItem.Id)

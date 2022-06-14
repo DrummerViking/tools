@@ -336,7 +336,7 @@ function GenerateForm {
         $txtBoxResults.Visible = $False
         $dgResults.AutoResizeColumns()
         $MainForm.refresh()
-        Write-Host "$((Get-Date).ToString("MM-dd-yyyy HH:mm:ss")) - listing all meetings completed. List exported to desktop" -ForegroundColor Yellow
+        Write-Host "$((Get-Date).ToString("MM-dd-yyyy HH:mm:ss")) - listing all meetings completed. List exported to $LogFolder" -ForegroundColor Yellow
         $statusBar.Text = "Ready"
     }
     #endregion
@@ -387,11 +387,11 @@ function GenerateForm {
             }
         }
         $array | export-csv "$LogFolder\DeletedMeetings-$organizer $((Get-Date).ToString("yyyy-MM-dd HH_mm")).csv" -NoTypeInformation
-        $display = "Deletion completed. Please check your resultant file in your Desktop"
+        $display = "Deletion completed. Please check your resultant file in $LogFolder"
         $txtBoxResults.Text = $display
         $txtBoxResults.Visible = $True
         $MainForm.refresh()
-        Write-Host "$((Get-Date).ToString("MM-dd-yyyy HH:mm:ss")) - Deleting all meetings completed. List exported to desktop" -ForegroundColor Yellow
+        Write-Host "$((Get-Date).ToString("MM-dd-yyyy HH:mm:ss")) - Deleting all meetings completed. List exported to $LogFolder" -ForegroundColor Yellow
         $statusBar.Text = "Ready" 
     }
     #endregion
