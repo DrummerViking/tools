@@ -396,7 +396,7 @@ function GenerateForm {
     }
     #endregion
 
-    #endregion
+    #endregion Processes
 
     #region Handlers
     $OnLoadMainWindow_StateCorrection = { #Correct the initial state of the form to prevent the .Net maximized form issue
