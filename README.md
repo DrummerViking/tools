@@ -99,14 +99,20 @@ More info and details here:
 Exports calendar items, some user/room mailboxes have in Exchange Online.  
 Reports can be exported to a ExportFolderPath or by default to user's Desktop.  
 
-If you want to connect using Oauth delegated permissions, you will need a "master account" with Impersonation permissions. You can run:  
-``` powershell
-New-ManagementRoleAssignment –Name:impersonationAssignmentName –Role:ApplicationImpersonation –User:<Account>
-```  
-This will give Impersonation permissions over all mailboxes in the tenant, so is critical that this account is not shared.  
+<details>
+	<summary>Connect using Oauth delegated Permissions</summary>
+	<sub>If you want to connect using Oauth delegated permissions, you will need a "master account" with Impersonation permissions. You can run:  <br>
+<b>New-ManagementRoleAssignment –Name:impersonationAssignmentName –Role:ApplicationImpersonation –User:<Account></b><br>
+This will give Impersonation permissions over all mailboxes in the tenant, so is critical that this account is not shared.<br><br>
+	</sub>
+</details>
 
-If you want to connect using Oauth Application permissions, you need to register an App, grant permissions, and the script will require ClientID, tenantID and ClientSecret.  
-More info [here](https://docs.microsoft.com/en-us/exchange/client-developer/exchange-web-services/how-to-authenticate-an-ews-application-by-using-oauth).  
+<details>
+	<summary>Connect using Oauth Application Permissions</summary>
+	<sub>If you want to connect using Oauth Application permissions, you need to register an App, grant permissions, and the script will require ClientID, tenantID and ClientSecret.  <br>
+More info here: https://docs.microsoft.com/en-us/exchange/client-developer/exchange-web-services/how-to-authenticate-an-ews-application-by-using-oauth <br>  
+	</sub>
+</details>
 
 The report exports the following columns:  
 > Mailbox, Subject, Organizer, RequiredAttendees, OptionalAttendees, Resources, Start Time, End Time, isRecurring, AppointmentType, ItemId  
