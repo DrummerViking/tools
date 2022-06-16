@@ -8,7 +8,7 @@ Exchange Powershell tools mostly use in Exchange Online (Office 365)
 5. [Online Mailbox and Archive report using a GUI  (EXO)](#online-mailbox-and-archive-report-using-a-gui-exo)
 6. [Delete Meetings using a GUI  (Exchange On-prem and EXO)](#delete-meetings-using-a-gui-exchange-on-prem-and-exo)
 7. [Replace Room locations in meetings for new ones (EXO)](#replace-room-locations-in-meetings-for-new-ones-exo)
-8. [Report Calendar Items (EXO)](#report-calendar-items-exo)
+8. [Export Calendar Items (EXO)](#export-calendar-items-exo)
 9. [Manage Mobile Devices using a GUI (EXO)](#manage-mobile-devices-using-a-gui-exo)
 10. [Manage Folder Permisions for Admins using a GUI (Exchange On-prem and EXO)](#manage-folder-permisions-for-admins-using-a-gui-exchange-on-prem-and-exo)
 11. [ Manage UserPhoto using a GUI (Exchange On-prem and EXO)](#manage-userphoto-using-a-gui-exchange-on-prem-and-exo)
@@ -95,21 +95,23 @@ More info and details here:
 
 ----  
 
-## Report Calendar Items (EXO)  
-Reports how many calendar items, per calendar year, some user/room mailboxes have in Exchange Online.  
-Report can be exported to a DestinationFolderPath or by default to user's Desktop.  
+## Export Calendar Items (EXO)  
+Exports calendar items, some user/room mailboxes have in Exchange Online.  
+Reports can be exported to a ExportFolderPath or by default to user's Desktop.  
 
-
-As this uses EWS, you will need a "master account" with Impersonation permissions. You can run:  
+If you want to connect using Oauth delegated permissions, you will need a "master account" with Impersonation permissions. You can run:  
 ``` powershell
 New-ManagementRoleAssignment –Name:impersonationAssignmentName –Role:ApplicationImpersonation –User:<Account>
 ```  
 This will give Impersonation permissions over all mailboxes in the tenant, so is critical that this account is not shared.  
 
-The report exports the following columns:  
-> Mailbox, Subject, Organizer, Start Time, End Time, Received Time  
+If you want to connect using Oauth Application permissions, you need to register an App, grant permissions, and the script will require ClientID, tenantID and ClientSecret.  
+More info [here](https://docs.microsoft.com/en-us/exchange/client-developer/exchange-web-services/how-to-authenticate-an-ews-application-by-using-oauth).  
 
-[More Info](/ReportCalendarItems/) - [Download (Right click and select 'Save link as')](https://raw.githubusercontent.com/agallego-css/tools/master/ReportCalendarItems/Report-CalendarItems.ps1)  
+The report exports the following columns:  
+> Mailbox, Subject, Organizer, RequiredAttendees, OptionalAttendees, Resources, Start Time, End Time, isRecurring, AppointmentType, ItemId  
+
+[More Info](/Export-MeetingItems) - [Download (Right click and select 'Save link as')](https://raw.githubusercontent.com/agallego-css/tools/master/Export-MeetingItems/Export-MeetingItems.ps1)  
 
 ----
 
