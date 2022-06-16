@@ -102,7 +102,7 @@ Reports can be exported to a ExportFolderPath or by default to user's Desktop.
 <details>
 	<summary>Connect using Oauth delegated Permissions</summary>
 	<sub>If you want to connect using Oauth delegated permissions, you will need a "master account" with Impersonation permissions. You can run:  <br>
-<b>New-ManagementRoleAssignment –Name:impersonationAssignmentName –Role:ApplicationImpersonation –User:<Account></b><br>
+<b>New-ManagementRoleAssignment –Name:impersonationAssignmentName –Role:ApplicationImpersonation –User:"Account"</b><br>
 This will give Impersonation permissions over all mailboxes in the tenant, so is critical that this account is not shared.<br><br>
 	</sub>
 </details>

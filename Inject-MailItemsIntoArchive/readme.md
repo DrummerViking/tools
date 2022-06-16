@@ -31,7 +31,7 @@ Will attempt to inject 10 messages into the user Archive's Inbox.
 
 ### Example 2  
 ```powershell
-PS C:\> Inject-MailItemsIntoPF.ps1 -TargetSMTPAddress "impersonated@contoso.com" -EnableTranscript -UseBasicAuth
+PS C:\> Inject-MailItemsIntoArchive.ps1 -TargetSMTPAddress "impersonated@contoso.com" -EnableTranscript -UseBasicAuth
 ```
 The script will request the user credentials which have impersonation permissions to open mailbox "impersonated@contoso.com".  
 Will attempt to inject 100 messages (default value) into the user Archive's Inbox.  
