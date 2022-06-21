@@ -220,7 +220,7 @@ foreach ($mb in $mailboxes) {
     $service.HttpHeaders.Add("X-AnchorMailbox", $TargetSmtpAddress)
 
     # binding to calendar in the primary mailbox, and archive mailbox if exists
-    [int]$NumOfItems = 10000
+    [int]$NumOfItems = 1000000
     $foldersToProcess = @()
     $Calendarfolder = [Microsoft.Exchange.WebServices.Data.Folder]::Bind($service, [Microsoft.Exchange.WebServices.Data.WellKnownFolderName]::Calendar)
     $foldersToProcess += $Calendarfolder
