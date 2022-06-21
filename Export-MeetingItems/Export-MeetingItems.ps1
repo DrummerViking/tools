@@ -83,11 +83,11 @@ param(
     
     [DateTime] $EndDate = (Get-date).AddDays(364),
 
-    [string] $ClientId = "6bdbd18f-1f05-4692-b073-3d0389cb8bbe",
+    [string] $ClientId,
 
-    [String] $TenantID = "ef494636-2282-44b5-8724-3c6a034994a0",
+    [String] $TenantID,
 
-    [String] $ClientSecret = "3EG8Q~y.uQYIOl_7daIQP3yuS8TyZI4.W_nkTbY3",
+    [String] $ClientSecret,
 
     [switch]$EnableTranscript = $false
 )
