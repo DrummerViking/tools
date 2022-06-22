@@ -60,8 +60,10 @@ Will Export meeting items to the selected folder "C:\Reports" in a file named by
 
 
 ## Version History:
+### 1.01 - 06/22/2022
+ - Updated: Changed exported CSV file naming to: "_alias_-CalendaritemsReport_yyyy_MM_dd HH-mm-ss.csv". So if the script is run multiple times, we will conflict with previous files.
 ### 1.01 - 06/21/2022
- - Increasing number of items return per calendar folder, from 10k to 1M items.
+ - Fixed: Increasing number of items return per calendar folder, from 10k to 1M items.
 ### 1.00 - 06/16/2022
  - First Release.
 ### 1.00 - 06/14/2022

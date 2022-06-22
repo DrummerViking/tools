@@ -219,6 +219,8 @@ foreach ($mb in $mailboxes) {
     $service.HttpHeaders.Clear()
     $service.HttpHeaders.Add("X-AnchorMailbox", $TargetSmtpAddress)
 
+    $filePath = "$ExportFolderPath\$($TargetSmtpAddress.split("@")[0])-CalendaritemsReport_$(Get-Date -Format "yyyy_MM_dd HH-mm-ss").csv"
+    
     # binding to calendar in the primary mailbox, and archive mailbox if exists
     [int]$NumOfItems = 1000000
     $foldersToProcess = @()
@@ -253,8 +255,8 @@ foreach ($mb in $mailboxes) {
             $tempItem = [Microsoft.Exchange.WebServices.Data.Appointment]::Bind($service, $Appointment.Id)
             $Subject = $tempItem.subject.ToString().replace($tempItem.Organizer.Name, '')
             $output = $tempItem | Select-Object @{N="Mailbox";E={$mailboxProcessed}},@{N = "Subject"; E = { $Subject.trimstart() } }, organizer, @{N="RequiredAttendees";E={$_.RequiredAttendees -join ";"}}, @{N="OptionalAttendees";E={$_.OptionalAttendees -join ";"}}, @{N="Resources";E={$_.Resources -join ";"}}, start, end, isRecurring, appointmenttype, id
-            $output | export-csv "$ExportFolderPath\$($TargetSmtpAddress.split("@")[0])-CalendaritemsReport.csv" -NoTypeInformation -Append
-        }    
+            $output | export-csv $filePath -NoTypeInformation -Append
+        }
     }
 }
 if ($EnableTranscript) { stop-transcript }
