@@ -118,14 +118,16 @@ function GenerateForm {
     $EWS = "$pwd\Microsoft.Exchange.WebServices.dll"
     if ( -not(Test-Path -Path $EWS) ) {
         Write-Host "EWS DLL in local path not found" -ForegroundColor Cyan
-        $ewspkg = Get-Package Microsoft.Exchange.WebServices -ErrorAction SilentlyContinue
-        if ( $null -eq $ewspkg ) {
+        $ewsPkg = Get-Package Microsoft.Exchange.WebServices -ErrorAction SilentlyContinue
+        if ( $null -eq $ewsPkg ) {
             Write-Host "Downloading EWS DLL Nuget package and installing it" -ForegroundColor Cyan
-            $null = Register-PackageSource -Name MyNuGet -Location https://www.nuget.org/api/v2 -ProviderName NuGet -Trusted -Force
+            if ( -not(Get-PackageSource -ProviderName Nuget -WarningAction SilentlyContinue)) {
+                $null = Register-PackageSource -Name MyNuGet -Location https://www.nuget.org/api/v2 -ProviderName NuGet -Trusted -Force
+            }
             $null = Install-Package Microsoft.Exchange.WebServices -requiredVersion 2.2.0 -Scope CurrentUser
-            $ewspkg = Get-Package Microsoft.Exchange.WebServices -ErrorAction SilentlyContinue
+            $ewsPkg = Get-Package Microsoft.Exchange.WebServices -ErrorAction SilentlyContinue
         }        
-        $EWSPath = $ewspkg.Source.Replace("\Microsoft.Exchange.WebServices.2.2.nupkg","")
+        $EWSPath = $ewsPkg.Source.Replace("\Microsoft.Exchange.WebServices.2.2.nupkg","")
         Write-Host "EWS DLL found in package folder path" -ForegroundColor Cyan
         $EWS = "$EWSPath\lib\40\Microsoft.Exchange.WebServices.dll"
     }
@@ -133,6 +135,34 @@ function GenerateForm {
         Write-Host "EWS DLL found in current folder path" -ForegroundColor Cyan
     }
     Add-Type -Path $EWS
+
+    $Abstractions = "$pwd\Microsoft.IdentityModel.Abstractions.dll"
+    if ( -not(Test-Path -Path $Abstractions) ) {
+        Write-Verbose "Microsoft.IdentityModel.Abstractions.dll in local path not found"
+        $absPkg = Get-Package Microsoft.IdentityModel.Abstractions -ErrorAction SilentlyContinue
+        if ( $null -eq $absPkg ) {
+            Write-Verbose "Downloading Abstractions DLL Nuget package and installing it"
+            if ( -not(Get-PackageSource -ProviderName Nuget -WarningAction SilentlyContinue)) {
+                $null = Register-PackageSource -Name MyNuGet -Location https://www.nuget.org/api/v2 -ProviderName NuGet -Trusted -Force
+            }
+            $null = Install-Package Microsoft.IdentityModel.Abstractions -RequiredVersion 6.22.0 -Scope CurrentUser
+            $absPkg = Get-Package Microsoft.IdentityModel.Abstractions -ErrorAction SilentlyContinue
+        }
+        $absPath = $absPkg.source.Replace("\Microsoft.IdentityModel.Abstractions.6.22.0.nupkg","")
+        Write-Verbose "Microsoft.IdentityModel.Abstractions DLL found in package folder path"
+        $abs = "$absPath\lib\net472\Microsoft.IdentityModel.Abstractions.dll"
+    }
+    else {
+        Write-Verbose "Microsoft.IdentityModel.Abstractions DLL found in current folder path"
+    }
+    try {
+        Add-Type -Path $abs -ErrorAction Stop
+    }
+    catch {
+        if ($_.Exception.Message -contains "Assembly with same name is already loaded" ) {
+            # ignoring this message
+        }
+    }
     #endregion
 
     #region Select Exchange version and establish connection
@@ -245,9 +275,9 @@ function GenerateForm {
         $scopes.Add("https://outlook.office365.com/.default")
         #$scopes.Add("https://outlook.office.com/EWS.AccessAsUser.All")
         $authResult = $pca.AcquireTokenInteractive($scopes)
-        $token = $authResult.ExecuteAsync()
+        $global:token = $authResult.ExecuteAsync()
         while ( $token.IsCompleted -eq $False ) { <# Waiting for token auth flow to complete #>}
-        if ($token.Status -eq "Faulted" -and $token.Exception.Message.StartsWith("One or more errors occurred. (ActiveX control '8856f961-340a-11d0-a96b-00c04fd705a2'")) {
+        if ($token.Status -eq "Faulted" -and $token.Exception.InnerException.Message.StartsWith("ActiveX control '8856f961-340a-11d0-a96b-00c04fd705a2'")) {
             Write-Host "Known issue occurred. There is work in progress to fix authentication flow." -ForegroundColor red
             Write-Host "Failed to obtain authentication token. Exiting script. Please rerun the script again and it should work." -ForegroundColor Red
             exit
