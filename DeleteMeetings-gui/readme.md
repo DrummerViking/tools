@@ -28,6 +28,9 @@ PS C:\> .\DeleteMeetings-GUI.ps1 -LogFolder "C:\Temp"
 In this example the script will run and it will log the exported list of items to the 'C:\Temp' folder.  
 
 ## Version History:  
+### 2.01 - 10/14/2022  
+ - Fixed authentication requirements. Added powershell module "MSAL.PS" in order to handle token requests.  
+ - fixed log file names, which where incorrectly selecting organizer names, instead of each mailbox name.  
 ### 2.01 - 09/03/2021  
  - Updated tool and add an optional parameter to export log files to a custom folder.  
 ### 2.00 - 05/11/2020

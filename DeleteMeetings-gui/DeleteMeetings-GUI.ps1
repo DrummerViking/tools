@@ -136,6 +136,7 @@ function GenerateForm {
     }
     Add-Type -Path $EWS
 
+    <#
     $Abstractions = "$pwd\Microsoft.IdentityModel.Abstractions.dll"
     if ( -not(Test-Path -Path $Abstractions) ) {
         Write-Verbose "Microsoft.IdentityModel.Abstractions.dll in local path not found"
@@ -163,6 +164,7 @@ function GenerateForm {
             # ignoring this message
         }
     }
+    #>
     #endregion
 
     #region Select Exchange version and establish connection
@@ -261,29 +263,27 @@ function GenerateForm {
 
     if ($radiobutton4.Checked) {
         #Getting oauth credentials using MSAL
-        if ( -not(Get-Module Microsoft.Identity.Client -ListAvailable) ) {
-            Install-Module Microsoft.Identity.Client -Force -ErrorAction Stop
+        if ( -not(Get-Module MSAL.PS -ListAvailable) ) {
+            Install-Module MSAL.PS -Force -ErrorAction Stop
         }
-        Import-Module Microsoft.Identity.Client
+        Import-Module MSAL.PS
         $AppId = "8799ab60-ace5-4bda-b31f-621c9f6668db"
-        $pcaOptions = [Microsoft.Identity.Client.PublicClientApplicationOptions]::new()
-        $pcaOptions.ClientId = $AppId
-        $pcaOptions.RedirectUri = "http://localhost/code"
-        $pcaBuilder = [Microsoft.Identity.Client.PublicClientApplicationBuilder]::CreateWithApplicationOptions($pcaOptions)
-        $pca = $pcaBuilder.Build()
+        $RedirectUri = "http://localhost/code"
         $scopes = New-Object System.Collections.Generic.List[string]
         $scopes.Add("https://outlook.office365.com/.default")
         #$scopes.Add("https://outlook.office.com/EWS.AccessAsUser.All")
-        $authResult = $pca.AcquireTokenInteractive($scopes)
-        $global:token = $authResult.ExecuteAsync()
-        while ( $token.IsCompleted -eq $False ) { <# Waiting for token auth flow to complete #>}
-        if ($token.Status -eq "Faulted" -and $token.Exception.InnerException.Message.StartsWith("ActiveX control '8856f961-340a-11d0-a96b-00c04fd705a2'")) {
-            Write-Host "Known issue occurred. There is work in progress to fix authentication flow." -ForegroundColor red
-            Write-Host "Failed to obtain authentication token. Exiting script. Please rerun the script again and it should work." -ForegroundColor Red
-            exit
+        try {
+            $global:token = Get-MsalToken -ClientId $AppId -RedirectUri $RedirectUri -Scopes $scopes -Interactive -ErrorAction Stop
         }
-        $exchangeCredentials = New-Object Microsoft.Exchange.WebServices.Data.OAuthCredentials($Token.Result.AccessToken)
-        $Global:email = $Token.Result.Account.Username
+        catch {
+            if ( $_.Exception.Message -match "8856f961-340a-11d0-a96b-00c04fd705a2") {
+                Write-Host "Known issue occurred. There is work in progress to fix authentication flow." -ForegroundColor red
+                Write-Host "Failed to obtain authentication token. Exiting script. Please rerun the script again and it should work." -ForegroundColor Red
+                exit
+            }
+        }
+        $exchangeCredentials = New-Object Microsoft.Exchange.WebServices.Data.OAuthCredentials($Token.AccessToken)
+        $Global:email = $Token.Account.Username
         $service.Url = New-Object Uri("https://outlook.office365.com/ews/exchange.asmx")
     }
     else {
@@ -352,7 +352,7 @@ function GenerateForm {
             $Appointments = $Calendarfolder.FindAppointments($calView)
             foreach ($Appointment in $Appointments) {
                 $tempItem = [Microsoft.Exchange.WebServices.Data.Appointment]::Bind($service, $Appointment.Id)
-                write-host $tempItem.Subject -ForegroundColor Yellow
+                #write-host $tempItem.Subject -ForegroundColor Yellow
                 if (($tempItem.Organizer.Address -like "*$organizer*") -and ($tempItem.LastModifiedName -ne $tempItem.Organizer.Name)) {
                     $Subject = $tempItem.subject.ToString().replace($tempItem.Organizer.Name, '')
                     $output = $tempItem | Select-Object @{N = "Mailbox"; E = { $tempItem.LastModifiedName } }, @{N = "Subject"; E = { $Subject.trimstart() } }, organizer, start, end, datetimereceived
@@ -361,7 +361,7 @@ function GenerateForm {
             }
         }
         $dgResults.datasource = $array
-        $array | export-csv "$LogFolder\ListMeetings-$organizer $((Get-Date).ToString("yyyy-MM-dd HH_mm")).csv" -NoTypeInformation
+        $array | export-csv "$LogFolder\ListMeetings-$($mbx.PrimarySMTPAddress) $((Get-Date).ToString("yyyy-MM-dd HH_mm")).csv" -NoTypeInformation
         $dgResults.Visible = $True
         $txtBoxResults.Visible = $False
         $dgResults.AutoResizeColumns()
@@ -416,7 +416,7 @@ function GenerateForm {
                 }
             }
         }
-        $array | export-csv "$LogFolder\DeletedMeetings-$organizer $((Get-Date).ToString("yyyy-MM-dd HH_mm")).csv" -NoTypeInformation
+        $array | export-csv "$LogFolder\DeletedMeetings-$($mbx.PrimarySMTPAddress) $((Get-Date).ToString("yyyy-MM-dd HH_mm")).csv" -NoTypeInformation
         $display = "Deletion completed. Please check your resultant file in $LogFolder"
         $txtBoxResults.Text = $display
         $txtBoxResults.Visible = $True
