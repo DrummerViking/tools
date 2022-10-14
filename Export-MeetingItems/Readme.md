@@ -60,6 +60,8 @@ Will Export meeting items to the selected folder "C:\Reports" in a file named by
 
 
 ## Version History:
+### 1.03 - 10/14/2022
+ - Updated script to use "MSAL.PS" module in order to handle authentication tokens.  
 ### 1.02 - 06/22/2022
  - Updated: Changed exported CSV file naming to: "_alias_-CalendaritemsReport_yyyy_MM_dd HH-mm-ss.csv". So if the script is run multiple times, we will not conflict with previous files.
 ### 1.01 - 06/21/2022

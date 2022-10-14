@@ -161,54 +161,52 @@ $ExchangeVersion = [Microsoft.Exchange.WebServices.Data.ExchangeVersion]::Exchan
 $service = New-Object Microsoft.Exchange.WebServices.Data.ExchangeService($ExchangeVersion)
 
 #Getting oauth credentials
-if ( -not(Get-Module Microsoft.Identity.Client -ListAvailable) -and -not(Get-Module Microsoft.Identity.Client) ) {
-    Install-Module Microsoft.Identity.Client -Force -ErrorAction Stop
+if ( -not(Get-Module MSAL.PS -ListAvailable) ) {
+    Install-Module MSAL.PS -Force -ErrorAction Stop
 }
-Import-Module Microsoft.Identity.Client
+Import-Module MSAL.PS
 
 # Connecting using Oauth with delegated permissions
 if ( $clientID -eq '' -or $TenantID -eq '' -or $CertificateThumbprint -eq '' ) {                
-    $pcaOptions = [Microsoft.Identity.Client.PublicClientApplicationOptions]::new()
-    $pcaOptions.ClientId = "8799ab60-ace5-4bda-b31f-621c9f6668db"
-    $pcaOptions.RedirectUri = "http://localhost/code"
-    $pcaBuilder = [Microsoft.Identity.Client.PublicClientApplicationBuilder]::CreateWithApplicationOptions($pcaOptions)
-    $pca = $pcaBuilder.Build()
+    $ClientId = "8799ab60-ace5-4bda-b31f-621c9f6668db"
+    $RedirectUri = "http://localhost/code"
     $scopes = New-Object System.Collections.Generic.List[string]
     $scopes.Add("https://outlook.office365.com/.default")
     #$scopes.Add("https://outlook.office.com/EWS.AccessAsUser.All")
-    $authResult = $pca.AcquireTokenInteractive($scopes)
-    $token = $authResult.ExecuteAsync()
-    while ( $token.IsCompleted -eq $False ) { <# Waiting for token auth flow to complete #> }
-    if ($token.Status -eq "Faulted" -and $token.Exception.Message.StartsWith("One or more errors occurred. (ActiveX control '8856f961-340a-11d0-a96b-00c04fd705a2'")) {
-        Write-Host "Known issue occurred. There is work in progress to fix authentication flow." -ForegroundColor red
-        Write-Host "Failed to obtain authentication token. Exiting script. Please rerun the script again and it should work." -ForegroundColor Red
-        exit
+    try {
+        $token = Get-MsalToken -ClientId $clientID -RedirectUri $RedirectUri -Scopes $scopes -Interactive -ErrorAction Stop
+    }
+    catch {
+        if ( $_.Exception.Message -match "8856f961-340a-11d0-a96b-00c04fd705a2") {
+            Write-Host "Known issue occurred. There is work in progress to fix authentication flow." -ForegroundColor red
+            Write-Host "Failed to obtain authentication token. Exiting script. Please rerun the script again and it should work." -ForegroundColor Red
+            exit
+        }
     }
 }
 # Connecting using Oauth with Application permissions
 else {
-    $ccaOptions = [Microsoft.Identity.Client.ConfidentialClientApplicationOptions]::new()
-    $ccaOptions.ClientId = $ClientId
-    $ccaOptions.TenantID = $TenantID
-    $ccaOptions.ClientSecret = $ClientSecret
-    $ccaBuilder = [Microsoft.Identity.Client.ConfidentialClientApplicationBuilder]::CreateWithApplicationOptions($ccaOptions)
-    $cca = $ccaBuilder.Build()
     $scopes = New-Object System.Collections.Generic.List[string]
     $scopes.Add("https://outlook.office365.com/.default")
-    $authResult = $cca.AcquireTokenForClient($scopes)
-    $token = $authResult.ExecuteAsync()
-    while ( $token.IsCompleted -eq $False ) { <# Waiting for token auth flow to complete #> }
-    if ($token.Status -eq "Faulted" -and $token.Exception.Message.StartsWith("One or more errors occurred. (ActiveX control '8856f961-340a-11d0-a96b-00c04fd705a2'")) {
-        Write-Host "Known issue occurred. There is work in progress to fix authentication flow." -ForegroundColor red
-        Write-Host "Failed to obtain authentication token. Exiting script. Please rerun the script again and it should work." -ForegroundColor Red
-        exit
+    try {
+        $global:token = Get-MsalToken -ClientId $clientID -TenantId $TenantID -ClientSecret $ClientSecret -Scopes $scopes -ErrorAction Stop
+    }
+    catch {
+        if ( $_.Exception.Message -match "8856f961-340a-11d0-a96b-00c04fd705a2") {
+            Write-Host "Known issue occurred. There is work in progress to fix authentication flow." -ForegroundColor red
+            Write-Host "Failed to obtain authentication token. Exiting script. Please rerun the script again and it should work." -ForegroundColor Red
+            exit
+        }
     }
 }
-$exchangeCredentials = New-Object Microsoft.Exchange.WebServices.Data.OAuthCredentials($Token.Result.AccessToken)
+$exchangeCredentials = New-Object Microsoft.Exchange.WebServices.Data.OAuthCredentials($Token.AccessToken)
 $service.Url = New-Object Uri("https://outlook.office365.com/ews/exchange.asmx")
 $Service.Credentials = $exchangeCredentials
 #endregion
 
+if ( $null -eq $mailboxes ) {
+    $mailboxes = $token.Account.Username
+}
 $i=0
 foreach ($mb in $mailboxes) {
     $i++

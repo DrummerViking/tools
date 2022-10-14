@@ -135,36 +135,6 @@ function GenerateForm {
         Write-Host "EWS DLL found in current folder path" -ForegroundColor Cyan
     }
     Add-Type -Path $EWS
-
-    <#
-    $Abstractions = "$pwd\Microsoft.IdentityModel.Abstractions.dll"
-    if ( -not(Test-Path -Path $Abstractions) ) {
-        Write-Verbose "Microsoft.IdentityModel.Abstractions.dll in local path not found"
-        $absPkg = Get-Package Microsoft.IdentityModel.Abstractions -ErrorAction SilentlyContinue
-        if ( $null -eq $absPkg ) {
-            Write-Verbose "Downloading Abstractions DLL Nuget package and installing it"
-            if ( -not(Get-PackageSource -ProviderName Nuget -WarningAction SilentlyContinue)) {
-                $null = Register-PackageSource -Name MyNuGet -Location https://www.nuget.org/api/v2 -ProviderName NuGet -Trusted -Force
-            }
-            $null = Install-Package Microsoft.IdentityModel.Abstractions -RequiredVersion 6.22.0 -Scope CurrentUser
-            $absPkg = Get-Package Microsoft.IdentityModel.Abstractions -ErrorAction SilentlyContinue
-        }
-        $absPath = $absPkg.source.Replace("\Microsoft.IdentityModel.Abstractions.6.22.0.nupkg","")
-        Write-Verbose "Microsoft.IdentityModel.Abstractions DLL found in package folder path"
-        $abs = "$absPath\lib\net472\Microsoft.IdentityModel.Abstractions.dll"
-    }
-    else {
-        Write-Verbose "Microsoft.IdentityModel.Abstractions DLL found in current folder path"
-    }
-    try {
-        Add-Type -Path $abs -ErrorAction Stop
-    }
-    catch {
-        if ($_.Exception.Message -contains "Assembly with same name is already loaded" ) {
-            # ignoring this message
-        }
-    }
-    #>
     #endregion
 
     #region Select Exchange version and establish connection
@@ -273,7 +243,7 @@ function GenerateForm {
         $scopes.Add("https://outlook.office365.com/.default")
         #$scopes.Add("https://outlook.office.com/EWS.AccessAsUser.All")
         try {
-            $global:token = Get-MsalToken -ClientId $AppId -RedirectUri $RedirectUri -Scopes $scopes -Interactive -ErrorAction Stop
+            $token = Get-MsalToken -ClientId $AppId -RedirectUri $RedirectUri -Scopes $scopes -Interactive -ErrorAction Stop
         }
         catch {
             if ( $_.Exception.Message -match "8856f961-340a-11d0-a96b-00c04fd705a2") {
