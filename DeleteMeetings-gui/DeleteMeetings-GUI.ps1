@@ -265,6 +265,8 @@ function GenerateForm {
         $service.AutodiscoverUrl($email, { $true })
     }
     $Service.Credentials = $exchangeCredentials
+    $service.ReturnClientRequestId = $true
+    $service.UserAgent = "DeleteMeetings-GUI/2.03"
     #endregion
 
     #region Processes

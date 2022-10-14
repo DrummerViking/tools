@@ -202,6 +202,8 @@ else {
 $exchangeCredentials = New-Object Microsoft.Exchange.WebServices.Data.OAuthCredentials($Token.AccessToken)
 $service.Url = New-Object Uri("https://outlook.office365.com/ews/exchange.asmx")
 $Service.Credentials = $exchangeCredentials
+$service.ReturnClientRequestId = $true
+$service.UserAgent = "ExportMeetingItems/1.03"
 #endregion
 
 if ( $null -eq $mailboxes ) {
