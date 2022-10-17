@@ -213,27 +213,26 @@ Function Get-ServerVersion {
                 default {}
             }
         }
-    }
-    # Determine CU version for Exchange 2019 builds
-    elseif ($CAS.AdminDisplayVersion.Minor -eq "2") {
-        switch ($CU) {
-            0221 { $exSetupVer += " - RTM" }
-            0330 { $exSetupVer += " - CU1" }
-            0397 { $exSetupVer += " - CU2" }
-            0464 { $exSetupVer += " - CU3" }
-            0529 { $exSetupVer += " - CU4" }
-            0595 { $exSetupVer += " - CU5" }
-            0659 { $exSetupVer += " - CU6" }
-            0721 { $exSetupVer += " - CU7" }
-            0792 { $exSetupVer += " - CU8" }
-            0858 { $exSetupVer += " - CU9" }
-            0922 { $exSetupVer += " - CU10" }
-            0986 { $exSetupVer += " - CU11" }
-            1118 { $exSetupVer += " - CU12" }
-            default {}
+        # Determine CU version for Exchange 2019 builds
+        elseif ($CAS.AdminDisplayVersion.Minor -eq "2") {
+            switch ($CU) {
+                0221 { $exSetupVer += " - RTM" }
+                0330 { $exSetupVer += " - CU1" }
+                0397 { $exSetupVer += " - CU2" }
+                0464 { $exSetupVer += " - CU3" }
+                0529 { $exSetupVer += " - CU4" }
+                0595 { $exSetupVer += " - CU5" }
+                0659 { $exSetupVer += " - CU6" }
+                0721 { $exSetupVer += " - CU7" }
+                0792 { $exSetupVer += " - CU8" }
+                0858 { $exSetupVer += " - CU9" }
+                0922 { $exSetupVer += " - CU10" }
+                0986 { $exSetupVer += " - CU11" }
+                1118 { $exSetupVer += " - CU12" }
+                default {}
+            }
         }
     }
-                    
 }
 
 # Declaring some variables 
@@ -402,6 +401,7 @@ if ($CASLoad -eq $true -and $Autodiscover -eq $false) {
                 528209 { $netver = ".NET Framework 4.8" }
                 528372 { $netver = ".NET Framework 4.8" }
                 528449 { $netver = ".NET Framework 4.8" }
+                533325 { $netver = ".NET Framework 4.8.1" }
             }
             $tempServer | Add-Member -Type NoteProperty -Name ".NET version" -Value $netver
 
@@ -534,6 +534,7 @@ elseif ($CASLoad -eq $false -and $CheckASACredentials -eq $false -and $Autodisco
                 528209 { $netver = ".NET Framework 4.8" }
                 528372 { $netver = ".NET Framework 4.8" }
                 528449 { $netver = ".NET Framework 4.8" }
+                533325 { $netver = ".NET Framework 4.8.1" }
             }
 
             $tempServer | Add-Member -Type NoteProperty -Name ".NET version" -Value $netver

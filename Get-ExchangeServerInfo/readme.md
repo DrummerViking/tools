@@ -45,6 +45,8 @@ It will check for the most common protocols user load.
 This optional switch allows to check for ASA Credentails in the environment.  
 
 ## Version History:  
+### 1.112 - 10/17/2022  
+ - Fixed Exchange 2019 CU build logic.  
 ### 1.111 - 05/11/2022
  - Updated build versions for May 2022 releases
 ### 1.109 - 06/29/2021
