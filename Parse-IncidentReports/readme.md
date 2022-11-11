@@ -27,6 +27,9 @@ The email address you want the report to be sent to.
 Send report to Organization Admins detected.  
 
 ## Version History:  
+### 1.80 - 11/09/2022  
+ - Updated logic to list and select the folder where incident reports are located.
+ - Updated command to connect to EXO if we need to fetch OrgAdmins
 ### 1.60 - 05/11/2020
  - Updated tool to connect to Exchange Online using oauth authentication.
 ### 1.50 - 06/19/2017
