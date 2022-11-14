@@ -90,8 +90,7 @@ Begin {
         Start-Transcript
     }
     $EWS = "$pwd\Microsoft.Exchange.WebServices.dll"
-    $test = Test-Path -Path $EWS
-    if ($test -eq $False) {
+    if (-not(Test-Path -Path $EWS)) {
         Write-Host "[$((Get-Date).ToString("HH:mm:ss"))] EWS DLL in local path not found" -ForegroundColor Cyan
         $ewspkg = Get-Package Microsoft.Exchange.WebServices -ErrorAction SilentlyContinue
         if ( $null -eq $ewspkg ) {
