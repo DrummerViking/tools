@@ -100,16 +100,20 @@ Type 'exit' to quit"
         switch ($premise) {
             default { return }
             office365 {
-                if ( !(Get-Module ExchangeOnlineManagement -ListAvailable) -and !(Get-Module ExchangeOnlineManagement) ) {
-                    Install-Module ExchangeOnlineManagement -Force -ErrorAction Stop
+                if ( -not(Get-Module ExchangeOnlineManagement -ListAvailable) ) {
+                    Install-Module ExchangeOnlineManagement -scope CurrentUser -Force -ErrorAction Stop
                 }
                 Import-Module ExchangeOnlineManagement
+                get-connectionInformation
                 try {
-                    Connect-ExchangeOnline -ShowBanner:$False -ErrorAction Stop -OutVariable $out
+                    Connect-ExchangeOnline -ErrorAction Stop
                 }
                 catch {
-                    if ($_.Exception.InnerException.message -like "ActiveX control*") {
+                    if ($_.Exception.Message -match "8856f961-340a-11d0-a96b-00c04fd705a2") {
                         Connect-ExchangeOnline -ShowBanner:$False
+                    }
+                    else {
+                        write-host "$((Get-Date).ToString("MM/dd/yyyy HH:mm:ss")) - Something failed to connect. Error message: $_" -ForegroundColor Red
                     }
                 }
             }
