@@ -31,7 +31,7 @@
 param(
     [switch] $EnableTranscript = $false,
 
-    [String] $LogFolder = "$home\Desktop"
+    [String] $LogFolder = [Environment]::GetFolderPath("Desktop")
 )
 
 $disclaimer = @"

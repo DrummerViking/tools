@@ -58,7 +58,7 @@ Param(
     [Switch]$EmailToGroupMembers = $False,
 
     [Parameter(Position = 5, Mandatory = $False, HelpMessage = 'Path where the HTML report will be saved. By default will be in the users desktop named "Quarantine report.html"...')]
-    [String]$ReportFilePath = "$Home\Desktop\Quarantine Report.html"
+    [String]$ReportFilePath = "$([Environment]::GetFolderPath("Desktop"))\Quarantine Report.html"
 )
 
 $disclaimer = @"

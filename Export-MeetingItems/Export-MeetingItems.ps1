@@ -29,7 +29,7 @@
     This is an optional parameter. String parameter with the Client Secret which is configured in the AzureAD App.
 
 .PARAMETER ExportFolderPath
-    Insert target folder path named like "C:\Temp". By default this will be "$home\desktop"
+    Insert target folder path named like "C:\Temp". By default this will be the user's desktop.
 
 .PARAMETER StartDate
     Set the start date to look for items. By default will consider 1 year backwards from the current date.
@@ -77,7 +77,7 @@ param(
     [String[]] $mailboxes,
 
     [Parameter(Mandatory = $false, HelpMessage = 'Insert target folder path name like "C:\Temp"')]
-    $ExportFolderPath = "$home\Desktop\",
+    $ExportFolderPath = [Environment]::GetFolderPath("Desktop"),
 
     [DateTime] $StartDate = (Get-date).AddYears(-1),
     
@@ -117,16 +117,10 @@ if ($EnableTranscript) {
 }
 
 # creating folder path if it doesn't exists
-if ( $ExportFolderPath -ne "$home\Desktop\" ) {
+if ( $ExportFolderPath -ne [Environment]::GetFolderPath("Desktop") ) {
     if ( -not (Test-Path $ExportFolderPath) ) {
         write-host "Folder '$ExportFolderPath' does not exists. Creating folder." -foregroundColor Green
         $null = New-Item -Path $ExportFolderPath -ItemType Directory -Force
-    }
-}
-else {
-    # Checking if Desktop folder is located in the user's profile folder, or synched to OneDrive
-    if ( -not(Test-Path $ExportFolderPath) ) {
-        $ExportFolderPath = "$env:OneDriveCommercial\Desktop"
     }
 }
 

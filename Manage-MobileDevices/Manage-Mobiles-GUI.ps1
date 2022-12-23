@@ -20,7 +20,7 @@
     .\Manage-Mobiles-GUI.ps1 -EnableTranscript
 #>
 param(
-    [switch]$EnableTranscript = $false
+    [switch]$EnableTranscript
 )
 
 $script:nl = "`r`n"

@@ -412,9 +412,9 @@ Unfortunatelly if the Mailbox is on-premises and Archive Online, you can only co
         $statusBar.Text = "Running..."
         $mbx = Get-EXOMailbox -Identity $txtBoxMbxAlias.Text -ErrorAction SilentlyContinue
         if ($null -ne $mbx) {
-            (Export-MailboxDiagnosticLogs $txtBoxMbxAlias.Text -ComponentName mrm -Verbose).Mailboxlog >> $home\Desktop\MFAlog.log
+            (Export-MailboxDiagnosticLogs $txtBoxMbxAlias.Text -ComponentName mrm -Verbose).Mailboxlog >> "$([Environment]::GetFolderPath("Desktop"))\MFAlog.log"
             [Microsoft.VisualBasic.Interaction]::MsgBox("MFA log exported successfully to your desktop", [Microsoft.VisualBasic.MsgBoxStyle]::Okonly, "Managed Folder Assistant")  
-            Start-Process notepad.exe -ArgumentList "$home\Desktop\MFAlog.log"
+            Start-Process notepad.exe -ArgumentList "$([Environment]::GetFolderPath("Desktop"))\MFAlog.log"
         }
         else {
             write-host "Mailbox not found. Please re type it" -ForegroundColor white -BackgroundColor Red
